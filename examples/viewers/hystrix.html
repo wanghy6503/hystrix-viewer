@@ -1,0 +1,55 @@
+<div class='row trunk-section'>
+    <div class='col-lg-8 text-left' id='hystrix-div'></div>
+    <div class='col-lg-4'>
+        <div class='data-column'><a href='data/timer-metrics.json'>data</a></div>
+
+        <pre><code class='javascript'>function addViewers() {
+    hystrixViewer.addHystrixDashboard('#hystrix-div');
+}
+
+$(function() {
+    addViewers();
+    hystrixViewer.init();
+    keepRefreshingViewer();
+});
+
+function keepRefreshingViewer() {
+    refreshViewer();
+    setInterval(refreshViewer, 2000);
+}
+
+function refreshViewer() {
+    $.getJSON('data/hystrix-metrics.json',
+            function (data) {
+        hystrixViewer.refresh(data);
+    });
+}
+</code></pre>
+
+    </div>
+</div>
+
+<script>
+    function addViewers() {
+        hystrixViewer.addHystrixDashboard('#hystrix-div');
+    }
+
+    //when document.readyState === 'complete
+    $(function () {
+        addViewers();
+        hystrixViewer.init();
+        keepRefreshingViewer();
+    });
+
+    function keepRefreshingViewer() {
+        refreshViewer();
+        var timer = setInterval(refreshViewer, 2000);
+        example.addTimer(timer);
+    }
+
+    function refreshViewer() {
+        $.getJSON('data/hystrix-metrics.json', function (data) {
+            hystrixViewer.refresh(data);
+        });
+    }
+</script>

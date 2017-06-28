@@ -1,0 +1,13 @@
+theme: jekyll-theme-midnight
+
+baseurl: /metrics-viewer
+
+title: Metrics Viewer
+description: JavaScript library for displaying Dropwizard Metrics
+
+author: Indra Basak
+
+logo: ./examples/images/logo-md-blue-64px.png
+docs: ./examples/index.html
+demo: ./examples/examples.html
+blog: https://indrabasak.github.io

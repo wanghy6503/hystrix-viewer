@@ -1,0 +1,293 @@
+{
+  "version": "3.0.0",
+  "gauges": {
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.0": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.100": {
+      "value": 100
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.25": {
+      "value": 25
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.50": {
+      "value": 50
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.75": {
+      "value": 75
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.90": {
+      "value": 90
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.95": {
+      "value": 95
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.99": {
+      "value": 99
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.99.5": {
+      "value": 99.5
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.currentConcurrentExecutionCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.errorCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.errorPercentage": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.latencyExecute_mean": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.latencyTotal_mean": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_circuitBreakerErrorThresholdPercentage": {
+      "value": 50
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_circuitBreakerRequestVolumeThreshold": {
+      "value": 20
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_circuitBreakerSleepWindowInMilliseconds": {
+      "value": 5000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_executionIsolationSemaphoreMaxConcurrentRequests": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_executionIsolationThreadTimeoutInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_executionTimeoutInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_fallbackIsolationSemaphoreMaxConcurrentRequests": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.propertyValue_metricsRollingStatisticalWindowInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.reportingHosts": {
+      "value": 1
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.requestCount": {
+      "value": 500
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountBadRequests": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountCollapsedRequests": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountEmit": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountExceptionsThrown": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFailure": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFallbackEmit": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFallbackFailure": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFallbackMissing": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFallbackRejection": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountFallbackSuccess": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountResponsesFromCache": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountSemaphoreRejected": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountShortCircuited": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountSuccess": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountThreadPoolRejected": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingCountTimeout": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readBooks.rollingMaxConcurrentExecutionCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.0": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.100": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.25": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.50": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.75": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.90": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.95": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.99": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.99.5": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.currentConcurrentExecutionCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.errorCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.errorPercentage": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.latencyExecute_mean": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.latencyTotal_mean": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_circuitBreakerErrorThresholdPercentage": {
+      "value": 50
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_circuitBreakerRequestVolumeThreshold": {
+      "value": 20
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_circuitBreakerSleepWindowInMilliseconds": {
+      "value": 5000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_executionIsolationSemaphoreMaxConcurrentRequests": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_executionIsolationThreadTimeoutInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_executionTimeoutInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_fallbackIsolationSemaphoreMaxConcurrentRequests": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.propertyValue_metricsRollingStatisticalWindowInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.reportingHosts": {
+      "value": 1
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.requestCount": {
+      "value": 25
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountBadRequests": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountCollapsedRequests": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountEmit": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountExceptionsThrown": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFailure": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFallbackEmit": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFallbackFailure": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFallbackMissing": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFallbackRejection": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountFallbackSuccess": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountResponsesFromCache": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountSemaphoreRejected": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountShortCircuited": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountSuccess": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountThreadPoolRejected": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountTimeout": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingMaxConcurrentExecutionCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentActiveCount": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentCompletedTaskCount": {
+      "value": 2
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentCorePoolSize": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentLargestPoolSize": {
+      "value": 2
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentMaximumPoolSize": {
+      "value": 10
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentPoolSize": {
+      "value": 2
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentQueueSize": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.currentTaskCount": {
+      "value": 2
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.propertyValue_metricsRollingStatisticalWindowInMilliseconds": {
+      "value": 10000
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.propertyValue_queueSizeRejectionThreshold": {
+      "value": 5
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.reportingHosts": {
+      "value": 1
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.rollingCountCommandRejections": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.rollingCountThreadsExecuted": {
+      "value": 0
+    },
+    "gauge.hystrix.HystrixThreadPool.serviceA.rollingMaxActiveThreads": {
+      "value": 0
+    }
+  }
+}
