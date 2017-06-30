@@ -78,17 +78,16 @@ gulp.task('compile:js', ['clean'], function () {
     return gulp.src(jsFiles)
         .pipe(gulp.dest(distJs))
         .pipe(closureCompiler({
-            compilerPath: 'lib/closure/closure-compiler-v20161024.jar',
+            compilerPath: 'lib/closure/closure-compiler-v20170521.jar',
             fileName: 'hystrixviewer.min.js',
-            compilerFlags: {
-                compilation_level: 'ADVANCED_OPTIMIZATIONS',
-                warning_level: 'VERBOSE',
-                externs: [
-                    'lib/externs/jquery-3.1.js',
-                    'lib/externs/metricgraphics-2.11.0.js',
-                    'lib/externs/d3_v4.7_externs.js'
-                ]
-            }
+            compilation_level: 'ADVANCED_OPTIMIZATIONS',
+            language_in: 'ECMASCRIPT5_STRICT',
+            language_out: 'ECMASCRIPT5_STRICT',
+            warning_level: 'VERBOSE',
+            externs: [
+                'lib/externs/jquery-3.1.js',
+                'lib/externs/d3_v4.7_externs.js'
+            ]
         }))
         .pipe(gulp.dest(distJs));
 });

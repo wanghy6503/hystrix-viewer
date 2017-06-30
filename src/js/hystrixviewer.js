@@ -50,7 +50,7 @@
 
         var $row1Div = $("<div></div>").addClass('row');
         $($containerDiv).append($row1Div);
-        var $menuBar1Div = $("<div></div>").addClass('hystrix-menuBar');
+        var $menuBar1Div = $("<div></div>").addClass('hystrix-menubar');
         $($row1Div).append($menuBar1Div);
         var $circuitTitleDiv = $("<div></div>").addClass('title').text("Circuit");
         $($menuBar1Div).append($circuitTitleDiv);
@@ -77,14 +77,13 @@
      * @param {string} json the metric data in json format
      */
     hystrixViewer.refresh = function (json) {
-        var date = new Date();
-
         if (_hystrixDashboardDivId) {
             _addHystrix(json);
 
             $("#" + _hystrixCircuitContainerDivId).empty();
-            for (var value of _hystrixCircuitMap.values()) {
-                value.refresh(json);
+            for (var key in _hystrixCircuitMap) {
+                if (_hystrixCircuitMap.hasOwnProperty(key))
+                    _hystrixCircuitMap[key].refresh(json);
             }
         }
     };
@@ -93,20 +92,20 @@
      * Clears all the graphs from the metrics viewer
      */
     hystrixViewer.clear = function () {
-/*        while (graphs.length) {
-            var graph = graphs.pop();
+        /*        while (graphs.length) {
+         var graph = graphs.pop();
 
-            $(graph.divId).empty();
-            delete graph.divId;
+         $(graph.divId).empty();
+         delete graph.divId;
 
-            graph.values.clear();
-            delete graph.values;
+         graph.values.clear();
+         delete graph.values;
 
-            graph.legendData.clear();
-            delete graph.legendData;
+         graph.legendData.clear();
+         delete graph.legendData;
 
-            graph = undefined;
-        }*/
+         graph = undefined;
+         }*/
     };
 
     Array.prototype.clear = function () {
@@ -158,7 +157,7 @@
     var circuitCircleYaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxXaxisForCircle]);
     var circuitCircleXaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxYaxisForCircle]);
     var circuitColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
-    var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
+    //var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
     var _hystrixDashboardDivId;
 
@@ -166,72 +165,49 @@
 
     /**
      * A cache of Hystrix circuit charts
-     * @type {Map}
+     * @type {}
      */
-    var _hystrixCircuitMap = new Map();
-
-    /**
-     * Represents a metric data point
-     * @param {Date} date the time of the metric
-     * @param {number} value the value of the metric
-     * @constructor
-     */
-    function MetricData(date, value) {
-        this.date = MG.clone(date);
-        //this.data = date;
-        this.value = value;
-    }
-
-    /**
-     * The data used to display the metric chart legend.
-     *
-     * @param {string} legend the name of the legend
-     * @param {string} key the metric key for the metric value
-     * @param {string|?} metricName the metric name if each line has a different metric source, otherwise null
-     * @param {string|null} altMetricName the alternate metric if the metric name is specified. It is used for look up
-     * when the metric doesn't exist for the provided metric name
-     * @constructor
-     */
-    function LegendData(legend, key, metricName, altMetricName) {
-        this.legend = legend;
-        this.key = key;
-        this.metricName = metricName;
-        this.altMetricName = altMetricName;
-    }
+    var _hystrixCircuitMap = {};
 
     var _addHystrix = function (jsonData) {
         for (var key in jsonData) {
             if (jsonData.hasOwnProperty(key)) {
                 if (key === METRIC_TYPE.GAUGE.type) {
-                    //gauge.hystrix.HystrixCommand
                     var jsonNode = jsonData[METRIC_TYPE.GAUGE.type];
-                    var circuitKey;
-                    var serviceName;
-                    var methodName;
-                    var title;
                     $.each(jsonNode, function (key, val) {
-                        if (key.startsWith("gauge.hystrix.HystrixCommand")) {
-                            //"gauge.hystrix.HystrixThreadPool.serviceA.propertyValue_metricsRollingStatisticalWindowInMilliseconds"
-                            //"gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountTimeout"
-                            var tokens = key.split(".");
-                            if (tokens.length == 6) {
-                                circuitKey = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
-                                    tokens[3] + "." + tokens[4];
-                                if (!_hystrixCircuitMap.has(circuitKey)) {
-                                    serviceName = tokens[3];
-                                    methodName = tokens[4];
-                                    console.log(serviceName + '.' + methodName);
-                                    //noinspection JSUnresolvedFunction
-                                    var config = new HystrixCommandConfig(circuitKey, serviceName, methodName);
-                                    _hystrixCircuitMap.set(circuitKey, config);
-                                }
-                            }
-                        }
+                        _addHystrixCircuit(key);
                     });
                 }
             }
         }
     };
+
+    /**
+     * Adds a Hystrix circuit chart
+     * @param {string} metricName name of metric,
+     * e.g., 'gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountTimeout'
+     * @private
+     */
+    function _addHystrixCircuit(metricName) {
+        if (metricName.startsWith("gauge.hystrix.HystrixCommand")) {
+            var tokens = metricName.split(".");
+            if (tokens.length == 6) {
+                var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
+                    tokens[3] + "." + tokens[4];
+                if (!_hystrixCircuitMap[key]) {
+                    if (tokens.length == 6) {
+                        console.log(tokens[3] + '.' + tokens[4]);
+                        var config = new HystrixCommandConfig(key, tokens[3], tokens[4]);
+                        _hystrixCircuitMap[key] = config;
+                    }
+                }
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // HYSTRIX COMMAND CONFIG
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      *
@@ -263,10 +239,10 @@
                 .addClass('monitor').css({'position': 'relative'});
             $("#" + _hystrixCircuitContainerDivId).append($circuitDiv);
 
-            this._addChart($circuitDiv);
-            this._addTitle($circuitDiv);
-            this._addData($circuitDiv);
-            this._addLineGraph($circuitDiv);
+            this.addChart($circuitDiv);
+            this.addTitle($circuitDiv);
+            this.addData($circuitDiv);
+            this.addLineGraph($circuitDiv);
 
             //    this.initialized = true;
             //}
@@ -278,7 +254,7 @@
             this.render();
         };
 
-        this._addChart = function addChart(circuitDiv) {
+        this.addChart = function addChart(circuitDiv) {
             this.chartDivId = "chart_CIRCUIT_" + this.serviceName + "_" + this.methodName;
             var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
                 .css({
@@ -287,10 +263,10 @@
                 });
             circuitDiv.append($chartDiv);
 
-            this._addCircle(this.chartDivId);
+            this.addCircle(this.chartDivId);
         };
 
-        this._addCircle = function addCirle(chartDivId) {
+        this.addCircle = function addCirle(chartDivId) {
             var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
                 .attr("width", "100%").attr("height", "100%");
             var circle = svgContainer.append("svg:circle");
@@ -317,7 +293,7 @@
                 .style("fill", circuitColorRange(this.errorPercentage));
         };
 
-        this._addTitle = function addTitle(circuitDiv) {
+        this.addTitle = function addTitle(circuitDiv) {
             var $titleDiv = $("<div></div>")
                 .css({
                     'position': 'absolute', 'top': '0px',
@@ -330,7 +306,7 @@
             $titleDiv.append($titleP);
         };
 
-        this._addData = function addData(chartDiv) {
+        this.addData = function addData(chartDiv) {
             var $monitorDiv = $("<div></div>");
             $($monitorDiv).css({
                 'position': 'absolute', 'top': '15px', 'opacity': '0.8',
@@ -341,12 +317,12 @@
             var $monitorDataDiv = $("<div></div>").addClass('monitor_data');
             $monitorDiv.append($monitorDataDiv);
 
-            this._addCounters($monitorDataDiv);
-            this._addRate($monitorDataDiv);
-            this._addDataTable($monitorDataDiv);
+            this.addCounters($monitorDataDiv);
+            this.addRate($monitorDataDiv);
+            this.addDataTable($monitorDataDiv);
         };
 
-        this._addCounters = function addCounters(monitorDataDiv) {
+        this.addCounters = function addCounters(monitorDataDiv) {
             var $countersDiv = $("<div></div>").addClass("counters");
             monitorDataDiv.append($countersDiv);
 
@@ -411,7 +387,7 @@
             $countersDiv.append($sec2Div);
         };
 
-        this._addRate = function addRate(monitorDataDiv) {
+        this.addRate = function addRate(monitorDataDiv) {
             var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Request Rate per Second per Reporting Host\""
                 + "class=\"hystrix-tooltip rate\">"
                 + "<span class=\"smaller\">Host: </span>"
@@ -433,7 +409,7 @@
             monitorDataDiv.append($rate2Div);
         };
 
-        this._addDataTable = function addDataTable(monitorDataDiv) {
+        this.addDataTable = function addDataTable(monitorDataDiv) {
             var $spacerDiv = $("<div></div>").addClass("spacer");
             monitorDataDiv.append($spacerDiv);
 
@@ -466,7 +442,7 @@
             monitorDataDiv.append($monitorRow3Div);
         };
 
-        this._addLineGraph = function addLineGraph(chartDiv) {
+        this.addLineGraph = function addLineGraph(chartDiv) {
             this.graphDivId = "graph_CIRCUIT_" + this.serviceName + "_" + this.methodName;
             var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
                 .css({
@@ -526,7 +502,7 @@
             //d3.selectAll(cssTarget).attr("d", sparkline(this.graphData));
             //var line = svgContainer.append("svg:path").attr("d", sparkline(this.graphData));
             var gdata = this.graphData;
-            var line = svgContainer.append("svg:path")
+            svgContainer.append("svg:path")
                 .attr("d", function (d, i) {
                     return sparkline(gdata);
                 });
@@ -543,8 +519,8 @@
 
             var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
 
-            this.ratePerSecond = roundNumber(totalRequests / numberSeconds);
-            this.ratePerSecondPerHost = roundNumber(totalRequests / numberSeconds / reportingHosts);
+            this.ratePerSecond = _roundNumber(totalRequests / numberSeconds);
+            this.ratePerSecondPerHost = _roundNumber(totalRequests / numberSeconds / reportingHosts);
             this.errorPercentage = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
 
             //var errorPercentage =  getValue(jsonData, this.circuitKey + ".errorPercentage");
@@ -572,26 +548,6 @@
             }
             return prefix + "_" + child;
         }
-
-        /* private */
-        function getInstanceAverage(value, reportingHosts, decimal) {
-            if (decimal) {
-                return roundNumber(value / reportingHosts);
-            } else {
-                return Math.floor(value / reportingHosts);
-            }
-        }
-
-        /* private */
-        function roundNumber(num) {
-            var dec = 1;
-            var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-            var resultAsString = result.toString();
-            if (resultAsString.indexOf('.') == -1) {
-                resultAsString = resultAsString + '.0';
-            }
-            return resultAsString;
-        }
     }
 
     function _getMetricValue(jsonRoot, metricName, defaultValue) {
@@ -609,6 +565,26 @@
             }
         }
         return value;
+    }
+
+    /* private */
+    function _getInstanceAverage(value, reportingHosts, decimal) {
+        if (decimal) {
+            return _roundNumber(value / reportingHosts);
+        } else {
+            return Math.floor(value / reportingHosts);
+        }
+    }
+
+    /* private */
+    function _roundNumber(num) {
+        var dec = 1;
+        var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+        var resultAsString = result.toString();
+        if (resultAsString.indexOf('.') == -1) {
+            resultAsString = resultAsString + '.0';
+        }
+        return resultAsString;
     }
 
     /**

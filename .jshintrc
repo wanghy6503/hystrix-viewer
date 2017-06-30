@@ -11,5 +11,5 @@
   "loopfunc": true,
   "sub": true,
   "node": true,
-  "esversion": 6
+  "esversion": 5
 }
