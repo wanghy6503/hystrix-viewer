@@ -80,7 +80,6 @@
         if (_hystrixDashboardDivId) {
             _addHystrix(json);
 
-            $("#" + _hystrixCircuitContainerDivId).empty();
             for (var key in _hystrixCircuitMap) {
                 if (_hystrixCircuitMap.hasOwnProperty(key))
                     _hystrixCircuitMap[key].refresh(json);
@@ -223,6 +222,7 @@
         this.circuitKey = circuitKey;
         this.serviceName = serviceName;
         this.methodName = methodName;
+        this.suffix = this.serviceName + "_" + this.methodName;
         this.initialized = false;
         this.chartDivId = undefined;
         this.graphDivId = undefined;
@@ -233,29 +233,32 @@
         this.errorPercentage = undefined;
 
         this.render = function render() {
-            //if (!this.initialized) {
-            this.circuitDivId = "CIRCUIT_" + this.serviceName + "_" + this.methodName;
-            var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
-                .addClass('monitor').css({'position': 'relative'});
-            $("#" + _hystrixCircuitContainerDivId).append($circuitDiv);
+            if (!this.initialized) {
+                this.circuitDivId = "CIRCUIT_" + this.suffix;
+                var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
+                    .addClass('monitor').css({'position': 'relative'});
+                $("#" + _hystrixCircuitContainerDivId).append($circuitDiv);
 
-            this.addChart($circuitDiv);
-            this.addTitle($circuitDiv);
-            this.addData($circuitDiv);
-            this.addLineGraph($circuitDiv);
+                this.addChart($circuitDiv);
+                this.addTitle($circuitDiv);
+                this.addData($circuitDiv);
+                this.addSparkline($circuitDiv);
 
-            //    this.initialized = true;
-            //}
+                this.initialized = true;
+            }
         };
 
         this.refresh = function update(jsonData) {
             this.jsonData = jsonData;
-            this.calcRatePerSecond(jsonData);
+            this.calculateValues(jsonData);
             this.render();
+            this.updateCircle();
+            this.updateData();
+            this.updateSparkline();
         };
 
         this.addChart = function addChart(circuitDiv) {
-            this.chartDivId = "chart_CIRCUIT_" + this.serviceName + "_" + this.methodName;
+            this.chartDivId = "chart_CIRCUIT_" + this.suffix;
             var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
                 .css({
                     'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
@@ -270,8 +273,10 @@
             var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
                 .attr("width", "100%").attr("height", "100%");
             var circle = svgContainer.append("svg:circle");
-            //circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 15);
+            circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 15);
+        };
 
+        this.updateCircle = function updateCircle() {
             var newXaxisForCircle = circuitCircleXaxis(this.ratePerSecondPerHost);
             if (parseInt(newXaxisForCircle, 10) > parseInt(maxXaxisForCircle, 10)) {
                 newXaxisForCircle = maxXaxisForCircle;
@@ -287,7 +292,10 @@
                 newRadiusForCircle = maxRadiusForCircle;
             }
 
-            circle.transition().duration(400).attr("cy", newYaxisForCircle)
+            d3.selectAll("#" + this.chartDivId + " circle")
+                .transition()
+                .duration(400)
+                .attr("cy", newYaxisForCircle)
                 .attr("cx", newXaxisForCircle)
                 .attr("r", newRadiusForCircle)
                 .style("fill", circuitColorRange(this.errorPercentage));
@@ -314,12 +322,20 @@
             });
             chartDiv.append($monitorDiv);
 
-            var $monitorDataDiv = $("<div></div>").addClass('monitor_data');
+            var $monitorDataDiv = $("<div></div>")
+                .attr('id', "chart_CIRCUIT_" + this.suffix + "_monitor_data")
+                .addClass('monitor_data');
             $monitorDiv.append($monitorDataDiv);
+        };
 
-            this.addCounters($monitorDataDiv);
-            this.addRate($monitorDataDiv);
-            this.addDataTable($monitorDataDiv);
+        this.updateData = function updateData() {
+            if (this.initialized) {
+                var $monitorDataDiv = $("#" + "chart_CIRCUIT_" + this.suffix + "_monitor_data");
+                $monitorDataDiv.empty();
+                this.addCounters($monitorDataDiv);
+                this.addRate($monitorDataDiv);
+                this.addDataTable($monitorDataDiv);
+            }
         };
 
         this.addCounters = function addCounters(monitorDataDiv) {
@@ -442,8 +458,8 @@
             monitorDataDiv.append($monitorRow3Div);
         };
 
-        this.addLineGraph = function addLineGraph(chartDiv) {
-            this.graphDivId = "graph_CIRCUIT_" + this.serviceName + "_" + this.methodName;
+        this.addSparkline = function addSparkline(chartDiv) {
+            this.graphDivId = "graph_CIRCUIT_" + this.suffix;
             var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
                 .css({
                     'position': 'absolute', 'top': '25px', 'left': '0', 'float': 'left',
@@ -453,8 +469,11 @@
 
             var svgContainer = d3.select("#" + this.graphDivId).append("svg:svg")
                 .attr("width", "100%").attr("height", "100%");
-            //var line = svgContainer.append("svg:path");
+            svgContainer.append("svg:path");
+        };
 
+
+        this.updateSparkline = function updateSparkline() {
             var currentTimeMilliseconds = new Date().getTime();
             this.graphData.push({"v": parseFloat(this.ratePerSecond), "t": currentTimeMilliseconds});
 
@@ -499,16 +518,14 @@
                 })
                 .curve(d3.curveBasis);
 
-            //d3.selectAll(cssTarget).attr("d", sparkline(this.graphData));
-            //var line = svgContainer.append("svg:path").attr("d", sparkline(this.graphData));
             var gdata = this.graphData;
-            svgContainer.append("svg:path")
+            d3.selectAll("#" + this.graphDivId + " path")
                 .attr("d", function (d, i) {
                     return sparkline(gdata);
                 });
         };
 
-        this.calcRatePerSecond = function calcRatePerSecond(jsonData) {
+        this.calculateValues = function calculateValues(jsonData) {
             var numberSeconds =
                 _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
 
