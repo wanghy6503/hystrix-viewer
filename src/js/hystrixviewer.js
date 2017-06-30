@@ -45,6 +45,11 @@
      */
     hystrixViewer.addHystrixDashboard = function (divId) {
         _hystrixDashboardDivId = divId;
+
+        var $headerDiv = $("<div></div>").attr('id', 'header')
+            .html("<h2><span id='title_name'>Hystrix</span></h2>");
+        $(_hystrixDashboardDivId).append($headerDiv);
+
         var $containerDiv = $("<div></div>").addClass('hystrix-container');
         $(_hystrixDashboardDivId).append($containerDiv);
 
@@ -58,7 +63,23 @@
         _hystrixCircuitContainerDivId = "dependencies";
         var $circuitContainerDiv = $("<div></div>").attr('id', _hystrixCircuitContainerDivId)
             .addClass('row').addClass('dependencies');
-        $row1Div.append($circuitContainerDiv);
+        $($containerDiv).append($circuitContainerDiv);
+
+        /////////////////////////////////////////////
+        var $spacerDiv = $("<div></div>").addClass("spacer");
+        $($containerDiv).append($spacerDiv);
+
+        var $row2Div = $("<div></div>").addClass('row');
+        $($containerDiv).append($row2Div);
+        var $menuBar2Div = $("<div></div>").addClass('hystrix-menubar');
+        $($row2Div).append($menuBar2Div);
+        var $threadTitleDiv = $("<div></div>").addClass('title').text("Thread Pools");
+        $($menuBar2Div).append($threadTitleDiv);
+
+        _hystrixThreadContainerDivId = "dependencyThreadPools";
+        var $threadContainerDiv = $("<div></div>").attr('id', _hystrixThreadContainerDivId)
+            .addClass('row').addClass('dependencyThreadPools');
+        $($containerDiv).append($threadContainerDiv);
     };
 
     /**
@@ -83,6 +104,11 @@
             for (var key in _hystrixCircuitMap) {
                 if (_hystrixCircuitMap.hasOwnProperty(key))
                     _hystrixCircuitMap[key].refresh(json);
+            }
+
+            for (var threadkey in _hystrixThreadpoolMap) {
+                if (_hystrixThreadpoolMap.hasOwnProperty(threadkey))
+                    _hystrixThreadpoolMap[threadkey].refresh(json);
             }
         }
     };
@@ -122,10 +148,10 @@
      *
      */
     var METRIC_TYPE = {
-        COUNTER: {type: "counters", xLabel: "time", yLabel: "count"},
-        GAUGE: {type: "gauges", xLabel: "time", yLabel: "value"},
-        METER: {type: "meters", xLabel: "time", yLabel: ""},
-        TIMER: {type: "timers", xLabel: "time", yLabel: ""}
+        COUNTER: {type: "counters"},
+        GAUGE: {type: "gauges"},
+        METER: {type: "meters"},
+        TIMER: {type: "timers"}
     };
     Object.freeze(METRIC_TYPE);
 
@@ -158,15 +184,28 @@
     var circuitColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
     //var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
+    var maxDomain = 2000;
+    Object.freeze(maxDomain);
+
+    var threadPoolCircleRadius = d3.scalePow().exponent(0.5).domain([0, maxDomain]).range(["5", maxRadiusForCircle]); // requests per second per host
+    var threadPoolCircleYaxis = d3.scaleLinear().domain([0, maxDomain]).range(["30%", maxXaxisForCircle]);
+    var threadPoolCircleXaxis = d3.scaleLinear().domain([0, maxDomain]).range(["30%", maxYaxisForCircle]);
+    var threadPoolColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
+    var threadPoolErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
+
     var _hystrixDashboardDivId;
 
     var _hystrixCircuitContainerDivId;
+
+    var _hystrixThreadContainerDivId;
 
     /**
      * A cache of Hystrix circuit charts
      * @type {}
      */
     var _hystrixCircuitMap = {};
+
+    var _hystrixThreadpoolMap = {};
 
     var _addHystrix = function (jsonData) {
         for (var key in jsonData) {
@@ -175,6 +214,7 @@
                     var jsonNode = jsonData[METRIC_TYPE.GAUGE.type];
                     $.each(jsonNode, function (key, val) {
                         _addHystrixCircuit(key);
+                        _addHystrixThreadpool(key);
                     });
                 }
             }
@@ -194,10 +234,23 @@
                 var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
                     tokens[3] + "." + tokens[4];
                 if (!_hystrixCircuitMap[key]) {
-                    if (tokens.length == 6) {
-                        var config = new HystrixCommandConfig(key, tokens[3], tokens[4]);
-                        _hystrixCircuitMap[key] = config;
-                    }
+                    var config = new HystrixCommandConfig(key, tokens[3], tokens[4]);
+                    _hystrixCircuitMap[key] = config;
+                }
+            }
+        }
+    }
+
+    function _addHystrixThreadpool(metricName) {
+        if (metricName.startsWith("gauge.hystrix.HystrixThreadPool")) {
+            var tokens = metricName.split(".");
+            if (tokens.length == 5) {
+                var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
+                    tokens[3];
+                if (!_hystrixThreadpoolMap[key]) {
+                    console.log(tokens[3]);
+                    var config = new HystrixThreadpoolConfig(key, tokens[3]);
+                    _hystrixThreadpoolMap[key] = config;
                 }
             }
         }
@@ -225,7 +278,6 @@
         this.initialized = false;
         this.chartDivId = undefined;
         this.graphDivId = undefined;
-        this.jsonData = undefined;
         this.data = {};
         this.graphData = [];
 
@@ -246,8 +298,7 @@
         };
 
         this.refresh = function update(jsonData) {
-            this.jsonData = jsonData;
-            this.calculateValues(jsonData);
+            this.preProcessData(jsonData);
             this.render();
             this.updateCircle();
             this.updateData();
@@ -270,7 +321,7 @@
             var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
                 .attr("width", "100%").attr("height", "100%");
             var circle = svgContainer.append("svg:circle");
-            circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 15);
+            circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 5);
         };
 
         this.updateCircle = function updateCircle() {
@@ -299,16 +350,20 @@
         };
 
         this.addTitle = function addTitle(circuitDiv) {
+            var html = "<p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
+                + this.serviceName + "." + this.methodName + "</p>";
+
             var $titleDiv = $("<div></div>")
                 .css({
                     'position': 'absolute', 'top': '0px',
                     'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
-                });
+                })
+                .html(html);
             circuitDiv.append($titleDiv);
 
-            var $titleP = $("<p></p>").addClass("name")
-                .text(this.serviceName + "." + this.methodName);
-            $titleDiv.append($titleP);
+            // var $titleP = $("<p></p>").addClass("name")
+            //     .text(this.serviceName + "." + this.methodName);
+            // $titleDiv.append($titleP);
         };
 
         this.addData = function addData(chartDiv) {
@@ -409,6 +464,36 @@
             monitorDataDiv.append($rate2Div);
         };
 
+        this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
+            var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus");
+            monitorDataDiv.append($circuitStatusDiv);
+            /*
+             <div class="circuitStatus">
+             <% if(propertyValue_circuitBreakerForceClosed) { %>
+             <span class="smaller">[ <font color="orange">Forced Closed</font> ]</span>
+             <% } %>
+             <% if(propertyValue_circuitBreakerForceOpen) { %>
+             Circuit <font color="red">Forced Open</font>
+             <% } else { %>
+             <% if(isCircuitBreakerOpen == reportingHosts) { %>
+             Circuit <font color="red">Open</font>
+             <% } else if(isCircuitBreakerOpen == 0) { %>
+             Circuit <font color="green">Closed</font>
+             <% } else {
+             //We have some circuits that are open
+             %>
+             <% if(typeof isCircuitBreakerOpen === 'object' ) { %>
+             Circuit <font color="red">Open <%= isCircuitBreakerOpen.true %></font> <font color="green">Closed <%= isCircuitBreakerOpen.false %></font>
+             <% } else { %>
+             Circuit <font color="orange"><%= isCircuitBreakerOpen.toString().replace("true", "Open").replace("false", "Closed") %></font>
+             <% } %>
+             <% }  %>
+             <% } %>
+
+             </div>
+             */
+        };
+
         this.addDataTable = function addDataTable(monitorDataDiv) {
             var $spacerDiv = $("<div></div>").addClass("spacer");
             monitorDataDiv.append($spacerDiv);
@@ -502,7 +587,7 @@
                 });
         };
 
-        this.calculateValues = function calculateValues(jsonData) {
+        this.preProcessData = function preProcessData(jsonData) {
             this.data = {};
             var numberSeconds =
                 _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
@@ -521,54 +606,246 @@
 
             //var errorThenVolume = isNaN( ratePerSecond )? -1: (errorPercentage * 100000000) +  this.ratePerSecond;
 
-            this.data["rollingCountTimeout"] = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountTimeout", 0);
+            this.data["rollingCountTimeout"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountTimeout", 0);
             var rollingCountThreadPoolRejected =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountThreadPoolRejected", -20);
+                _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadPoolRejected", -20);
 
             if (rollingCountThreadPoolRejected === -20) {
                 this.data["rollingCountSemaphoreRejected"] =
-                    _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSemaphorePoolRejected", 0);
+                    _getMetricValue(jsonData, this.circuitKey + ".rollingCountSemaphorePoolRejected", 0);
             } else {
                 this.data["rollingCountThreadPoolRejected"] = rollingCountThreadPoolRejected;
             }
 
-            this.data["rollingCountFailure"] = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountFailure", 0);
+            this.data["rollingCountFailure"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountFailure", 0);
             this.data["rollingCountSuccess"] =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSuccess", 0);
+                _getMetricValue(jsonData, this.circuitKey + ".rollingCountSuccess", 0);
             this.data["rollingCountShortCircuited"] =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountShortCircuited", 0);
+                _getMetricValue(jsonData, this.circuitKey + ".rollingCountShortCircuited", 0);
             this.data["rollingCountBadRequests"] =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountBadRequests", 0);
+                _getMetricValue(jsonData, this.circuitKey + ".rollingCountBadRequests", 0);
 
-            this.data["reportingHosts"] = _getMetricValue(this.jsonData, this.circuitKey + ".reportingHosts", 1);
-            this.data["latency90"] = _getMetricValue(this.jsonData, this.circuitKey + ".90", 0);
-            this.data["latencyMedian"] = _getMetricValue(this.jsonData, this.circuitKey + ".50", 0);
-            this.data["latency99"] = _getMetricValue(this.jsonData, this.circuitKey + ".99", 0);
-            this.data["latencyMean"] = _getMetricValue(this.jsonData, this.circuitKey + ".latencyExecute_mean", 0);
-            this.data["latency995"] = _getMetricValue(this.jsonData, this.circuitKey + ".99.5", 0);
+            this.data["reportingHosts"] = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 1);
+            this.data["latency90"] = _getMetricValue(jsonData, this.circuitKey + ".90", 0);
+            this.data["latencyMedian"] = _getMetricValue(jsonData, this.circuitKey + ".50", 0);
+            this.data["latency99"] = _getMetricValue(jsonData, this.circuitKey + ".99", 0);
+            this.data["latencyMean"] = _getMetricValue(jsonData, this.circuitKey + ".latencyExecute_mean", 0);
+            this.data["latency995"] = _getMetricValue(jsonData, this.circuitKey + ".99.5", 0);
+        };
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // HYSTRIX THREADPOOL CONFIG
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * Hystrix circuit configuration which holds the circuit chart properties and the data.
+     *
+     * @param {string} circuitKey metric prefix for retrieving the individual metric data from metric JSON array.
+     * @param {string} serviceName name of the service name which generates the Hystrix metrics
+     * @constructor
+     */
+    function HystrixThreadpoolConfig(circuitKey, serviceName) {
+        this.circuitKey = circuitKey;
+        this.serviceName = serviceName;
+        this.data = {};
+        this.initialized = false;
+        this.threadDivId = undefined;
+        this.chartDivId = undefined;
+
+        this.refresh = function update(jsonData) {
+            this.preProcessData(jsonData);
+            this.render();
+            this.updateCircle();
+            this.updateData();
         };
 
-        /**
-         * Creates a child HTML division tag id from a parent diviison tag
-         * @param {Object|string} parentDiv the parent division tag
-         * @param {string} child the child division suffix which is appended at to the parent div id
-         * @returns {string} the child div id
-         */
-        function getChildDivId(parentDiv, child) {
-            var prefix = null;
+        this.render = function render() {
+            if (!this.initialized) {
+                this.threadDivId = "THREAD_POOL_" + this.serviceName;
+                var $threadDiv = $("<div></div>").attr('id', this.threadDivId)
+                    .addClass('monitor').css({'position': 'relative'});
+                $("#" + _hystrixThreadContainerDivId).append($threadDiv);
 
-            if (parentDiv instanceof HTMLElement) {
-                prefix = parentDiv.id;
-            } else {
-                prefix = parentDiv;
-                var indexAt0 = parentDiv.charAt(0);
-                if (indexAt0 === "#") {
-                    prefix = parentDiv.substring(1);
-                }
+                this.addChart($threadDiv);
+                this.addTitle($threadDiv);
+                this.addData($threadDiv);
+
+                this.initialized = true;
             }
-            return prefix + "_" + child;
-        }
+        };
+
+        this.addChart = function addChart(threadDiv) {
+            this.chartDivId = "chart_THREAD_POOL_" + this.serviceName;
+            var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
+                .css({
+                    'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
+                    'width': '100%', 'height': '100%'
+                });
+            threadDiv.append($chartDiv);
+
+            this.addCircle(this.chartDivId);
+        };
+
+        this.addCircle = function addCirle(chartDivId) {
+            var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
+                .attr("width", "100%").attr("height", "100%");
+            var circle = svgContainer.append("svg:circle");
+            circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 5);
+        };
+
+        this.updateCircle = function updateCircle() {
+            var newXaxisForCircle = threadPoolCircleXaxis(this.data["ratePerSecondPerHost"]);
+            if (parseInt(newXaxisForCircle) > parseInt(maxXaxisForCircle)) {
+                newXaxisForCircle = maxXaxisForCircle;
+            }
+
+            var newYaxisForCircle = threadPoolCircleYaxis(this.data["ratePerSecondPerHost"]);
+            if (parseInt(newYaxisForCircle) > parseInt(maxYaxisForCircle)) {
+                newYaxisForCircle = maxYaxisForCircle;
+            }
+
+            var newRadiusForCircle = threadPoolCircleRadius(this.data["ratePerSecondPerHost"]);
+            if (parseInt(newRadiusForCircle) > parseInt(maxRadiusForCircle)) {
+                newRadiusForCircle = maxRadiusForCircle;
+            }
+
+            d3.selectAll("#" + this.chartDivId + " circle")
+                .transition()
+                .duration(400)
+                .attr("cy", newYaxisForCircle)
+                .attr("cx", newXaxisForCircle)
+                .attr("r", newRadiusForCircle)
+                .style("fill", threadPoolColorRange(this.data["errorPercentage"]));
+        };
+
+        this.addTitle = function addTitle(threadDiv) {
+            var html = "<p class=\"name\"" + this.serviceName + ">" + this.serviceName + "</p>";
+            var $titleDiv = $("<div></div>")
+                .css({
+                    'position': 'absolute', 'top': '0px',
+                    'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
+                })
+                .html(html);
+            threadDiv.append($titleDiv);
+        };
+
+        this.addData = function addData(threadDiv) {
+            var $monitorDiv = $("<div></div>");
+            $($monitorDiv).css({
+                'position': 'absolute', 'top': '15px', 'opacity': '0.8',
+                'background': 'white', 'width': '100%', 'height': '95%'
+            });
+            threadDiv.append($monitorDiv);
+
+            var $monitorDataDiv = $("<div></div>")
+                .attr('id', "chart_THREAD_POOL_" + this.serviceName + "_monitor_data")
+                .addClass('monitor_data');
+            $monitorDiv.append($monitorDataDiv);
+        };
+
+        this.updateData = function updateData() {
+            if (this.initialized) {
+                var $monitorDataDiv = $("#" + "chart_THREAD_POOL_" + this.serviceName + "_monitor_data");
+                $monitorDataDiv.empty();
+                var $spacerDiv = $("<div></div>").addClass("spacer");
+                $monitorDataDiv.append($spacerDiv);
+
+                this.addRate($monitorDataDiv);
+                this.addDataTable($monitorDataDiv);
+            }
+        };
+
+        this.addRate = function addRate(monitorDataDiv) {
+            var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
+                + "class=\"hystrix-tooltip rate\">"
+                + "<span class=\"smaller\">Host: </span>"
+                + "<span class=\"ratePerSecondPerHost\">"
+                + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
+
+            var $rate1Div = $("<div></div>").addClass("rate")
+                .html(ratePerSecondPerHostHtml);
+            monitorDataDiv.append($rate1Div);
+
+            var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
+                + "class=\"hystrix-tooltip rate\">"
+                + "<span class=\"smaller\">Cluster: </span>"
+                + "<span class=\"ratePerSecond\">"
+                + this.data["ratePerSecond"] + "</span>/s</a>";
+
+            var $rate2Div = $("<div></div>").addClass("rate")
+                .html(ratePerSecondPerClusterHtml);
+            monitorDataDiv.append($rate2Div);
+        };
+
+        this.addDataTable = function addDataTable(monitorDataDiv) {
+            var $spacerDiv = $("<div></div>").addClass("spacer");
+            monitorDataDiv.append($spacerDiv);
+
+            var $monitorRow1Div = $("<div class=\"tableRow\">" +
+                "<div class=\"cell header left\">Active</div>" +
+                "<div class=\"cell data left\">" + this.data["currentActiveCount"] + " </div>" +
+                "<div class=\"cell header right\">Max Active</div>" +
+                "<div class=\"cell data right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
+            monitorDataDiv.append($monitorRow1Div);
+
+            var $monitorRow2Div = $("<div class=\"tableRow\">" +
+                "<div class=\"cell header left\">Queued</div>" +
+                "<div class=\"cell data left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
+                "<div class=\"cell header right\">Executions</div>" +
+                "<div class=\"cell data right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
+            monitorDataDiv.append($monitorRow2Div);
+
+            var $monitorRow3Div = $("<div class=\"tableRow\">" +
+                "<div class=\"cell header left\">Pool Size</div>" +
+                "<div class=\"cell data left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
+                "<div class=\"cell header right\">Queue Size</div>" +
+                "<div class=\"cell data right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
+            monitorDataDiv.append($monitorRow3Div);
+        };
+
+        this.preProcessData = function preProcessData(jsonData) {
+            this.data = {};
+            var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 1);
+            this.data["reportingHosts"] = reportingHosts;
+
+            var propertyValue_queueSizeRejectionThreshold =
+                _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 0);
+            this.data["propertyValue_queueSizeRejectionThreshold"] =
+                _roundNumber(propertyValue_queueSizeRejectionThreshold / reportingHosts);
+
+            var propertyValue_metricsRollingStatisticalWindowInMilliseconds =
+                _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0);
+            this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] =
+                _roundNumber(propertyValue_metricsRollingStatisticalWindowInMilliseconds / reportingHosts);
+
+            var numberSeconds = this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
+
+            var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+            if (totalThreadsExecuted < 0) {
+                totalThreadsExecuted = 0;
+            }
+
+            this.data["ratePerSecond"] = _roundNumber(totalThreadsExecuted / numberSeconds);
+            this.data["ratePerSecondPerHost"] = _roundNumber(totalThreadsExecuted / numberSeconds / reportingHosts);
+
+            this.data["currentActiveCount"] =
+                _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 1);
+            this.data["rollingMaxActiveThreads"] =
+                _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 1);
+            this.data["currentQueueSize"] =
+                _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+            this.data["rollingCountThreadsExecuted"] =
+                _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+            this.data["currentPoolSize"] =
+                _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 1);
+            this.data["propertyValue_queueSizeRejectionThreshold"] =
+                _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
+        };
     }
+
+    //////////////////////////////////////////////////////////////////////
 
     function _getMetricValue(jsonRoot, metricName, defaultValue) {
         var value = defaultValue;
