@@ -195,7 +195,6 @@
                     tokens[3] + "." + tokens[4];
                 if (!_hystrixCircuitMap[key]) {
                     if (tokens.length == 6) {
-                        console.log(tokens[3] + '.' + tokens[4]);
                         var config = new HystrixCommandConfig(key, tokens[3], tokens[4]);
                         _hystrixCircuitMap[key] = config;
                     }
@@ -227,10 +226,8 @@
         this.chartDivId = undefined;
         this.graphDivId = undefined;
         this.jsonData = undefined;
+        this.data = {};
         this.graphData = [];
-        this.ratePerSecond = undefined;
-        this.ratePerSecondPerHost = undefined;
-        this.errorPercentage = undefined;
 
         this.render = function render() {
             if (!this.initialized) {
@@ -277,17 +274,17 @@
         };
 
         this.updateCircle = function updateCircle() {
-            var newXaxisForCircle = circuitCircleXaxis(this.ratePerSecondPerHost);
+            var newXaxisForCircle = circuitCircleXaxis(this.data["ratePerSecondPerHost"]);
             if (parseInt(newXaxisForCircle, 10) > parseInt(maxXaxisForCircle, 10)) {
                 newXaxisForCircle = maxXaxisForCircle;
             }
 
-            var newYaxisForCircle = circuitCircleYaxis(this.ratePerSecondPerHost);
+            var newYaxisForCircle = circuitCircleYaxis(this.data["ratePerSecondPerHost"]);
             if (parseInt(newYaxisForCircle, 10) > parseInt(maxYaxisForCircle, 10)) {
                 newYaxisForCircle = maxYaxisForCircle;
             }
 
-            var newRadiusForCircle = circuitCircleRadius(this.ratePerSecondPerHost);
+            var newRadiusForCircle = circuitCircleRadius(this.data["ratePerSecondPerHost"]);
             if (parseInt(newRadiusForCircle, 10) > parseInt(maxRadiusForCircle, 10)) {
                 newRadiusForCircle = maxRadiusForCircle;
             }
@@ -298,7 +295,7 @@
                 .attr("cy", newYaxisForCircle)
                 .attr("cx", newXaxisForCircle)
                 .attr("r", newRadiusForCircle)
-                .style("fill", circuitColorRange(this.errorPercentage));
+                .style("fill", circuitColorRange(this.data["errorPercentage"]));
         };
 
         this.addTitle = function addTitle(circuitDiv) {
@@ -345,57 +342,44 @@
             var $errPerDiv = $("<div></div>").addClass("cell line")
                 .html("<a href=\"javascript://\" title=\"Error Percentage [Timed-out + Threadpool Rejected + Failure / Total]\""
                     + "class=\"hystrix-tooltip errorPercentage\">"
-                    + "<span class=\"value\">" + this.errorPercentage + "</span>%</a>");
+                    + "<span class=\"value\">" + this.data["errorPercentage"] + "</span>%</a>");
             $countersDiv.append($errPerDiv);
 
-            var rollingCountTimeout = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountTimeout", 0);
             var rollingCountTimeoutHtml = "<a href=\"javascript://\" title=\"Timed-out Request Count\""
                 + "class=\"line hystrix-tooltip timeout\">"
-                + "<span class=\"value\">" + rollingCountTimeout + "</span></a>";
-
-            var rollingCountThreadPoolRejected =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountThreadPoolRejected", -20);
+                + "<span class=\"value\">" + this.data["rollingCountTimeout"] + "</span></a>";
 
             var rollingCountPoolRejectedHtml;
-            if (rollingCountThreadPoolRejected === -20) {
-                var rollingCountSemaphoreRejected =
-                    _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSemaphoreRejected", 0);
+            if (!this.data["rollingCountThreadPoolRejected"]) {
                 rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Semaphore Rejected Request Count\""
                     + "class=\"line hystrix-tooltip rejected\">"
-                    + "<span class=\"value\">" + rollingCountSemaphoreRejected + "</span></a>";
+                    + "<span class=\"value\">" + this.data["rollingCountSemaphoreRejected"] + "</span></a>";
             } else {
                 rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Threadpool Rejected Request Count\""
                     + "class=\"line hystrix-tooltip rejected\">"
-                    + "<span class=\"value\">" + rollingCountThreadPoolRejected + "</span></a>";
+                    + "<span class=\"value\">" + this.data["rollingCountThreadPoolRejected"] + "</span></a>";
             }
 
-            var rollingCountFailure = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountFailure", 0);
             var rollingCountFailureHtml = "<a href=\"javascript://\" title=\"Failure Request Count\""
                 + "class=\"line hystrix-tooltip failure\">"
-                + "<span class=\"value\">" + rollingCountFailure + "</span></a>";
+                + "<span class=\"value\">" + this.data["rollingCountFailure"] + "</span></a>";
 
             var $sec1Div = $("<div></div>").addClass("cell borderRight")
                 .html(rollingCountTimeoutHtml + "\n" + rollingCountPoolRejectedHtml + "\n"
                     + rollingCountFailureHtml);
             $countersDiv.append($sec1Div);
 
-            var rollingCountSuccess =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSuccess", 0);
             var rollingCountSuccessHtml = "<a href=\"javascript://\" title=\"Successful Request Count\""
                 + "class=\"line hystrix-tooltip success\">"
-                + "<span class=\"value\">" + rollingCountSuccess + "</span></a>";
+                + "<span class=\"value\">" + this.data["rollingCountSuccess"] + "</span></a>";
 
-            var rollingCountShortCircuited =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountShortCircuited", 0);
             var rollingCountShortCircuitedHtml = "<a href=\"javascript://\" title=\"Short-circuited Request Count\""
                 + "class=\"line hystrix-tooltip shortCircuited\">"
-                + "<span class=\"value\">" + rollingCountShortCircuited + "</span></a>";
+                + "<span class=\"value\">" + this.data["rollingCountShortCircuited"] + "</span></a>";
 
-            var rollingCountBadRequests =
-                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountBadRequests", 0);
             var rollingCountBadRequestsHtml = "<a href=\"javascript://\" title=\"Bad Request Count\""
                 + "class=\"line hystrix-tooltip badRequest\">"
-                + "<span class=\"value\">" + rollingCountBadRequests + "</span></a>";
+                + "<span class=\"value\">" + this.data["rollingCountBadRequests"] + "</span></a>";
 
             var $sec2Div = $("<div></div>").addClass("cell borderRight")
                 .html(rollingCountSuccessHtml + "\n" + rollingCountShortCircuitedHtml + "\n"
@@ -408,7 +392,7 @@
                 + "class=\"hystrix-tooltip rate\">"
                 + "<span class=\"smaller\">Host: </span>"
                 + "<span class=\"ratePerSecondPerHost\">"
-                + this.ratePerSecondPerHost + "</span>/s</a>";
+                + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
 
             var $rate1Div = $("<div></div>").addClass("rate")
                 .html(ratePerSecondPerHostHtml);
@@ -418,7 +402,7 @@
                 + "class=\"hystrix-tooltip rate\">"
                 + "<span class=\"smaller\">Cluster: </span>"
                 + "<span class=\"ratePerSecond\">"
-                + this.ratePerSecond + "</span>/s</a>";
+                + this.data["ratePerSecond"] + "</span>/s</a>";
 
             var $rate2Div = $("<div></div>").addClass("rate")
                 .html(ratePerSecondPerClusterHtml);
@@ -429,32 +413,25 @@
             var $spacerDiv = $("<div></div>").addClass("spacer");
             monitorDataDiv.append($spacerDiv);
 
-            var reportingHosts = _getMetricValue(this.jsonData, this.circuitKey + ".reportingHosts", 1);
-            var latency90 = _getMetricValue(this.jsonData, this.circuitKey + ".90", 0);
-            var latencyMedian = _getMetricValue(this.jsonData, this.circuitKey + ".50", 0);
-            var latency99 = _getMetricValue(this.jsonData, this.circuitKey + ".99", 0);
-            var latencyMean = _getMetricValue(this.jsonData, this.circuitKey + ".latencyExecute_mean", 0);
-            var latency995 = _getMetricValue(this.jsonData, this.circuitKey + ".99.5", 0);
-
             var $monitorRow1Div = $("<div class=\"tableRow\">" +
                 "<div class=\"cell header\">Hosts</div>" +
-                "<div class=\"cell data\">" + reportingHosts + " </div>" +
+                "<div class=\"cell data\">" + this.data["reportingHosts"] + " </div>" +
                 "<div class=\"cell header\">90th</div>" +
-                "<div class=\"cell data latency90\"><span class=\"value\">" + latency90 + "</span>ms </div></div>");
+                "<div class=\"cell data latency90\"><span class=\"value\">" + this.data["latency90"] + "</span>ms </div></div>");
             monitorDataDiv.append($monitorRow1Div);
 
             var $monitorRow2Div = $("<div class=\"tableRow\">" +
                 "<div class=\"cell header\">Median</div>" +
-                "<div class=\"cell data latencyMedian\"><span class=\"value\">" + latencyMedian + "</span>ms </div>" +
+                "<div class=\"cell data latencyMedian\"><span class=\"value\">" + this.data["latencyMedian"] + "</span>ms </div>" +
                 "<div class=\"cell header\">99th</div>" +
-                "<div class=\"cell data latency99\"><span class=\"value\">" + latency99 + "</span>ms </div></div>");
+                "<div class=\"cell data latency99\"><span class=\"value\">" + this.data["latency99"] + "</span>ms </div></div>");
             monitorDataDiv.append($monitorRow2Div);
 
             var $monitorRow3Div = $("<div class=\"tableRow\">" +
                 "<div class=\"cell header\">Mean</div>" +
-                "<div class=\"cell data latencyMean\"><span class=\"value\">" + latencyMean + "</span>ms</div>" +
+                "<div class=\"cell data latencyMean\"><span class=\"value\">" + this.data["latencyMean"] + "</span>ms</div>" +
                 "<div class=\"cell header\">99.5th</div>" +
-                "<div class=\"cell data latency995\"><span class=\"value\">" + latency995 + "</span>ms</div></div>");
+                "<div class=\"cell data latency995\"><span class=\"value\">" + this.data["latency995"] + "</span>ms</div></div>");
             monitorDataDiv.append($monitorRow3Div);
         };
 
@@ -475,7 +452,7 @@
 
         this.updateSparkline = function updateSparkline() {
             var currentTimeMilliseconds = new Date().getTime();
-            this.graphData.push({"v": parseFloat(this.ratePerSecond), "t": currentTimeMilliseconds});
+            this.graphData.push({"v": parseFloat(this.data["ratePerSecond"]), "t": currentTimeMilliseconds});
 
             // 400 should be plenty for the 2 minutes we have the scale set
             // to below even with a very low update latency
@@ -526,6 +503,7 @@
         };
 
         this.calculateValues = function calculateValues(jsonData) {
+            this.data = {};
             var numberSeconds =
                 _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
 
@@ -536,13 +514,38 @@
 
             var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
 
-            this.ratePerSecond = _roundNumber(totalRequests / numberSeconds);
-            this.ratePerSecondPerHost = _roundNumber(totalRequests / numberSeconds / reportingHosts);
-            this.errorPercentage = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
+            this.data["ratePerSecond"] = _roundNumber(totalRequests / numberSeconds);
+            this.data["ratePerSecondPerHost"] = _roundNumber(totalRequests / numberSeconds / reportingHosts);
+            this.data["ratePerSecondPerHostDisplay"] = this.data["ratePerSecondPerHost"];
+            this.data["errorPercentage"] = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
 
-            //var errorPercentage =  getValue(jsonData, this.circuitKey + ".errorPercentage");
-            //var ratePerSecondPerHostDisplay = ratePerSecondPerHost;
             //var errorThenVolume = isNaN( ratePerSecond )? -1: (errorPercentage * 100000000) +  this.ratePerSecond;
+
+            this.data["rollingCountTimeout"] = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountTimeout", 0);
+            var rollingCountThreadPoolRejected =
+                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountThreadPoolRejected", -20);
+
+            if (rollingCountThreadPoolRejected === -20) {
+                this.data["rollingCountSemaphoreRejected"] =
+                    _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSemaphorePoolRejected", 0);
+            } else {
+                this.data["rollingCountThreadPoolRejected"] = rollingCountThreadPoolRejected;
+            }
+
+            this.data["rollingCountFailure"] = _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountFailure", 0);
+            this.data["rollingCountSuccess"] =
+                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountSuccess", 0);
+            this.data["rollingCountShortCircuited"] =
+                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountShortCircuited", 0);
+            this.data["rollingCountBadRequests"] =
+                _getMetricValue(this.jsonData, this.circuitKey + ".rollingCountBadRequests", 0);
+
+            this.data["reportingHosts"] = _getMetricValue(this.jsonData, this.circuitKey + ".reportingHosts", 1);
+            this.data["latency90"] = _getMetricValue(this.jsonData, this.circuitKey + ".90", 0);
+            this.data["latencyMedian"] = _getMetricValue(this.jsonData, this.circuitKey + ".50", 0);
+            this.data["latency99"] = _getMetricValue(this.jsonData, this.circuitKey + ".99", 0);
+            this.data["latencyMean"] = _getMetricValue(this.jsonData, this.circuitKey + ".latencyExecute_mean", 0);
+            this.data["latency995"] = _getMetricValue(this.jsonData, this.circuitKey + ".99.5", 0);
         };
 
         /**
