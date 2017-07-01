@@ -21,9 +21,6 @@
  *   //create a Hystrix dashboard
  *   hystrixViewer.addHystrixDashboard('#hystrix-div');
  *
- *   //initialize the Hystrix viewer before displaying for the first time
- *   hystrixViewer.init();
- *
  *   //refreshing the Hetric viewer with new metric data
  *   hystrixViewer.refresh(data);
  * </pre>
@@ -46,7 +43,7 @@
     hystrixViewer.addHystrixDashboard = function (divId) {
         _hystrixDashboardDivId = divId;
 
-        var $headerDiv = $("<div></div>").attr('id', 'header')
+        var $headerDiv = $("<div></div>").attr('id', 'streamHeader')
             .html("<h2><span id='title_name'>Hystrix</span></h2>");
         $(_hystrixDashboardDivId).append($headerDiv);
 
@@ -59,6 +56,29 @@
         $($row1Div).append($menuBar1Div);
         var $circuitTitleDiv = $("<div></div>").addClass('title').text("Circuit");
         $($menuBar1Div).append($circuitTitleDiv);
+
+        var menuActionsHtml = "Sort: " +
+            //"<a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical</a> | " +
+            //"<a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume</a> | " +
+            //"<a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
+            "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
+        var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+        $($menuBar1Div).append($menuActions);
+
+        var menuLegendHtml = "<span class=\"success\">Success</span> | " +
+            "<span class=\"shortCircuited\">Short-Circuited</span> | " +
+            "<span class=\"badRequest\"> Bad Request</span> | " +
+            "<span class=\"timeout\">Timeout</span> | " +
+            "<span class=\"rejected\">Rejected</span> | " +
+            "<span class=\"failure\">Failure</span> | " +
+            "<span class=\"errorPercentage\">Error %</span>";
+        var $menuLegend = $("<div></div>").addClass('menu_legend').html(menuLegendHtml);
+        $($menuBar1Div).append($menuLegend);
 
         _hystrixCircuitContainerDivId = "dependencies";
         var $circuitContainerDiv = $("<div></div>").attr('id', _hystrixCircuitContainerDivId)
@@ -82,13 +102,8 @@
         $($containerDiv).append($threadContainerDiv);
     };
 
-    /**
-     * Initializes the metric viewer
-     */
     hystrixViewer.init = function () {
-        for (var i = 0; i < graphs.length; i++) {
-            graphs[i].render();
-        }
+
     };
 
     /**
@@ -139,6 +154,70 @@
         }
     };
 
+    hystrixViewer.sortAlphabetically = function () {
+        var direction = "asc";
+        if(_sortedBy == 'alph_asc') {
+            direction = 'desc';
+        }
+        _sortAlphabeticalInDirection(direction);
+    };
+
+    function _sortAlphabeticalInDirection (direction) {
+        var $monitors = $('#' + "dependencies" + ' div.monitor');
+        _sortedBy = 'alph_' + direction;
+        $monitors.tsort("p.name", {order: direction});
+    }
+
+    hystrixViewer.sortByLatency90 = function() {
+        var direction = "desc";
+        if(_sortedBy == 'lat90_desc') {
+            direction = 'asc';
+        }
+        _sortedBy = 'lat90_' + direction;
+        this.sortByMetricInDirection(direction, ".latency90 .value");
+    };
+
+    hystrixViewer.sortByLatency99 = function() {
+        var direction = "desc";
+        if(_sortedBy == 'lat99_desc') {
+            direction = 'asc';
+        }
+        _sortedBy = 'lat99_' + direction;
+        this.sortByMetricInDirection(direction, ".latency99 .value");
+    };
+
+    hystrixViewer.sortByLatency995 = function() {
+        var direction = "desc";
+        if(_sortedBy == 'lat995_desc') {
+            direction = 'asc';
+        }
+        _sortedBy = 'lat995_' + direction;
+        this.sortByMetricInDirection(direction, ".latency995 .value");
+    };
+
+    hystrixViewer.sortByLatencyMean = function() {
+        var direction = "desc";
+        if(_sortedBy == 'latMean_desc') {
+            direction = 'asc';
+        }
+        _sortedBy = 'latMean_' + direction;
+        this.sortByMetricInDirection(direction, ".latencyMean .value");
+    };
+
+    hystrixViewer.sortByLatencyMedian = function() {
+        var direction = "desc";
+        if(_sortedBy == 'latMedian_desc') {
+            direction = 'asc';
+        }
+        _sortedBy = 'latMedian_' + direction;
+        this.sortByMetricInDirection(direction, ".latencyMedian .value");
+    };
+
+    hystrixViewer.sortByMetricInDirection = function(direction, metric) {
+        var $monitors = $('#' + "dependencies" + ' div.monitor');
+        $monitors.tsort(metric, {order: direction});
+    };
+
     //////////////////////////////////////////////////////////////////////////////////////////////////
     // PRIVATE FUNCTIONS
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +241,6 @@
     var QUEUE_SIZE = 100;
     Object.freeze(QUEUE_SIZE);
 
-    /**
-     * A cache of graph that will be displayed in a page
-     * @type {Array}
-     */
-    var graphs = [];
-
     var maxXaxisForCircle = "40%";
     Object.freeze(maxXaxisForCircle);
 
@@ -182,7 +255,7 @@
     var circuitCircleYaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxXaxisForCircle]);
     var circuitCircleXaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxYaxisForCircle]);
     var circuitColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
-    //var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
+    var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
     var maxDomain = 2000;
     Object.freeze(maxDomain);
@@ -201,11 +274,14 @@
 
     /**
      * A cache of Hystrix circuit charts
-     * @type {}
+     * @type {Array}
      */
     var _hystrixCircuitMap = {};
 
     var _hystrixThreadpoolMap = {};
+
+    // default sort type and direction
+    var _sortedBy = 'alph_asc';
 
     var _addHystrix = function (jsonData) {
         for (var key in jsonData) {
@@ -270,20 +346,19 @@
      * @constructor
      */
     function HystrixCommandConfig(circuitKey, serviceName, methodName) {
-        this.circuitDivId = undefined;
         this.circuitKey = circuitKey;
         this.serviceName = serviceName;
         this.methodName = methodName;
         this.suffix = this.serviceName + "_" + this.methodName;
         this.initialized = false;
-        this.chartDivId = undefined;
-        this.graphDivId = undefined;
+        this.circuitDivId = "CIRCUIT_" + this.suffix;
+        this.chartDivId = "chart_CIRCUIT_" + this.suffix;
+        this.graphDivId = "graph_CIRCUIT_" + this.suffix;
         this.data = {};
         this.graphData = [];
 
         this.render = function render() {
             if (!this.initialized) {
-                this.circuitDivId = "CIRCUIT_" + this.suffix;
                 var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
                     .addClass('monitor').css({'position': 'relative'});
                 $("#" + _hystrixCircuitContainerDivId).append($circuitDiv);
@@ -306,7 +381,6 @@
         };
 
         this.addChart = function addChart(circuitDiv) {
-            this.chartDivId = "chart_CIRCUIT_" + this.suffix;
             var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
                 .css({
                     'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
@@ -360,10 +434,6 @@
                 })
                 .html(html);
             circuitDiv.append($titleDiv);
-
-            // var $titleP = $("<p></p>").addClass("name")
-            //     .text(this.serviceName + "." + this.methodName);
-            // $titleDiv.append($titleP);
         };
 
         this.addData = function addData(chartDiv) {
@@ -375,18 +445,27 @@
             chartDiv.append($monitorDiv);
 
             var $monitorDataDiv = $("<div></div>")
-                .attr('id', "chart_CIRCUIT_" + this.suffix + "_monitor_data")
+                .attr('id', this.chartDivId + "_monitor_data")
                 .addClass('monitor_data');
             $monitorDiv.append($monitorDataDiv);
         };
 
         this.updateData = function updateData() {
             if (this.initialized) {
-                var $monitorDataDiv = $("#" + "chart_CIRCUIT_" + this.suffix + "_monitor_data");
+                var $monitorDataDiv = $("#" + this.chartDivId + "_monitor_data");
                 $monitorDataDiv.empty();
                 this.addCounters($monitorDataDiv);
                 this.addRate($monitorDataDiv);
+                this.addCircuitStatus($monitorDataDiv);
                 this.addDataTable($monitorDataDiv);
+
+                // set the rates on the div element so it's available for sorting
+                $("#" + this.circuitDivId)
+                    .attr('rate_value', this.data["ratePerSecond"])
+                    .attr('error_then_volume', this.data["errorThenVolume"]);
+
+                $("#" + this.circuitDivId + " a.errorPercentage")
+                    .css('color', circuitErrorPercentageColorRange(this.data["errorPercentage"]));
             }
         };
 
@@ -465,8 +544,10 @@
         };
 
         this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
-            var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus");
+            var html = "Circuit <font color=\"green\">Closed</font>";
+            var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus").html(html);
             monitorDataDiv.append($circuitStatusDiv);
+
             /*
              <div class="circuitStatus">
              <% if(propertyValue_circuitBreakerForceClosed) { %>
@@ -521,7 +602,6 @@
         };
 
         this.addSparkline = function addSparkline(chartDiv) {
-            this.graphDivId = "graph_CIRCUIT_" + this.suffix;
             var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
                 .css({
                     'position': 'absolute', 'top': '25px', 'left': '0', 'float': 'left',
@@ -604,7 +684,9 @@
             this.data["ratePerSecondPerHostDisplay"] = this.data["ratePerSecondPerHost"];
             this.data["errorPercentage"] = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
 
-            //var errorThenVolume = isNaN( ratePerSecond )? -1: (errorPercentage * 100000000) +  this.ratePerSecond;
+            this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"])?
+                -1 : (this.data["errorPercentage"] * 100000000) +  this.data["ratePerSecond"];
+            console.log("errorThenVolume: " + this.data["errorThenVolume"]);
 
             this.data["rollingCountTimeout"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountTimeout", 0);
             var rollingCountThreadPoolRejected =
@@ -651,8 +733,8 @@
         this.serviceName = serviceName;
         this.data = {};
         this.initialized = false;
-        this.threadDivId = undefined;
-        this.chartDivId = undefined;
+        this.threadDivId = "THREAD_POOL_" + this.serviceName;
+        this.chartDivId = "chart_THREAD_POOL_" + this.serviceName;
 
         this.refresh = function update(jsonData) {
             this.preProcessData(jsonData);
@@ -663,7 +745,6 @@
 
         this.render = function render() {
             if (!this.initialized) {
-                this.threadDivId = "THREAD_POOL_" + this.serviceName;
                 var $threadDiv = $("<div></div>").attr('id', this.threadDivId)
                     .addClass('monitor').css({'position': 'relative'});
                 $("#" + _hystrixThreadContainerDivId).append($threadDiv);
@@ -677,7 +758,6 @@
         };
 
         this.addChart = function addChart(threadDiv) {
-            this.chartDivId = "chart_THREAD_POOL_" + this.serviceName;
             var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
                 .css({
                     'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
@@ -740,14 +820,14 @@
             threadDiv.append($monitorDiv);
 
             var $monitorDataDiv = $("<div></div>")
-                .attr('id', "chart_THREAD_POOL_" + this.serviceName + "_monitor_data")
+                .attr('id', this.chartDivId + "_monitor_data")
                 .addClass('monitor_data');
             $monitorDiv.append($monitorDataDiv);
         };
 
         this.updateData = function updateData() {
             if (this.initialized) {
-                var $monitorDataDiv = $("#" + "chart_THREAD_POOL_" + this.serviceName + "_monitor_data");
+                var $monitorDataDiv = $("#" + this.chartDivId + "_monitor_data");
                 $monitorDataDiv.empty();
                 var $spacerDiv = $("<div></div>").addClass("spacer");
                 $monitorDataDiv.append($spacerDiv);
@@ -900,15 +980,6 @@
         var roundedTempNumber = Math.round(tempNumber);
 
         return roundedTempNumber / factor;
-    }
-
-    /**
-     * Capitalizes the first letter of a string
-     * @param {string} str the string whose first letter to be capitalized
-     * @returns {string} the updated string
-     */
-    function _capitalizeFirstLetter(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
 }(window.hystrixViewer = window.hystrixViewer || {}, jQuery, d3));

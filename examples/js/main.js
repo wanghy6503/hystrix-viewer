@@ -13,7 +13,7 @@
     $('.examples li a#goto-' + section).addClass('active');
 
     //handle mouse clicks and so on
-    assignEventListeners();
+    //assignEventListeners();
 
     function assignEventListeners() {
         $('ul.examples li a.viewer').on('click', function (event) {
@@ -41,42 +41,6 @@
             });
 
             document.location.hash = section;
-
-            return false;
-        });
-
-        $('#dark-css').on('click', function () {
-            theme = 'dark';
-
-            $('.trunk-section')
-                .css('border-top-color', '#5e5e5e');
-
-            $('.mg-missing-background')
-                .css('stroke', '#ccc');
-
-            $('.head ul li a.viewer').removeClass('active');
-            $(this).toggleClass('active');
-            $('#dark').attr({href: '../lib/css/metricsgraphics-dark.css'});
-            $('#dark-code').attr({href : 'css/railscasts.css'});
-            $('#mv-dark').attr({href: '../dist/css/metricsviewer-dark.css'});
-
-            return false;
-        });
-
-        $('#light-css').on('click', function () {
-            theme = 'light';
-
-            $('.trunk-section')
-                .css('border-top-color', '#ccc');
-
-            $('.mg-missing-background')
-                .css('stroke', 'blue');
-
-            $('.head ul li a.viewer').removeClass('active');
-            $(this).toggleClass('active');
-            $('#dark').attr({href: ''});
-            $('#dark-code').attr({href: ''});
-            $('#mv-dark').attr({href: ''});
 
             return false;
         });
