@@ -8,6 +8,9 @@ var threadPoolCircleXaxis = d3.scaleLinear().domain([0, maxDomain]).range(["30%"
 var threadPoolColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
 var threadPoolErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
+// default sort type and direction
+var _threadPoolSortedBy = 'alph_asc';
+
 /**
  *
  * Hystrix thread pool configuration which holds the threadpool chart properties and the data.
@@ -25,6 +28,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     this.initialized = false;
     this.threadDivId = "THREAD_POOL_" + this.serviceName;
     this.chartDivId = "chart_THREAD_POOL_" + this.serviceName;
+    this.dataDivId = this.chartDivId + "_monitor_data";
 
     this.refresh = function update(jsonData) {
         this.preProcessData(jsonData);
@@ -45,6 +49,19 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
             this.initialized = true;
         }
+    };
+
+    this.clear = function() {
+        $(this.threadDivId).empty();
+        delete this.threadDivId;
+
+        $(this.chartDivId).empty();
+        delete this.chartDivId;
+
+        $(this.dataDivId).empty();
+        delete this.dataDivId;
+
+        delete this.data;
     };
 
     this.addChart = function addChart(threadDiv) {
@@ -110,14 +127,14 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         threadDiv.append($monitorDiv);
 
         var $monitorDataDiv = $("<div></div>")
-            .attr('id', this.chartDivId + "_monitor_data")
+            .attr('id', this.dataDivId)
             .addClass('monitor_data');
         $monitorDiv.append($monitorDataDiv);
     };
 
     this.updateData = function updateData() {
         if (this.initialized) {
-            var $monitorDataDiv = $("#" + this.chartDivId + "_monitor_data");
+            var $monitorDataDiv = $("#" + this.dataDivId);
             $monitorDataDiv.empty();
             var $spacerDiv = $("<div></div>").addClass("spacer");
             $monitorDataDiv.append($spacerDiv);
@@ -129,7 +146,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
     this.addRate = function addRate(monitorDataDiv) {
         var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Host: </span>"
             + "<span class=\"ratePerSecondPerHost\">"
             + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
@@ -139,7 +156,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         monitorDataDiv.append($rate1Div);
 
         var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Cluster: </span>"
             + "<span class=\"ratePerSecond\">"
             + this.data["ratePerSecond"] + "</span>/s</a>";
@@ -213,4 +230,70 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         this.data["propertyValue_queueSizeRejectionThreshold"] =
             _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
     };
+}
+
+HV.sortThreadpoolAlphabetically = function () {
+    var direction = "asc";
+    if(_threadPoolSortedBy == 'alph_asc') {
+        direction = 'desc';
+    }
+    _sortThreadpoolAlphabeticalInDirection(direction);
+};
+
+function _sortThreadpoolAlphabeticalInDirection (direction) {
+    var $monitors = $('#' + "dependencyThreadPools" + ' div.monitor');
+    _threadPoolSortedBy = 'alph_' + direction;
+    $monitors.tsort("p.name", {order: direction});
+}
+
+HV.sortThreadpoolByVolume = function() {
+    var direction = "desc";
+    if(_threadPoolSortedBy == 'rate_desc') {
+        direction = 'asc';
+    }
+    _sortThreadpoolByVolumeInDirection(direction);
+};
+
+function _sortThreadpoolByVolumeInDirection (direction) {
+    var $monitors = $('#' + "dependencyThreadPools" + ' div.monitor');
+    _threadPoolSortedBy = 'rate_' + direction;
+    $monitors.tsort({order: direction, attr: 'rate_value'});
+}
+
+function _sortThreadpoolByMetricInDirection (direction, metric) {
+    var $monitors = $('#' + "dependencyThreadPools" + ' div.monitor');
+    $monitors.tsort(metric, {order: direction});
+}
+
+// this method is for when new divs are added to cause the elements to be sorted to whatever the user last chose
+function _sortThreadpoolSameAsLast() {
+    if(_threadPoolSortedBy == 'alph_asc') {
+        _sortThreadpoolAlphabeticalInDirection('asc');
+    } else if(_threadPoolSortedBy == 'alph_desc') {
+        _sortThreadpoolAlphabeticalInDirection('desc');
+    } else if(_threadPoolSortedBy == 'rate_asc') {
+        _sortThreadpoolByVolumeInDirection('asc');
+    } else if(_threadPoolSortedBy == 'rate_desc') {
+        _sortThreadpoolByVolumeInDirection('desc');
+    } else if(_threadPoolSortedBy == 'lat90_asc') {
+        _sortThreadpoolByMetricInDirection('asc', 'p90');
+    } else if(_threadPoolSortedBy == 'lat90_desc') {
+        _sortThreadpoolByMetricInDirection('desc', 'p90');
+    } else if(_threadPoolSortedBy == 'lat99_asc') {
+        _sortThreadpoolByMetricInDirection('asc', 'p99');
+    } else if(_threadPoolSortedBy == 'lat99_desc') {
+        _sortThreadpoolByMetricInDirection('desc', 'p99');
+    } else if(_threadPoolSortedBy == 'lat995_asc') {
+        _sortThreadpoolByMetricInDirection('asc', 'p995');
+    } else if(_threadPoolSortedBy == 'lat995_desc') {
+        _sortThreadpoolByMetricInDirection('desc', 'p995');
+    } else if(_threadPoolSortedBy == 'latMean_asc') {
+        _sortThreadpoolByMetricInDirection('asc', 'pMean');
+    } else if(_threadPoolSortedBy == 'latMean_desc') {
+        _sortThreadpoolByMetricInDirection('desc', 'pMean');
+    } else if(_threadPoolSortedBy == 'latMedian_asc') {
+        _sortThreadpoolByMetricInDirection('asc', 'pMedian');
+    } else if(_threadPoolSortedBy == 'latMedian_desc') {
+        _sortThreadpoolByMetricInDirection('desc', 'pMedian');
+    }
 }

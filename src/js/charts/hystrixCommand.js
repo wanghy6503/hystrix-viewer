@@ -28,6 +28,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.initialized = false;
     this.circuitDivId = "CIRCUIT_" + this.suffix;
     this.chartDivId = "chart_CIRCUIT_" + this.suffix;
+    this.dataDivId = this.chartDivId + "_monitor_data";
     this.graphDivId = "graph_CIRCUIT_" + this.suffix;
     this.data = {};
     this.graphData = [];
@@ -53,6 +54,23 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         this.updateCircle();
         this.updateData();
         this.updateSparkline();
+    };
+
+    this.clear = function() {
+        $(this.circuitDivId).empty();
+        delete this.circuitDivId;
+
+        $(this.chartDivId).empty();
+        delete this.chartDivId;
+
+        $(this.dataDivId).empty();
+        delete this.dataDivId;
+
+        $(this.graphDivId).empty();
+        delete this.graphDivId;
+
+        delete this.data;
+        delete this.graphData;
     };
 
     this.addChart = function addChart(circuitDiv) {
@@ -120,14 +138,14 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         chartDiv.append($monitorDiv);
 
         var $monitorDataDiv = $("<div></div>")
-            .attr('id', this.chartDivId + "_monitor_data")
+            .attr('id', this.dataDivId)
             .addClass('monitor_data');
         $monitorDiv.append($monitorDataDiv);
     };
 
     this.updateData = function updateData() {
         if (this.initialized) {
-            var $monitorDataDiv = $("#" + this.chartDivId + "_monitor_data");
+            var $monitorDataDiv = $("#" + this.dataDivId);
             $monitorDataDiv.empty();
             this.addCounters($monitorDataDiv);
             this.addRate($monitorDataDiv);
@@ -360,7 +378,6 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
         this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"])?
             -1 : (this.data["errorPercentage"] * 100000000) +  this.data["ratePerSecond"];
-        console.log("errorThenVolume: " + this.data["errorThenVolume"]);
 
         this.data["rollingCountTimeout"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountTimeout", 0);
         var rollingCountThreadPoolRejected =
@@ -513,7 +530,7 @@ function HystrixThreadpoolConfig(circuitKey, serviceName) {
 
     this.addRate = function addRate(monitorDataDiv) {
         var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Host: </span>"
             + "<span class=\"ratePerSecondPerHost\">"
             + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
@@ -523,7 +540,7 @@ function HystrixThreadpoolConfig(circuitKey, serviceName) {
         monitorDataDiv.append($rate1Div);
 
         var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Cluster: </span>"
             + "<span class=\"ratePerSecond\">"
             + this.data["ratePerSecond"] + "</span>/s</a>";
@@ -597,6 +614,48 @@ function HystrixThreadpoolConfig(circuitKey, serviceName) {
         this.data["propertyValue_queueSizeRejectionThreshold"] =
             _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
     };
+}
+
+HV.sortByVolume = function() {
+    var direction = "desc";
+    if(_circuitSortedBy == 'rate_desc') {
+        direction = 'asc';
+    }
+    _sortByVolumeInDirection(direction);
+};
+
+function _sortByVolumeInDirection (direction) {
+    var $monitors = $('#' + "dependencies" + ' div.monitor');
+    _circuitSortedBy = 'rate_' + direction;
+    $monitors.tsort({order: direction, attr: 'rate_value'});
+}
+
+HV.sortByError = function() {
+    var direction = "desc";
+    if(_circuitSortedBy == 'error_desc') {
+        direction = 'asc';
+    }
+    _sortByErrorInDirection(direction);
+};
+
+function _sortByErrorInDirection (direction) {
+    var $monitors = $('#' + "dependencies" + ' div.monitor');
+    _circuitSortedBy = 'error_' + direction;
+    $monitors.tsort(".errorPercentage .value", {order: direction});
+}
+
+HV.sortByErrorThenVolume = function() {
+    var direction = "desc";
+    if(_circuitSortedBy == 'error_then_volume_desc') {
+        direction = 'asc';
+    }
+    _sortByErrorThenVolumeInDirection(direction);
+};
+
+function _sortByErrorThenVolumeInDirection(direction) {
+    var $monitors = $('#' + "dependencies" + ' div.monitor');
+    _circuitSortedBy = 'error_then_volume_' + direction;
+    $monitors.tsort({order: direction, attr: 'error_then_volume'});
 }
 
 HV.sortAlphabetically = function () {

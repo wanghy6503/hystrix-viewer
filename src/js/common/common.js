@@ -52,23 +52,20 @@ HV.refresh = function (json) {
 };
 
 /**
- * Clears all the graphs from the metrics viewer
+ * Clears all the charts from the hystrix viewer
  */
 HV.clear = function () {
-    /*        while (graphs.length) {
-     var graph = graphs.pop();
+    for (var key in _hystrixCircuitMap) {
+        if (_hystrixCircuitMap.hasOwnProperty(key))
+            _hystrixCircuitMap[key].clear();
+    }
+    _hystrixCircuitMap = {};
 
-     $(graph.divId).empty();
-     delete graph.divId;
-
-     graph.values.clear();
-     delete graph.values;
-
-     graph.legendData.clear();
-     delete graph.legendData;
-
-     graph = undefined;
-     }*/
+    for (var threadkey in _hystrixThreadpoolMap) {
+        if (_hystrixThreadpoolMap.hasOwnProperty(threadkey))
+            _hystrixThreadpoolMap[threadkey].clear();
+    }
+    _hystrixThreadpoolMap = {};
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,10 +137,10 @@ function _createHystrixCircuitArea(containerDiv) {
     $($menuBar1Div).append($circuitTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        //"<a href=\"javascript://\" onclick=\"HV.sortByErrorThenVolume();\">Error then Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"HV.sortByErrorThenVolume();\">Error then Volume</a> | " +
         "<a href=\"javascript://\" onclick=\"HV.sortAlphabetically();\">Alphabetical</a> | " +
-        //"<a href=\"javascript://\" onclick=\"HV.sortByVolume();\">Volume</a> | " +
-        //"<a href=\"javascript://\" onclick=\"HV.sortByError();\">Error</a> | " +
+        "<a href=\"javascript://\" onclick=\"HV.sortByVolume();\">Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"HV.sortByError();\">Error</a> | " +
         "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMean();\">Mean</a> | " +
         "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMedian();\">Median</a> | " +
         "<a href=\"javascript://\" onclick=\"HV.sortByLatency90();\">90</a> | " +
@@ -175,6 +172,12 @@ function _createHystrixThreadPoolArea(containerDiv) {
     $($row2Div).append($menuBar2Div);
     var $threadTitleDiv = $("<div></div>").addClass('title').text("Thread Pools");
     $($menuBar2Div).append($threadTitleDiv);
+
+    var menuActionsHtml = "Sort: " +
+        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
+        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolByVolume();\">Volume</a>";
+    var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+    $($menuBar2Div).append($menuActions);
 
     _hystrixThreadContainerDivId = "dependencyThreadPools";
     var $threadContainerDiv = $("<div></div>").attr('id', _hystrixThreadContainerDivId)
@@ -209,7 +212,6 @@ function _addHystrixThreadPool(metricName) {
             var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
                 tokens[3];
             if (!_hystrixThreadpoolMap[key]) {
-                console.log(tokens[3]);
                 var config = new HystrixThreadpoolConfig(_hystrixThreadContainerDivId, key, tokens[3]);
                 _hystrixThreadpoolMap[key] = config;
             }

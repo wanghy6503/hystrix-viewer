@@ -13,7 +13,7 @@
     $('.examples li a#goto-' + section).addClass('active');
 
     //handle mouse clicks and so on
-    //assignEventListeners();
+    assignEventListeners();
 
     function assignEventListeners() {
         $('ul.examples li a.viewer').on('click', function (event) {
@@ -24,7 +24,7 @@
             $(this).addClass('active');
 
             //clear the old div tags
-            hystrixViewer.clear();
+            HV.clear();
 
             //clear all the timers
             while (timers.length) {
