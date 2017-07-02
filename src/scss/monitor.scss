@@ -115,7 +115,8 @@ h3.sectionHeader {
   position:relative;
   padding-left: 20px;
   top: 26px;
-  font-size: 20px;
+  //font-size: 20px;
+  font-size: 100%;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
@@ -133,7 +134,8 @@ h3.sectionHeader {
   position:relative;
   padding-left: 20px;
   top: 26px;
-  font-size: 20px;
+  //font-size: 20px;
+  font-size: 100%;
   font-weight: bold;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
@@ -144,6 +146,7 @@ h3.sectionHeader {
   padding-right: 20px;
   margin:0;
   line-height: 1;
+  font-size: 14px;
 }
 
 .hystrix-row {
@@ -195,6 +198,16 @@ h3.sectionHeader {
   float: left;
   position:relative;
   top: 4px;
+}
+
+.hystrix-menubar a {
+  margin:0;
+  padding:0;
+  font-size:100%;
+  vertical-align:baseline;
+  background:transparent;
+  text-decoration: underline;
+  color: -webkit-link;
 }
 
 .hystrix-menubar .menu_legend {

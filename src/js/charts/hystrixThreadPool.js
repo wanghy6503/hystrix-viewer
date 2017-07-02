@@ -171,24 +171,24 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         monitorDataDiv.append($spacerDiv);
 
         var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header left\">Active</div>" +
-            "<div class=\"cell data left\">" + this.data["currentActiveCount"] + " </div>" +
-            "<div class=\"cell header right\">Max Active</div>" +
-            "<div class=\"cell data right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
+            "<div class=\"hystrix-cell hystrix-header left\">Active</div>" +
+            "<div class=\"hystrix-cell hystrix-data left\">" + this.data["currentActiveCount"] + " </div>" +
+            "<div class=\"hystrix-cell hystrix-header right\">Max Active</div>" +
+            "<div class=\"hystrix-cell hystrix-data right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
         monitorDataDiv.append($monitorRow1Div);
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header left\">Queued</div>" +
-            "<div class=\"cell data left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
-            "<div class=\"cell header right\">Executions</div>" +
-            "<div class=\"cell data right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header left\">Queued</div>" +
+            "<div class=\"hystrix-cell hystrix-data left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
+            "<div class=\"hystrix-cell hystrix-header right\">Executions</div>" +
+            "<div class=\"hystrix-cell hystrix-data right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header left\">Pool Size</div>" +
-            "<div class=\"cell data left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
-            "<div class=\"cell header right\">Queue Size</div>" +
-            "<div class=\"cell data right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
+            "<div class=\"hystrix-cell hystrix-header left\">Pool Size</div>" +
+            "<div class=\"hystrix-cell hystrix-data left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
+            "<div class=\"hystrix-cell hystrix-header right\">Queue Size</div>" +
+            "<div class=\"hystrix-cell hystrix-data right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 

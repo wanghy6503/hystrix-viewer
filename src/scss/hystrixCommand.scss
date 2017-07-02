@@ -1,12 +1,12 @@
 .dependencies {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 0.875em;
+  //font-size: 0.875em;
   line-height:1;
 }
 
 .dependencies p {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 0.875em;
+  //font-size: 0.875em;
   line-height:1;
 }
 
@@ -120,7 +120,8 @@
 
 .dependencies div.monitor {
   width: 245px; /* we want a fixed width instead of percentage as I want the boxes to be a set size and then fill in as many as can fit in each row ... this allows 3 columns on an iPad */
-  height: 160px;
+  //height: 160px;
+  height: 155px;
 }
 
 .dependencies .success {

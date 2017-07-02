@@ -90,7 +90,7 @@ h3.sectionHeader {
   position: relative;
   padding-left: 20px;
   top: 26px;
-  font-size: 20px;
+  font-size: 100%;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
 
 #hystrix-header {
@@ -106,7 +106,7 @@ h3.sectionHeader {
   position: relative;
   padding-left: 20px;
   top: 26px;
-  font-size: 20px;
+  font-size: 100%;
   font-weight: bold;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
 
@@ -114,7 +114,8 @@ h3.sectionHeader {
   padding-left: 20px;
   padding-right: 20px;
   margin: 0;
-  line-height: 1; }
+  line-height: 1;
+  font-size: 14px; }
 
 .hystrix-row {
   width: 100%;
@@ -155,6 +156,15 @@ h3.sectionHeader {
   position: relative;
   top: 4px; }
 
+.hystrix-menubar a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  text-decoration: underline;
+  color: -webkit-link; }
+
 .hystrix-menubar .menu_legend {
   float: right;
   position: relative;
@@ -167,12 +177,10 @@ h3.sectionHeader {
 
 .dependencies {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 0.875em;
   line-height: 1; }
 
 .dependencies p {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size: 0.875em;
   line-height: 1; }
 
 /* --------------------- START*/
@@ -264,7 +272,7 @@ h3.sectionHeader {
 .dependencies div.monitor {
   width: 245px;
   /* we want a fixed width instead of percentage as I want the boxes to be a set size and then fill in as many as can fit in each row ... this allows 3 columns on an iPad */
-  height: 160px; }
+  height: 155px; }
 
 .dependencies .success {
   color: green; }
@@ -377,27 +385,27 @@ h3.sectionHeader {
   margin: 0 auto;
   clear: both; }
 
-.dependencyThreadPools div.tableRow .cell {
+.dependencyThreadPools div.tableRow .hystrix-cell {
   float: left; }
 
-.dependencyThreadPools div.tableRow .header {
+.dependencyThreadPools div.tableRow .hystrix-header {
   text-align: right;
   padding-right: 5px; }
 
-.dependencyThreadPools div.tableRow .header.left {
+.dependencyThreadPools div.tableRow .hystrix-header.left {
   width: 85px; }
 
-.dependencyThreadPools div.tableRow .header.right {
+.dependencyThreadPools div.tableRow .hystrix-header.right {
   width: 75px; }
 
-.dependencyThreadPools div.tableRow .data {
+.dependencyThreadPools div.tableRow .hystrix-data {
   font-weight: bold;
   text-align: right; }
 
-.dependencyThreadPools div.tableRow .data.left {
+.dependencyThreadPools div.tableRow .hystrix-data.left {
   width: 30px; }
 
-.dependencyThreadPools div.tableRow .data.right {
+.dependencyThreadPools div.tableRow .hystrix-data.right {
   width: 45px; }
 
 .dependencyThreadPools div.monitor {
@@ -406,7 +414,7 @@ h3.sectionHeader {
   height: 110px; }
 
 /* override the HREF when we have specified it as a tooltip to not act like a link */
-.dependencyThreadPools div.monitor_data a.tooltip {
+.dependencyThreadPools div.monitor_data a.hystrix-tooltip {
   text-decoration: none;
   cursor: default; }
 

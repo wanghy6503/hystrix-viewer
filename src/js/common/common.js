@@ -161,7 +161,7 @@ function _createHystrixCircuitArea(containerDiv) {
 
     _hystrixCircuitContainerDivId = "dependencies";
     var $circuitContainerDiv = $("<div></div>").attr('id', _hystrixCircuitContainerDivId)
-        .addClass('row').addClass('dependencies');
+        .addClass('hystrix-row').addClass('dependencies');
     $(containerDiv).append($circuitContainerDiv);
 }
 
@@ -181,7 +181,7 @@ function _createHystrixThreadPoolArea(containerDiv) {
 
     _hystrixThreadContainerDivId = "dependencyThreadPools";
     var $threadContainerDiv = $("<div></div>").attr('id', _hystrixThreadContainerDivId)
-        .addClass('row').addClass('dependencyThreadPools');
+        .addClass('hystrix-row').addClass('dependencyThreadPools');
     $(containerDiv).append($threadContainerDiv);
 }
 

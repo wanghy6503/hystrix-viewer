@@ -63,33 +63,33 @@
   clear: both;
 }
 
-.dependencyThreadPools div.tableRow .cell {
+.dependencyThreadPools div.tableRow .hystrix-cell {
   float: left;
 }
 
-.dependencyThreadPools div.tableRow .header {
+.dependencyThreadPools div.tableRow .hystrix-header {
   text-align: right;
   padding-right: 5px;
 }
 
-.dependencyThreadPools div.tableRow .header.left {
+.dependencyThreadPools div.tableRow .hystrix-header.left {
   width: 85px;
 }
 
-.dependencyThreadPools div.tableRow .header.right {
+.dependencyThreadPools div.tableRow .hystrix-header.right {
   width: 75px;
 }
 
-.dependencyThreadPools div.tableRow .data {
+.dependencyThreadPools div.tableRow .hystrix-data {
   font-weight: bold;
   text-align: right;
 }
 
-.dependencyThreadPools div.tableRow .data.left {
+.dependencyThreadPools div.tableRow .hystrix-data.left {
   width: 30px;
 }
 
-.dependencyThreadPools div.tableRow .data.right {
+.dependencyThreadPools div.tableRow .hystrix-data.right {
   width: 45px;
 }
 
@@ -99,7 +99,7 @@
 }
 
 /* override the HREF when we have specified it as a tooltip to not act like a link */
-.dependencyThreadPools div.monitor_data a.tooltip {
+.dependencyThreadPools div.monitor_data a.hystrix-tooltip {
   text-decoration: none;
   cursor: default;
 }
