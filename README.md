@@ -2,40 +2,27 @@
 
 <!-- ![](./examples/images/logo-md-blue-379px.png) -->
 
-**HystrixViewer.js** is a simple JavaScript library for displaying Hystrix [Dropwizard Metrics](http://metrics.dropwizard.io/). It's a port of Hystrix dashboard.
+**HystrixViewer.js** is a simple JavaScript library for displaying Hystrix [Dropwizard Metrics](http://metrics.dropwizard.io/). It's a port of [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard).
 
-<!--
 # Examples
-This library is very easy to use. You can create a simple counter metrics viewer by calling the calling 
-`addCounter`.
+This library is very easy to use. You can create a Hystrix Dashboard by calling `addHystrixDashboard`.
 
-```js
-metricsViewer.addCounter('#counter-div', 
-    "Counter Metrics Viewer Example", 
-    "Metric Viewer Example of Counter Metrics", 
-    "counter.test.metric.a");   
+```js  
+HV.addHystrixDashboard('#hystrix-div');
 ```
--->
-
-The complete documentation can be found [here](https://cdn.rawgit.com/indrabasak/metrics-viewer/f7856ae7ac5b21cf5509de27a3a2534bf0a07696/examples/index.html). 
-Other examples can be found on the [examples](https://cdn.rawgit.com/indrabasak/metrics-viewer/master/examples/examples.html) page. 
 
 ## Get Started
-<!--
-1. Download the javascript and css files from [dist](dist) directory.
-2. Download the MetricsGraphics files either [lib](lib) directory or from [MetricsGraphics](https://github.com/mozilla/metrics-graphics/releases) site.The current version of MetricsViewer.js is based on MetricsGraphics.js v2.10.1 milestone.
-3. The documentation can be [here](https://cdn.rawgit.com/indrabasak/metrics-viewer/f7856ae7ac5b21cf5509de27a3a2534bf0a07696/examples/index.html).
-4. Follow the working examples [here](https://cdn.rawgit.com/indrabasak/metrics-viewer/master/examples/examples.html).
--->
+1. Download all the javascript and css files from [dist](dist) directory.
+2. The documentation and working example can be found here in [demo](demo).
+
 
 ## Dependencies
 The HystrixViewer depends on the following libraries:
-2. [D3](http://d3js.org) is a JavaScript library for manipulating documents based on data. MetricsGraphics.js is based
- on D3 library.
-3. [jQuery](http://jquery.com/) is a quintessential JavaScriptIt for manipulating HTML documents.
+1. [D3](http://d3js.org) is a JavaScript library for manipulating documents based on data. 
+2. [jQuery](http://jquery.com/) is a quintessential JavaScriptIt for manipulating HTML documents.
 
 # Build
-1. Check out the [library](ccc).
+1. Check out the [project](https://github.com/indrabasak/patra).
 2. Install [Node.js](http://nodejs.org).
 3. Install [gulp](http://gulpjs.com) from the project root directory.
 ```    

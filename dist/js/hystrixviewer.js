@@ -275,15 +275,6 @@ function _getMetricValue(jsonRoot, metricName, defaultValue) {
 }
 
 /* private */
-function _getInstanceAverage(value, reportingHosts, decimal) {
-    if (decimal) {
-        return _roundNumber(value / reportingHosts);
-    } else {
-        return Math.floor(value / reportingHosts);
-    }
-}
-
-/* private */
 function _roundNumber(num) {
     var dec = 1;
     var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
