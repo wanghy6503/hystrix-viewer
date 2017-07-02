@@ -1,0 +1,87 @@
+1. Make a directory 'patra'
+2. Change directory to 'patra'
+3. Install npm if you havent' already
+4. From the project directory, run
+   npm init
+
+   It will prompt for information. Once it's completed, a file named 'package.json' will be created
+5. Install Gulp into project by using the following command:
+   npm install gulp --save-dev
+
+6. Install other modules
+npm install jshint gulp-jshint --save-dev
+npm install gulp-connect --save-dev
+npm install gulp-jsdoc --save-dev
+npm install gulp-rename --save-dev
+npm install gulp-rimraf --save-dev
+npm install gulp-closure-compiler --save-dev
+npm install gulp-sass --save-dev
+npm install gulp-testem --save-dev
+npm install gulp-uglify --save-dev
+npm install gulp-umd --save-dev
+npm install jquery --save-dev
+npm install metrics-graphics@2.10.1 --save-dev
+npm install jshint-stylish --save-dev
+npm install gulp-header --save-dev
+npm install run-sequence --save-dev
+npm install gulp-concat --save-dev
+
+npm install jquery@1.11.3 --save-dev
+
+npm install gulp-replace --save-dev
+
+npm install gulp-delete-file --save-dev
+
+npm install gulp-flatmap --save-dev
+
+
+nav {
+    position: relative;
+    width: 100%;
+    background-color: #f9fcf6;
+    font-weight: 500;
+}
+
+nav ul, nav li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+nav ul {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: height 0.4s ease-out;
+    -moz-transition: height 0.4s ease-out;
+    -ms-transition: height 0.4s ease-out;
+    -o-transition: height 0.4s ease-out;
+    transition: height 0.4s ease-out;
+}
+
+nav ul .selected {
+    background-color: #729d34;
+    color: white;
+}
+
+nav ul .selected a {
+    color: white;
+}
+
+nav li {
+    display: block;
+}
+
+npm install -g polymer-cli
+
+npm install vaadin-split-layout --save-dev
+
+npm install polymerjs --save-dev
+
+npm install --save-dev polymer-build
+
+npm install polymer-cli --save-dev
+
+npm install polymer --save-dev
+
+npm install npm-polymer-elements --save-dev
