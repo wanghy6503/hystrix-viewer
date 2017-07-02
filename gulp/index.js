@@ -19,6 +19,7 @@ var src = './src/',
     doc = './doc',
     distJs = dist + 'js',
     distCss = dist + 'css',
+    distImg = dist + '/images',
     lib = './lib/',
     jsFiles = [src + 'js/' + 'HV.js',
         src + 'js/' + 'common/common.js',
@@ -26,11 +27,12 @@ var src = './src/',
         src + 'js/' + 'charts/hystrixThreadPool.js'],
     scssFiles = [src + 'scss/' + 'monitor.scss',
         src + 'scss/' + 'hystrixCommand.scss',
-        src + 'scss/' + 'hystrixThreadPool.scss'];
+        src + 'scss/' + 'hystrixThreadPool.scss'],
+    imgFiles = [src + '/images/' + '*.*'];
 
-gulp.task('default', ['jshint', 'build:js', 'build:css']);
+gulp.task('default', ['jshint', 'build:js', 'build:css', 'copy:img']);
 
-gulp.task('compile', ['jshint', 'compile:js', 'build:css']);
+gulp.task('compile', ['jshint', 'compile:js', 'build:css', 'copy:img']);
 
 // deletes the distribution directory
 gulp.task('clean', function () {
@@ -111,6 +113,12 @@ gulp.task('build:css', function () {
         .pipe(gulp.dest(distCss));
 });
 
+gulp.task('copy:img', function () {
+    return gulp.src(imgFiles)
+        .pipe(gulp.dest(distImg))
+        .on('error', log);
+});
+
 // Check source js files with jshint
 gulp.task('jshint', function () {
     return gulp.src(jsFiles)
@@ -125,3 +133,7 @@ gulp.task('test', function () {
             configFile: 'testem.json'
         }));
 });
+
+function log(error) {
+    console.error(error.toString && error.toString());
+}

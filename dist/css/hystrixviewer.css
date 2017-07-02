@@ -82,6 +82,89 @@ h3.sectionHeader {
     padding-left: 5px;
     padding-right: 5px; } }
 
+#streamHeader {
+  height: 65px;
+  margin-bottom: 5px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
+
+#streamHeader h2 {
+  float: left;
+  color: black;
+  position: relative;
+  padding-left: 20px;
+  top: 26px;
+  font-size: 20px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
+
+#hystrix-header {
+  background: #FFFFFF url(../images/hystrix-logo-tagline-tiny.png) no-repeat scroll 99% 0%;
+  height: 65px;
+  margin-bottom: 5px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  line-height: 1; }
+
+#hystrix-header h2 {
+  float: left;
+  color: black;
+  position: relative;
+  padding-left: 20px;
+  top: 26px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
+
+.hystrix-container {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0;
+  line-height: 1; }
+
+.row {
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden; }
+
+.spacer {
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 4px;
+  clear: both; }
+
+.hystrix-menubar {
+  overflow: hidden;
+  border-bottom: 1px solid black; }
+
+.hystrix-menubar div {
+  padding-bottom: 5px;
+  margin: 0 auto;
+  overflow: hidden;
+  font-size: 80%;
+  font-family: 'Bookman Old Style',Bookman,'URW Bookman L','Palatino Linotype',serif;
+  float: left; }
+
+.hystrix-menubar .title {
+  float: left;
+  padding-right: 20px;
+  font-size: 110%;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: bold;
+  vertical-align: bottom; }
+
+.hystrix-menubar .menu_actions {
+  float: left;
+  position: relative;
+  top: 4px; }
+
+.hystrix-menubar .menu_legend {
+  float: right;
+  position: relative;
+  top: 4px; }
+
+@media screen and (max-width: 1100px) {
+  .container {
+    padding-left: 5px;
+    padding-right: 5px; } }
+
 .dependencies {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-size: 0.875em;
@@ -238,58 +321,6 @@ h3.sectionHeader {
   stroke: steelblue;
   stroke-width: 1;
   fill: none; }
-
-/* --------------------- END */
-.hystrix-container {
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 0; }
-
-.row {
-  width: 100%;
-  margin: 0 auto;
-  overflow: hidden; }
-
-.spacer {
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 4px;
-  clear: both; }
-
-.hystrix-menubar {
-  overflow: hidden;
-  border-bottom: 1px solid black; }
-
-.hystrix-menubar div {
-  padding-bottom: 5px;
-  margin: 0 auto;
-  overflow: hidden;
-  font-size: 80%;
-  font-family: 'Bookman Old Style',Bookman,'URW Bookman L','Palatino Linotype',serif;
-  float: left; }
-
-.hystrix-menubar .title {
-  float: left;
-  padding-right: 20px;
-  font-size: 110%;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: bold;
-  vertical-align: bottom; }
-
-.hystrix-menubar .menu_actions {
-  float: left;
-  position: relative;
-  top: 4px; }
-
-.hystrix-menubar .menu_legend {
-  float: right;
-  position: relative;
-  top: 4px; }
-
-@media screen and (max-width: 1100px) {
-  .container {
-    padding-left: 5px;
-    padding-right: 5px; } }
 
 .dependencyThreadPools {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;

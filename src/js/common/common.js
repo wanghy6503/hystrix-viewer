@@ -10,7 +10,7 @@
 HV.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
-    var $headerDiv = $("<div></div>").attr('id', 'streamHeader')
+    var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
         .html("<h2><span id='title_name'>Hystrix</span></h2>");
     $(_hystrixDashboardDivId).append($headerDiv);
 
