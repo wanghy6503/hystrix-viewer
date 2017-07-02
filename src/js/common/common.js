@@ -19,7 +19,7 @@ HV.addHystrixDashboard = function (divId) {
 
     _createHystrixCircuitArea($containerDiv);
 
-    var $spacerDiv = $("<div></div>").addClass("spacer");
+    var $spacerDiv = $("<div></div>").addClass("hystrix-spacer");
     $($containerDiv).append($spacerDiv);
 
     _createHystrixThreadPoolArea($containerDiv);
@@ -129,7 +129,7 @@ var _addHystrix = function (jsonData) {
 };
 
 function _createHystrixCircuitArea(containerDiv) {
-    var $row1Div = $("<div></div>").addClass('row');
+    var $row1Div = $("<div></div>").addClass('hystrix-row');
     $(containerDiv).append($row1Div);
     var $menuBar1Div = $("<div></div>").addClass('hystrix-menubar');
     $($row1Div).append($menuBar1Div);
@@ -166,7 +166,7 @@ function _createHystrixCircuitArea(containerDiv) {
 }
 
 function _createHystrixThreadPoolArea(containerDiv) {
-    var $row2Div = $("<div></div>").addClass('row');
+    var $row2Div = $("<div></div>").addClass('hystrix-row');
     $(containerDiv).append($row2Div);
     var $menuBar2Div = $("<div></div>").addClass('hystrix-menubar');
     $($row2Div).append($menuBar2Div);

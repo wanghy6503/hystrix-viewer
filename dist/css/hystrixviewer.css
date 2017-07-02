@@ -13,9 +13,6 @@
   padding-top: 4px;
   clear: both; }
 
-.last {
-  margin-right: 0px; }
-
 .menubar {
   overflow: hidden;
   border-bottom: 1px solid black; }
@@ -119,16 +116,19 @@ h3.sectionHeader {
   margin: 0;
   line-height: 1; }
 
-.row {
+.hystrix-row {
   width: 100%;
   margin: 0 auto;
   overflow: hidden; }
 
-.spacer {
+.hystrix-spacer {
   width: 100%;
   margin: 0 auto;
   padding-top: 4px;
   clear: both; }
+
+.hystrix-last {
+  margin-right: 0px; }
 
 .hystrix-menubar {
   overflow: hidden;

@@ -2,6 +2,7 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     closureCompiler = require('gulp-closure-compiler'),
+    del = require('del'),
     flatmap = require('gulp-flatmap'),
     jsdoc = require("gulp-jsdoc3"),
     jshint = require('gulp-jshint'),
@@ -19,7 +20,7 @@ var src = './src/',
     doc = './doc',
     distJs = dist + 'js',
     distCss = dist + 'css',
-    distImg = dist + '/images',
+    distImg = dist + 'images',
     lib = './lib/',
     jsFiles = [src + 'js/' + 'HV.js',
         src + 'js/' + 'common/common.js',
@@ -37,7 +38,7 @@ gulp.task('compile', ['jshint', 'compile:js', 'build:css', 'copy:img']);
 // deletes the distribution directory
 gulp.task('clean', function () {
     return gulp.src([dist + '*'], {read: false})
-        .pipe(rimraf());
+         .pipe(rimraf());
 });
 
 // create 'hystrixviewer.js' and 'hystrixviewer.min.js' from source js
@@ -113,7 +114,12 @@ gulp.task('build:css', function () {
         .pipe(gulp.dest(distCss));
 });
 
-gulp.task('copy:img', function () {
+gulp.task('clean:img', function () {
+    return gulp.src([distImg + '*'], {read: false})
+        .pipe(rimraf());
+});
+
+gulp.task('copy:img', ['clean:img'], function () {
     return gulp.src(imgFiles)
         .pipe(gulp.dest(distImg))
         .on('error', log);
