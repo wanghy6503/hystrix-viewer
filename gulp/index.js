@@ -1,7 +1,9 @@
 // Gulp and plugins
 var gulp = require('gulp'),
+    concat = require('gulp-concat'),
     closureCompiler = require('gulp-closure-compiler'),
-    jsdoc = require("gulp-jsdoc"),
+    flatmap = require('gulp-flatmap'),
+    jsdoc = require("gulp-jsdoc3"),
     jshint = require('gulp-jshint'),
     rename = require('gulp-rename'),
     rimraf = require('gulp-rimraf'),
@@ -18,9 +20,13 @@ var src = './src/',
     distJs = dist + 'js',
     distCss = dist + 'css',
     lib = './lib/',
-    jsFiles = [src + 'js/' + 'hystrixviewer.js'],
-    scssFiles = [src + 'scss/' + 'metricsviewer.scss',
-        src + 'scss/' + 'metricsviewer-dark.scss'];
+    jsFiles = [src + 'js/' + 'HV.js',
+        src + 'js/' + 'common/common.js',
+        src + 'js/' + 'charts/hystrixCommand.js',
+        src + 'js/' + 'charts/hystrixThreadPool.js'],
+    scssFiles = [src + 'scss/' + 'monitor.scss',
+        src + 'scss/' + 'hystrixCommand.scss',
+        src + 'scss/' + 'hystrixThreadPool.scss'];
 
 gulp.task('default', ['jshint', 'build:js', 'build:css']);
 
@@ -35,6 +41,7 @@ gulp.task('clean', function () {
 // create 'hystrixviewer.js' and 'hystrixviewer.min.js' from source js
 gulp.task('build:js', ['clean'], function () {
     return gulp.src(jsFiles)
+        .pipe(concat({path: 'hystrixviewer.js'}))
         .pipe(umd(
             {
                 dependencies: function () {
@@ -46,13 +53,6 @@ gulp.task('build:js', ['clean'], function () {
                         param: '$'
                     },
                         {
-                            name: 'HV',
-                            amd: 'HV',
-                            cjs: 'HV',
-                            global: 'HV',
-                            param: 'HV'
-                        },
-                        {
                             name: 'd3',
                             amd: 'd3',
                             cjs: 'd3',
@@ -61,10 +61,10 @@ gulp.task('build:js', ['clean'], function () {
                         }];
                 },
                 exports: function () {
-                    return "hystrixViewer";
+                    return "HV";
                 },
                 namespace: function () {
-                    return "hystrixViewer";
+                    return "HV";
                 }
             }
         ))
@@ -76,6 +76,7 @@ gulp.task('build:js', ['clean'], function () {
 
 gulp.task('compile:js', ['clean'], function () {
     return gulp.src(jsFiles)
+        .pipe(concat({path: 'hystrixviewer.js'}))
         .pipe(gulp.dest(distJs))
         .pipe(closureCompiler({
             compilerPath: 'lib/closure/closure-compiler-v20170521.jar',
@@ -105,6 +106,7 @@ gulp.task('doc', ['clean:doc'], function () {
 // build css files from scss
 gulp.task('build:css', function () {
     return gulp.src(scssFiles)
+        .pipe(concat({path: 'hystrixviewer.css'}))
         .pipe(sass())
         .pipe(gulp.dest(distCss));
 });
