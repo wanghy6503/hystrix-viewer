@@ -72,11 +72,11 @@
   padding-right: 5px;
 }
 
-.dependencyThreadPools div.tableRow .hystrix-header.left {
+.dependencyThreadPools div.tableRow .hystrix-header.hystrix-left {
   width: 85px;
 }
 
-.dependencyThreadPools div.tableRow .hystrix-header.right {
+.dependencyThreadPools div.tableRow .hystrix-header.hystrix-right {
   width: 75px;
 }
 
@@ -85,11 +85,11 @@
   text-align: right;
 }
 
-.dependencyThreadPools div.tableRow .hystrix-data.left {
+.dependencyThreadPools div.tableRow .hystrix-data.hystrix-left {
   width: 30px;
 }
 
-.dependencyThreadPools div.tableRow .hystrix-data.right {
+.dependencyThreadPools div.tableRow .hystrix-data.hystrix-right {
   width: 45px;
 }
 

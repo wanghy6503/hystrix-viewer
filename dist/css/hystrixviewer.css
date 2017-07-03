@@ -1,31 +1,81 @@
-.container {
-  padding-left: 20px;
-  padding-right: 20px; }
+.hystrix-outer-container html, .hystrix-outer-container body,
+.hystrix-outer-container span,
+.hystrix-outer-container object, .hystrix-outer-container iframe,
+.hystrix-outer-container h1, .hystrix-outer-container h2,
+.hystrix-outer-container h3, .hystrix-outer-container h4,
+.hystrix-outer-container h5, .hystrix-outer-container h6,
+.hystrix-outer-container p, .hystrix-outer-container blockquote,
+.hystrix-outer-container pre, .hystrix-outer-container abbr,
+.hystrix-outer-container address, .hystrix-outer-container cite,
+.hystrix-outer-container code, .hystrix-outer-container del,
+.hystrix-outer-container dfn, .hystrix-outer-container em,
+.hystrix-outer-container img, .hystrix-outer-container ins,
+.hystrix-outer-container kbd, .hystrix-outer-container q,
+.hystrix-outer-container samp, .hystrix-outer-container small,
+.hystrix-outer-container strong, .hystrix-outer-container sub,
+.hystrix-outer-container sup, .hystrix-outer-container var,
+.hystrix-outer-container b, .hystrix-outer-container i,
+.hystrix-outer-container dl, .hystrix-outer-container dt,
+.hystrix-outer-container dd, .hystrix-outer-container ol,
+.hystrix-outer-container ul, .hystrix-outer-container li,
+.hystrix-outer-container fieldset, .hystrix-outer-container form,
+.hystrix-outer-container label, .hystrix-outer-container legend,
+.hystrix-outer-container table, .hystrix-outer-container caption,
+.hystrix-outer-container tbody, .hystrix-outer-container tfoot,
+.hystrix-outer-container thead, .hystrix-outer-container tr,
+.hystrix-outer-container th, .hystrix-outer-container td,
+.hystrix-outer-container article, .hystrix-outer-container aside,
+.hystrix-outer-container canvas, .hystrix-outer-container details,
+.hystrix-outer-container figcaption, .hystrix-outer-container figure,
+.hystrix-outer-container footer, .hystrix-outer-container header,
+.hystrix-outer-container hgroup, .hystrix-outer-container menu,
+.hystrix-outer-container nav, .hystrix-outer-container section,
+.hystrix-outer-container summary, .hystrix-outer-container time,
+.hystrix-outer-container mark, .hystrix-outer-container audio,
+.hystrix-outer-container video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
 
-.row {
+.hystrix-container {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0;
+  line-height: 1;
+  font-size: 14px; }
+
+.hystrix-row {
   width: 100%;
   margin: 0 auto;
   overflow: hidden; }
 
-.spacer {
+.hystrix-spacer {
   width: 100%;
   margin: 0 auto;
   padding-top: 4px;
   clear: both; }
 
-.menubar {
+.hystrix-menubar {
   overflow: hidden;
   border-bottom: 1px solid black; }
 
-.menubar div {
+.hystrix-menubar div {
   padding-bottom: 5px;
   margin: 0 auto;
   overflow: hidden;
   font-size: 80%;
-  font-family: 'Bookman Old Style',Bookman,'URW Bookman L','Palatino Linotype',serif;
+  font-family: 'Bookman Old Style', Bookman, 'URW Bookman L', 'Palatino Linotype', serif;
   float: left; }
 
-.menubar .title {
+.hystrix-last {
+  margin-right: 0px; }
+
+.hystrix-menubar .title {
   float: left;
   padding-right: 20px;
   font-size: 110%;
@@ -33,15 +83,24 @@
   font-weight: bold;
   vertical-align: bottom; }
 
-.menubar .menu_actions {
+.hystrix-menubar .menu_actions {
   float: left;
   position: relative;
   top: 4px; }
 
-.menubar .menu_legend {
+.hystrix-menubar .menu_legend {
   float: right;
   position: relative;
   top: 4px; }
+
+.hystrix-menubar a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+  text-decoration: underline;
+  color: -webkit-link; }
 
 h3.sectionHeader {
   color: black;
@@ -106,69 +165,9 @@ h3.sectionHeader {
   position: relative;
   padding-left: 20px;
   top: 26px;
-  font-size: 100%;
+  font-size: 20px;
   font-weight: bold;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
-
-.hystrix-container {
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 0;
-  line-height: 1;
-  font-size: 14px; }
-
-.hystrix-row {
-  width: 100%;
-  margin: 0 auto;
-  overflow: hidden; }
-
-.hystrix-spacer {
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 4px;
-  clear: both; }
-
-.hystrix-last {
-  margin-right: 0px; }
-
-.hystrix-menubar {
-  overflow: hidden;
-  border-bottom: 1px solid black; }
-
-.hystrix-menubar div {
-  padding-bottom: 5px;
-  margin: 0 auto;
-  overflow: hidden;
-  font-size: 80%;
-  font-family: 'Bookman Old Style',Bookman,'URW Bookman L','Palatino Linotype',serif;
-  float: left; }
-
-.hystrix-menubar .title {
-  float: left;
-  padding-right: 20px;
-  font-size: 110%;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: bold;
-  vertical-align: bottom; }
-
-.hystrix-menubar .menu_actions {
-  float: left;
-  position: relative;
-  top: 4px; }
-
-.hystrix-menubar a {
-  margin: 0;
-  padding: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
-  text-decoration: underline;
-  color: -webkit-link; }
-
-.hystrix-menubar .menu_legend {
-  float: right;
-  position: relative;
-  top: 4px; }
 
 @media screen and (max-width: 1100px) {
   .container {
@@ -228,7 +227,7 @@ h3.sectionHeader {
   font-size: 10pt;
   clear: both; }
 
-.dependencies div.monitor_data div.counters div.cell {
+.dependencies div.monitor_data div.counters div.hystrix-cell {
   display: inline;
   float: right; }
 
@@ -237,7 +236,7 @@ h3.sectionHeader {
   padding-right: 6px;
   padding-left: 8px; }
 
-.dependencies div.cell .line {
+.dependencies div.hystrix-cell .line {
   display: block; }
 
 .dependencies div.monitor_data a,
@@ -253,18 +252,23 @@ h3.sectionHeader {
   white-space: nowrap;
   font-size: 8pt;
   margin: 0 auto;
-  clear: both;
-  padding-left: 26%; }
+  clear: both; }
 
-.dependencies div.tableRow .cell {
+.dependencies div.tableRow .hystrix-cell {
   float: left; }
 
-.dependencies div.tableRow .header {
+.dependencies div.tableRow .hystrix-header {
   width: 18%;
   text-align: right;
   padding-right: 2%; }
 
-.dependencies div.tableRow .data {
+.dependencies div.tableRow .hystrix-header.hystrix-left {
+  width: 85px; }
+
+.dependencies div.tableRow .hystrix-header.hystrix-right {
+  width: 75px; }
+
+.dependencies div.tableRow .hystrix-data {
   width: 17%;
   font-weight: bold;
   text-align: right; }
@@ -308,7 +312,7 @@ h3.sectionHeader {
 .dependencies .errorPercentage {
   color: grey; }
 
-.dependencies div.cell .errorPercentage {
+.dependencies div.hystrix-cell .errorPercentage {
   padding-left: 5px;
   font-size: 12pt !important; }
 
@@ -392,20 +396,20 @@ h3.sectionHeader {
   text-align: right;
   padding-right: 5px; }
 
-.dependencyThreadPools div.tableRow .hystrix-header.left {
+.dependencyThreadPools div.tableRow .hystrix-header.hystrix-left {
   width: 85px; }
 
-.dependencyThreadPools div.tableRow .hystrix-header.right {
+.dependencyThreadPools div.tableRow .hystrix-header.hystrix-right {
   width: 75px; }
 
 .dependencyThreadPools div.tableRow .hystrix-data {
   font-weight: bold;
   text-align: right; }
 
-.dependencyThreadPools div.tableRow .hystrix-data.left {
+.dependencyThreadPools div.tableRow .hystrix-data.hystrix-left {
   width: 30px; }
 
-.dependencyThreadPools div.tableRow .hystrix-data.right {
+.dependencyThreadPools div.tableRow .hystrix-data.hystrix-right {
   width: 45px; }
 
 .dependencyThreadPools div.monitor {

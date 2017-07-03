@@ -50,12 +50,15 @@ window.HV = {version: '1.0.0'};
 HV.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
+    var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
+    $(_hystrixDashboardDivId).append($outerContainerDiv);
+
     var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
         .html("<h2><span id='title_name'>Hystrix</span></h2>");
-    $(_hystrixDashboardDivId).append($headerDiv);
+    $outerContainerDiv.append($headerDiv);
 
     var $containerDiv = $("<div></div>").addClass('hystrix-container');
-    $(_hystrixDashboardDivId).append($containerDiv);
+    $outerContainerDiv.append($containerDiv);
 
     _createHystrixCircuitArea($containerDiv);
 
@@ -341,9 +344,11 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
     this.render = function render() {
         if (!this.initialized) {
+            var $parentDiv = $("#" + this.parentDivId);
+
             var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
                 .addClass('monitor').css({'position': 'relative'});
-            $("#" + this.parentDivId).append($circuitDiv);
+            $parentDiv.append($circuitDiv);
 
             this.addChart($circuitDiv);
             this.addTitle($circuitDiv);
@@ -472,7 +477,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         var $countersDiv = $("<div></div>").addClass("counters");
         monitorDataDiv.append($countersDiv);
 
-        var $errPerDiv = $("<div></div>").addClass("cell line")
+        var $errPerDiv = $("<div></div>").addClass("hystrix-cell line")
             .html("<a href=\"javascript://\" title=\"Error Percentage [Timed-out + Threadpool Rejected + Failure / Total]\""
                 + "class=\"hystrix-tooltip errorPercentage\">"
                 + "<span class=\"value\">" + this.data["errorPercentage"] + "</span>%</a>");
@@ -497,7 +502,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             + "class=\"line hystrix-tooltip failure\">"
             + "<span class=\"value\">" + this.data["rollingCountFailure"] + "</span></a>";
 
-        var $sec1Div = $("<div></div>").addClass("cell borderRight")
+        var $sec1Div = $("<div></div>").addClass("hystrix-cell borderRight")
             .html(rollingCountTimeoutHtml + "\n" + rollingCountPoolRejectedHtml + "\n"
                 + rollingCountFailureHtml);
         $countersDiv.append($sec1Div);
@@ -514,7 +519,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             + "class=\"line hystrix-tooltip badRequest\">"
             + "<span class=\"value\">" + this.data["rollingCountBadRequests"] + "</span></a>";
 
-        var $sec2Div = $("<div></div>").addClass("cell borderRight")
+        var $sec2Div = $("<div></div>").addClass("hystrix-cell borderRight")
             .html(rollingCountSuccessHtml + "\n" + rollingCountShortCircuitedHtml + "\n"
                 + rollingCountBadRequestsHtml);
         $countersDiv.append($sec2Div);
@@ -579,24 +584,24 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         monitorDataDiv.append($spacerDiv);
 
         var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header\">Hosts</div>" +
-            "<div class=\"cell data\">" + this.data["reportingHosts"] + " </div>" +
-            "<div class=\"cell header\">90th</div>" +
-            "<div class=\"cell data latency90\"><span class=\"value\">" + this.data["latency90"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Hosts</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["reportingHosts"] + " </div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">90th</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right latency90\"><span class=\"value\">" + this.data["latency90"] + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow1Div);
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header\">Median</div>" +
-            "<div class=\"cell data latencyMedian\"><span class=\"value\">" + this.data["latencyMedian"] + "</span>ms </div>" +
-            "<div class=\"cell header\">99th</div>" +
-            "<div class=\"cell data latency99\"><span class=\"value\">" + this.data["latency99"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Median</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMedian\"><span class=\"value\">" + this.data["latencyMedian"] + "</span>ms </div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99th</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right latency99\"><span class=\"value\">" + this.data["latency99"] + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"cell header\">Mean</div>" +
-            "<div class=\"cell data latencyMean\"><span class=\"value\">" + this.data["latencyMean"] + "</span>ms</div>" +
-            "<div class=\"cell header\">99.5th</div>" +
-            "<div class=\"cell data latency995\"><span class=\"value\">" + this.data["latency995"] + "</span>ms</div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Mean</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMean\"><span class=\"value\">" + this.data["latencyMean"] + "</span>ms</div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99.5th</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right latency995\"><span class=\"value\">" + this.data["latency995"] + "</span>ms</div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
@@ -859,9 +864,11 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
     this.render = function render() {
         if (!this.initialized) {
+            var $parentDiv = $("#" + this.parentDivId);
+
             var $threadDiv = $("<div></div>").attr('id', this.threadDivId)
                 .addClass('monitor').css({'position': 'relative'});
-            $("#" + this.parentDivId).append($threadDiv);
+            $parentDiv.append($threadDiv);
 
             this.addChart($threadDiv);
             this.addTitle($threadDiv);
@@ -991,24 +998,24 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         monitorDataDiv.append($spacerDiv);
 
         var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header left\">Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data left\">" + this.data["currentActiveCount"] + " </div>" +
-            "<div class=\"hystrix-cell hystrix-header right\">Max Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Active</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["currentActiveCount"] + " </div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Max Active</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
         monitorDataDiv.append($monitorRow1Div);
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header left\">Queued</div>" +
-            "<div class=\"hystrix-cell hystrix-data left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
-            "<div class=\"hystrix-cell hystrix-header right\">Executions</div>" +
-            "<div class=\"hystrix-cell hystrix-data right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Queued</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Executions</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header left\">Pool Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
-            "<div class=\"hystrix-cell hystrix-header right\">Queue Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
+            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Queue Size</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 

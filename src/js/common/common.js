@@ -10,12 +10,15 @@
 HV.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
+    var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
+    $(_hystrixDashboardDivId).append($outerContainerDiv);
+
     var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
         .html("<h2><span id='title_name'>Hystrix</span></h2>");
-    $(_hystrixDashboardDivId).append($headerDiv);
+    $outerContainerDiv.append($headerDiv);
 
     var $containerDiv = $("<div></div>").addClass('hystrix-container');
-    $(_hystrixDashboardDivId).append($containerDiv);
+    $outerContainerDiv.append($containerDiv);
 
     _createHystrixCircuitArea($containerDiv);
 
