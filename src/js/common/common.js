@@ -7,7 +7,7 @@
  *     </li>
  * @param {string} divId divId the id of the HTML division tag where the Hystrix dashboard will be displayed
  */
-HV.addHystrixDashboard = function (divId) {
+hystrixViewer.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
     var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
@@ -28,17 +28,13 @@ HV.addHystrixDashboard = function (divId) {
     _createHystrixThreadPoolArea($containerDiv);
 };
 
-HV.init = function () {
-
-};
-
 /**
  * Refreshes the metric view with new data. Each metric is cashed up to the 100 metric points. Older metrics are
  * removed once it reaches the threshold.
  *
  * @param {string} json the metric data in json format
  */
-HV.refresh = function (json) {
+hystrixViewer.refresh = function (json) {
     if (_hystrixDashboardDivId) {
         _addHystrix(json);
 
@@ -57,7 +53,7 @@ HV.refresh = function (json) {
 /**
  * Clears all the charts from the hystrix viewer
  */
-HV.clear = function () {
+hystrixViewer.clear = function () {
     for (var key in _hystrixCircuitMap) {
         if (_hystrixCircuitMap.hasOwnProperty(key))
             _hystrixCircuitMap[key].clear();
@@ -140,15 +136,15 @@ function _createHystrixCircuitArea(containerDiv) {
     $($menuBar1Div).append($circuitTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByErrorThenVolume();\">Error then Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByVolume();\">Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByError();\">Error</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMean();\">Mean</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMedian();\">Median</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency90();\">90</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency99();\">99</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency995();\">99.5</a> ";
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
     var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar1Div).append($menuActions);
 
@@ -177,8 +173,8 @@ function _createHystrixThreadPoolArea(containerDiv) {
     $($menuBar2Div).append($threadTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolByVolume();\">Volume</a>";
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume</a>";
     var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar2Div).append($menuActions);
 

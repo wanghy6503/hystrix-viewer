@@ -7,10 +7,18 @@ It's a port of [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/maste
 Hystrix metrics instead of Hystrix stream.
 
 # Examples
-This library is very easy to use. You can create a Hystrix Dashboard by calling `addHystrixDashboard`.
+This library is very easy to use. You can create a Hystrix Dashboard by calling `addHystrixDashboard` method. 
+The method takes a div id.
 
 ```js  
-HV.addHystrixDashboard('#hystrix-div');
+hystrixViewer.addHystrixDashboard('#hystrix-div');
+hystrixViewer.refresh(data);
+```
+
+The viewer can be updated by calling `refresh` method.
+
+```js  
+hystrixViewer.refresh(data);
 ```
 
 ## Get Started

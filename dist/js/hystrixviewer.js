@@ -4,7 +4,7 @@
   } else if (typeof exports === 'object') {
     module.exports = factory(require('jquery'), require('d3'));
   } else {
-    root.HV = factory(root.jQuery, root.d3);
+    root.hystrixViewer = factory(root.jQuery, root.d3);
   }
 }(this, function($, d3) {
 /**
@@ -37,7 +37,7 @@
  * @author Indra Basak
  * @since June 2017
  */
-window.HV = {version: '1.0.0'};
+window.hystrixViewer = {version: '1.0.0'};
 
 /**
  * Creates a Hystrix dashboard, It displays the the following:
@@ -47,7 +47,7 @@ window.HV = {version: '1.0.0'};
  *     </li>
  * @param {string} divId divId the id of the HTML division tag where the Hystrix dashboard will be displayed
  */
-HV.addHystrixDashboard = function (divId) {
+hystrixViewer.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
     var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
@@ -68,17 +68,13 @@ HV.addHystrixDashboard = function (divId) {
     _createHystrixThreadPoolArea($containerDiv);
 };
 
-HV.init = function () {
-
-};
-
 /**
  * Refreshes the metric view with new data. Each metric is cashed up to the 100 metric points. Older metrics are
  * removed once it reaches the threshold.
  *
  * @param {string} json the metric data in json format
  */
-HV.refresh = function (json) {
+hystrixViewer.refresh = function (json) {
     if (_hystrixDashboardDivId) {
         _addHystrix(json);
 
@@ -97,7 +93,7 @@ HV.refresh = function (json) {
 /**
  * Clears all the charts from the hystrix viewer
  */
-HV.clear = function () {
+hystrixViewer.clear = function () {
     for (var key in _hystrixCircuitMap) {
         if (_hystrixCircuitMap.hasOwnProperty(key))
             _hystrixCircuitMap[key].clear();
@@ -180,15 +176,15 @@ function _createHystrixCircuitArea(containerDiv) {
     $($menuBar1Div).append($circuitTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByErrorThenVolume();\">Error then Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByVolume();\">Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByError();\">Error</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMean();\">Mean</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatencyMedian();\">Median</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency90();\">90</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency99();\">99</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortByLatency995();\">99.5</a> ";
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
     var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar1Div).append($menuActions);
 
@@ -217,8 +213,8 @@ function _createHystrixThreadPoolArea(containerDiv) {
     $($menuBar2Div).append($threadTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"HV.sortThreadpoolByVolume();\">Volume</a>";
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
+        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume</a>";
     var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar2Div).append($menuActions);
 
@@ -718,7 +714,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 }
 
-HV.sortByVolume = function () {
+hystrixViewer.sortByVolume = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'rate_desc') {
         direction = 'asc';
@@ -732,7 +728,7 @@ function _sortByVolumeInDirection(direction) {
     $monitors.tsort({order: direction, attr: 'rate_value'});
 }
 
-HV.sortByError = function () {
+hystrixViewer.sortByError = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'error_desc') {
         direction = 'asc';
@@ -746,7 +742,7 @@ function _sortByErrorInDirection(direction) {
     $monitors.tsort(".errorPercentage .value", {order: direction});
 }
 
-HV.sortByErrorThenVolume = function () {
+hystrixViewer.sortByErrorThenVolume = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'error_then_volume_desc') {
         direction = 'asc';
@@ -760,7 +756,7 @@ function _sortByErrorThenVolumeInDirection(direction) {
     $monitors.tsort({order: direction, attr: 'error_then_volume'});
 }
 
-HV.sortAlphabetically = function () {
+hystrixViewer.sortAlphabetically = function () {
     var direction = "asc";
     if (_circuitSortedBy == 'alph_asc') {
         direction = 'desc';
@@ -774,7 +770,7 @@ function _sortAlphabeticalInDirection(direction) {
     $monitors.tsort("p.name", {order: direction});
 }
 
-HV.sortByLatency90 = function () {
+hystrixViewer.sortByLatency90 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat90_desc') {
         direction = 'asc';
@@ -783,7 +779,7 @@ HV.sortByLatency90 = function () {
     this.sortByMetricInDirection(direction, ".latency90 .value");
 };
 
-HV.sortByLatency99 = function () {
+hystrixViewer.sortByLatency99 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat99_desc') {
         direction = 'asc';
@@ -792,7 +788,7 @@ HV.sortByLatency99 = function () {
     this.sortByMetricInDirection(direction, ".latency99 .value");
 };
 
-HV.sortByLatency995 = function () {
+hystrixViewer.sortByLatency995 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat995_desc') {
         direction = 'asc';
@@ -801,7 +797,7 @@ HV.sortByLatency995 = function () {
     this.sortByMetricInDirection(direction, ".latency995 .value");
 };
 
-HV.sortByLatencyMean = function () {
+hystrixViewer.sortByLatencyMean = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'latMean_desc') {
         direction = 'asc';
@@ -810,7 +806,7 @@ HV.sortByLatencyMean = function () {
     this.sortByMetricInDirection(direction, ".latencyMean .value");
 };
 
-HV.sortByLatencyMedian = function () {
+hystrixViewer.sortByLatencyMedian = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'latMedian_desc') {
         direction = 'asc';
@@ -819,7 +815,7 @@ HV.sortByLatencyMedian = function () {
     this.sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-HV.sortByMetricInDirection = function (direction, metric) {
+hystrixViewer.sortByMetricInDirection = function (direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
 };
@@ -1059,7 +1055,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 }
 
-HV.sortThreadpoolAlphabetically = function () {
+hystrixViewer.sortThreadpoolAlphabetically = function () {
     var direction = "asc";
     if(_threadPoolSortedBy == 'alph_asc') {
         direction = 'desc';
@@ -1073,7 +1069,7 @@ function _sortThreadpoolAlphabeticalInDirection (direction) {
     $monitors.tsort("p.name", {order: direction});
 }
 
-HV.sortThreadpoolByVolume = function() {
+hystrixViewer.sortThreadpoolByVolume = function() {
     var direction = "desc";
     if(_threadPoolSortedBy == 'rate_desc') {
         direction = 'asc';
@@ -1124,5 +1120,5 @@ function _sortThreadpoolSameAsLast() {
         _sortThreadpoolByMetricInDirection('desc', 'pMedian');
     }
 }
-return HV;
+return hystrixViewer;
 }));

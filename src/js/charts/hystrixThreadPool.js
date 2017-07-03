@@ -234,7 +234,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 }
 
-HV.sortThreadpoolAlphabetically = function () {
+hystrixViewer.sortThreadpoolAlphabetically = function () {
     var direction = "asc";
     if(_threadPoolSortedBy == 'alph_asc') {
         direction = 'desc';
@@ -248,7 +248,7 @@ function _sortThreadpoolAlphabeticalInDirection (direction) {
     $monitors.tsort("p.name", {order: direction});
 }
 
-HV.sortThreadpoolByVolume = function() {
+hystrixViewer.sortThreadpoolByVolume = function() {
     var direction = "desc";
     if(_threadPoolSortedBy == 'rate_desc') {
         direction = 'asc';

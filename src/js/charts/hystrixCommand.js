@@ -409,7 +409,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 }
 
-HV.sortByVolume = function () {
+hystrixViewer.sortByVolume = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'rate_desc') {
         direction = 'asc';
@@ -423,7 +423,7 @@ function _sortByVolumeInDirection(direction) {
     $monitors.tsort({order: direction, attr: 'rate_value'});
 }
 
-HV.sortByError = function () {
+hystrixViewer.sortByError = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'error_desc') {
         direction = 'asc';
@@ -437,7 +437,7 @@ function _sortByErrorInDirection(direction) {
     $monitors.tsort(".errorPercentage .value", {order: direction});
 }
 
-HV.sortByErrorThenVolume = function () {
+hystrixViewer.sortByErrorThenVolume = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'error_then_volume_desc') {
         direction = 'asc';
@@ -451,7 +451,7 @@ function _sortByErrorThenVolumeInDirection(direction) {
     $monitors.tsort({order: direction, attr: 'error_then_volume'});
 }
 
-HV.sortAlphabetically = function () {
+hystrixViewer.sortAlphabetically = function () {
     var direction = "asc";
     if (_circuitSortedBy == 'alph_asc') {
         direction = 'desc';
@@ -465,7 +465,7 @@ function _sortAlphabeticalInDirection(direction) {
     $monitors.tsort("p.name", {order: direction});
 }
 
-HV.sortByLatency90 = function () {
+hystrixViewer.sortByLatency90 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat90_desc') {
         direction = 'asc';
@@ -474,7 +474,7 @@ HV.sortByLatency90 = function () {
     this.sortByMetricInDirection(direction, ".latency90 .value");
 };
 
-HV.sortByLatency99 = function () {
+hystrixViewer.sortByLatency99 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat99_desc') {
         direction = 'asc';
@@ -483,7 +483,7 @@ HV.sortByLatency99 = function () {
     this.sortByMetricInDirection(direction, ".latency99 .value");
 };
 
-HV.sortByLatency995 = function () {
+hystrixViewer.sortByLatency995 = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'lat995_desc') {
         direction = 'asc';
@@ -492,7 +492,7 @@ HV.sortByLatency995 = function () {
     this.sortByMetricInDirection(direction, ".latency995 .value");
 };
 
-HV.sortByLatencyMean = function () {
+hystrixViewer.sortByLatencyMean = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'latMean_desc') {
         direction = 'asc';
@@ -501,7 +501,7 @@ HV.sortByLatencyMean = function () {
     this.sortByMetricInDirection(direction, ".latencyMean .value");
 };
 
-HV.sortByLatencyMedian = function () {
+hystrixViewer.sortByLatencyMedian = function () {
     var direction = "desc";
     if (_circuitSortedBy == 'latMedian_desc') {
         direction = 'asc';
@@ -510,7 +510,7 @@ HV.sortByLatencyMedian = function () {
     this.sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-HV.sortByMetricInDirection = function (direction, metric) {
+hystrixViewer.sortByMetricInDirection = function (direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
 };

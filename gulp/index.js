@@ -64,10 +64,10 @@ gulp.task('build:js', ['clean'], function () {
                         }];
                 },
                 exports: function () {
-                    return "HV";
+                    return "hystrixViewer";
                 },
                 namespace: function () {
-                    return "HV";
+                    return "hystrixViewer";
                 }
             }
         ))

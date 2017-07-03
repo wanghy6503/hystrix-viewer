@@ -28,4 +28,4 @@
  * @author Indra Basak
  * @since June 2017
  */
-window.HV = {version: '1.0.0'};
+window.hystrixViewer = {version: '1.0.0'};

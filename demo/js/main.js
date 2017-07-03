@@ -24,7 +24,7 @@
             $(this).addClass('active');
 
             //clear the old div tags
-            HV.clear();
+            hystrixViewer.clear();
 
             //clear all the timers
             while (timers.length) {
