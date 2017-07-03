@@ -1,6 +1,6 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status][travis-badge]][travis-badge-url]
 
-<!-- ![](./examples/images/logo-md-blue-379px.png) -->
+![](./src/images/hystrix-logo-tagline-tiny.png)
 
 **HystrixViewer.js** is a simple JavaScript library for monitoring Hystrix Metrics in real time.
 It's a port of [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard) and relies on 
