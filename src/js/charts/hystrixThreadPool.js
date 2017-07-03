@@ -196,7 +196,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
     this.preProcessData = function preProcessData(jsonData) {
         this.data = {};
-        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 1);
+        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
         this.data["reportingHosts"] = reportingHosts;
 
         var propertyValue_queueSizeRejectionThreshold =
@@ -211,7 +211,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
         var numberSeconds = this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
 
-        var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+        var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
         if (totalThreadsExecuted < 0) {
             totalThreadsExecuted = 0;
         }
@@ -220,20 +220,20 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         this.data["ratePerSecondPerHost"] = _roundNumber(totalThreadsExecuted / numberSeconds / reportingHosts);
 
         this.data["currentActiveCount"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 0);
         this.data["rollingMaxActiveThreads"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 0);
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
         this.data["rollingCountThreadsExecuted"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
         this.data["currentPoolSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 0);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 0);
 
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
         this.data["errorPercentage"] = this.data["currentQueueSize"] / this.data["reportingHosts"];
     };
 }

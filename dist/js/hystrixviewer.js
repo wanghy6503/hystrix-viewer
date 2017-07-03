@@ -343,8 +343,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         if (!this.initialized) {
             var $parentDiv = $("#" + this.parentDivId);
 
-            var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
-                .addClass('monitor').css({'position': 'relative'});
+            var $circuitDiv = $("<div></div>").addClass('monitor')
+                .attr('id', this.circuitDivId).css({'position': 'relative'});
             $parentDiv.append($circuitDiv);
 
             this.addChart($circuitDiv);
@@ -384,7 +384,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addChart = function addChart(circuitDiv) {
         var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
             .css({
-                'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
+                'position': 'absolute', 'top': '15px', 'left': '0', 'float': 'left',
                 'width': '100%', 'height': '100%'
             });
         circuitDiv.append($chartDiv);
@@ -426,7 +426,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
     this.addTitle = function addTitle(circuitDiv) {
         var html = "<p class=\"service-name\"" + this.serviceName + ">"
-            + this.serviceName + "</p> <p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
+            + this.serviceName + "</p> <p class=\"name\"" + this.methodName + ">"
             + this.methodName + "</p>";
 
         var $titleDiv = $("<div></div>")
@@ -607,7 +607,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addSparkline = function addSparkline(chartDiv) {
         var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
             .css({
-                'position': 'absolute', 'top': '25px', 'left': '0', 'float': 'left',
+                'position': 'absolute', 'top': '38px', 'left': '0', 'float': 'left',
                 'width': '140px', 'height': '62px'
             });
         chartDiv.append($graphDiv);
@@ -1060,7 +1060,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
     this.preProcessData = function preProcessData(jsonData) {
         this.data = {};
-        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 1);
+        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
         this.data["reportingHosts"] = reportingHosts;
 
         var propertyValue_queueSizeRejectionThreshold =
@@ -1075,7 +1075,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
         var numberSeconds = this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
 
-        var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+        var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
         if (totalThreadsExecuted < 0) {
             totalThreadsExecuted = 0;
         }
@@ -1084,20 +1084,20 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         this.data["ratePerSecondPerHost"] = _roundNumber(totalThreadsExecuted / numberSeconds / reportingHosts);
 
         this.data["currentActiveCount"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 0);
         this.data["rollingMaxActiveThreads"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 0);
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
         this.data["rollingCountThreadsExecuted"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
         this.data["currentPoolSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 0);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 0);
 
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
         this.data["errorPercentage"] = this.data["currentQueueSize"] / this.data["reportingHosts"];
     };
 }

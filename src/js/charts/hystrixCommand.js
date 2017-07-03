@@ -36,8 +36,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         if (!this.initialized) {
             var $parentDiv = $("#" + this.parentDivId);
 
-            var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
-                .addClass('monitor').css({'position': 'relative'});
+            var $circuitDiv = $("<div></div>").addClass('monitor')
+                .attr('id', this.circuitDivId).css({'position': 'relative'});
             $parentDiv.append($circuitDiv);
 
             this.addChart($circuitDiv);
@@ -77,7 +77,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addChart = function addChart(circuitDiv) {
         var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
             .css({
-                'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
+                'position': 'absolute', 'top': '15px', 'left': '0', 'float': 'left',
                 'width': '100%', 'height': '100%'
             });
         circuitDiv.append($chartDiv);
@@ -119,7 +119,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
     this.addTitle = function addTitle(circuitDiv) {
         var html = "<p class=\"service-name\"" + this.serviceName + ">"
-            + this.serviceName + "</p> <p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
+            + this.serviceName + "</p> <p class=\"name\"" + this.methodName + ">"
             + this.methodName + "</p>";
 
         var $titleDiv = $("<div></div>")
@@ -300,7 +300,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addSparkline = function addSparkline(chartDiv) {
         var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
             .css({
-                'position': 'absolute', 'top': '25px', 'left': '0', 'float': 'left',
+                'position': 'absolute', 'top': '38px', 'left': '0', 'float': 'left',
                 'width': '140px', 'height': '62px'
             });
         chartDiv.append($graphDiv);
