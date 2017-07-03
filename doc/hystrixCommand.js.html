@@ -1,4 +1,31 @@
-// CIRCUIT_BREAKER circle visualization settings
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: charts/hystrixCommand.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: charts/hystrixCommand.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// CIRCUIT_BREAKER circle visualization settings
 var circuitCircleRadius = d3.scalePow().exponent(0.5).domain([0, 400]).range(["5", maxRadiusForCircle]); // requests per second per host
 var circuitCircleYaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxXaxisForCircle]);
 var circuitCircleXaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxYaxisForCircle]);
@@ -23,7 +50,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.circuitKey = circuitKey;
     this.serviceName = serviceName;
     this.methodName = methodName;
-    this.suffix = "_" + this.methodName;
+    this.suffix = this.serviceName + "_" + this.methodName;
     this.initialized = false;
     this.circuitDivId = "CIRCUIT_" + this.suffix;
     this.chartDivId = "chart_CIRCUIT_" + this.suffix;
@@ -36,7 +63,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         if (!this.initialized) {
             var $parentDiv = $("#" + this.parentDivId);
 
-            var $circuitDiv = $("<div></div>").attr('id', this.circuitDivId)
+            var $circuitDiv = $("&lt;div>&lt;/div>").attr('id', this.circuitDivId)
                 .addClass('monitor').css({'position': 'relative'});
             $parentDiv.append($circuitDiv);
 
@@ -75,7 +102,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addChart = function addChart(circuitDiv) {
-        var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
+        var $chartDiv = $("&lt;div>&lt;/div>").attr('id', this.chartDivId).addClass('chart')
             .css({
                 'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
                 'width': '100%', 'height': '100%'
@@ -118,28 +145,27 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addTitle = function addTitle(circuitDiv) {
-        var html = "<p class=\"service-name\"" + this.serviceName + ">"
-            + this.serviceName + "</p> <p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
-            + this.methodName + "</p>";
+        var html = "&lt;p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
+            + this.serviceName + "." + this.methodName + "&lt;/p>";
 
-        var $titleDiv = $("<div></div>")
+        var $titleDiv = $("&lt;div>&lt;/div>")
             .css({
                 'position': 'absolute', 'top': '0px',
-                'width': '100%', 'height': '30px', 'opacity': '0.8', 'background': 'white'
+                'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
             })
             .html(html);
         circuitDiv.append($titleDiv);
     };
 
     this.addData = function addData(chartDiv) {
-        var $monitorDiv = $("<div></div>");
+        var $monitorDiv = $("&lt;div>&lt;/div>");
         $($monitorDiv).css({
-            'position': 'absolute', 'top': '30px', 'opacity': '0.8',
+            'position': 'absolute', 'top': '15px', 'opacity': '0.8',
             'background': 'white', 'width': '100%', 'height': '95%'
         });
         chartDiv.append($monitorDiv);
 
-        var $monitorDataDiv = $("<div></div>")
+        var $monitorDataDiv = $("&lt;div>&lt;/div>")
             .attr('id', this.dataDivId)
             .addClass('monitor_data');
         $monitorDiv.append($monitorDataDiv);
@@ -165,140 +191,140 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addCounters = function addCounters(monitorDataDiv) {
-        var $countersDiv = $("<div></div>").addClass("counters");
+        var $countersDiv = $("&lt;div>&lt;/div>").addClass("counters");
         monitorDataDiv.append($countersDiv);
 
-        var $errPerDiv = $("<div></div>").addClass("hystrix-cell line")
-            .html("<a href=\"javascript://\" title=\"Error Percentage [Timed-out + Threadpool Rejected + Failure / Total]\""
+        var $errPerDiv = $("&lt;div>&lt;/div>").addClass("hystrix-cell line")
+            .html("&lt;a href=\"javascript://\" title=\"Error Percentage [Timed-out + Threadpool Rejected + Failure / Total]\""
                 + "class=\"hystrix-tooltip errorPercentage\">"
-                + "<span class=\"value\">" + this.data["errorPercentage"] + "</span>%</a>");
+                + "&lt;span class=\"value\">" + this.data["errorPercentage"] + "&lt;/span>%&lt;/a>");
         $countersDiv.append($errPerDiv);
 
-        var rollingCountTimeoutHtml = "<a href=\"javascript://\" title=\"Timed-out Request Count\""
+        var rollingCountTimeoutHtml = "&lt;a href=\"javascript://\" title=\"Timed-out Request Count\""
             + "class=\"line hystrix-tooltip timeout\">"
-            + "<span class=\"value\">" + this.data["rollingCountTimeout"] + "</span></a>";
+            + "&lt;span class=\"value\">" + this.data["rollingCountTimeout"] + "&lt;/span>&lt;/a>";
 
         var rollingCountPoolRejectedHtml;
         if (!this.data["rollingCountThreadPoolRejected"]) {
-            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Semaphore Rejected Request Count\""
+            rollingCountPoolRejectedHtml = "&lt;a href=\"javascript://\" title=\"Semaphore Rejected Request Count\""
                 + "class=\"line hystrix-tooltip rejected\">"
-                + "<span class=\"value\">" + this.data["rollingCountSemaphoreRejected"] + "</span></a>";
+                + "&lt;span class=\"value\">" + this.data["rollingCountSemaphoreRejected"] + "&lt;/span>&lt;/a>";
         } else {
-            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Threadpool Rejected Request Count\""
+            rollingCountPoolRejectedHtml = "&lt;a href=\"javascript://\" title=\"Threadpool Rejected Request Count\""
                 + "class=\"line hystrix-tooltip rejected\">"
-                + "<span class=\"value\">" + this.data["rollingCountThreadPoolRejected"] + "</span></a>";
+                + "&lt;span class=\"value\">" + this.data["rollingCountThreadPoolRejected"] + "&lt;/span>&lt;/a>";
         }
 
-        var rollingCountFailureHtml = "<a href=\"javascript://\" title=\"Failure Request Count\""
+        var rollingCountFailureHtml = "&lt;a href=\"javascript://\" title=\"Failure Request Count\""
             + "class=\"line hystrix-tooltip failure\">"
-            + "<span class=\"value\">" + this.data["rollingCountFailure"] + "</span></a>";
+            + "&lt;span class=\"value\">" + this.data["rollingCountFailure"] + "&lt;/span>&lt;/a>";
 
-        var $sec1Div = $("<div></div>").addClass("hystrix-cell borderRight")
+        var $sec1Div = $("&lt;div>&lt;/div>").addClass("hystrix-cell borderRight")
             .html(rollingCountTimeoutHtml + "\n" + rollingCountPoolRejectedHtml + "\n"
                 + rollingCountFailureHtml);
         $countersDiv.append($sec1Div);
 
-        var rollingCountSuccessHtml = "<a href=\"javascript://\" title=\"Successful Request Count\""
+        var rollingCountSuccessHtml = "&lt;a href=\"javascript://\" title=\"Successful Request Count\""
             + "class=\"line hystrix-tooltip success\">"
-            + "<span class=\"value\">" + this.data["rollingCountSuccess"] + "</span></a>";
+            + "&lt;span class=\"value\">" + this.data["rollingCountSuccess"] + "&lt;/span>&lt;/a>";
 
-        var rollingCountShortCircuitedHtml = "<a href=\"javascript://\" title=\"Short-circuited Request Count\""
+        var rollingCountShortCircuitedHtml = "&lt;a href=\"javascript://\" title=\"Short-circuited Request Count\""
             + "class=\"line hystrix-tooltip shortCircuited\">"
-            + "<span class=\"value\">" + this.data["rollingCountShortCircuited"] + "</span></a>";
+            + "&lt;span class=\"value\">" + this.data["rollingCountShortCircuited"] + "&lt;/span>&lt;/a>";
 
-        var rollingCountBadRequestsHtml = "<a href=\"javascript://\" title=\"Bad Request Count\""
+        var rollingCountBadRequestsHtml = "&lt;a href=\"javascript://\" title=\"Bad Request Count\""
             + "class=\"line hystrix-tooltip badRequest\">"
-            + "<span class=\"value\">" + this.data["rollingCountBadRequests"] + "</span></a>";
+            + "&lt;span class=\"value\">" + this.data["rollingCountBadRequests"] + "&lt;/span>&lt;/a>";
 
-        var $sec2Div = $("<div></div>").addClass("hystrix-cell borderRight")
+        var $sec2Div = $("&lt;div>&lt;/div>").addClass("hystrix-cell borderRight")
             .html(rollingCountSuccessHtml + "\n" + rollingCountShortCircuitedHtml + "\n"
                 + rollingCountBadRequestsHtml);
         $countersDiv.append($sec2Div);
     };
 
     this.addRate = function addRate(monitorDataDiv) {
-        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Request Rate per Second per Reporting Host\""
+        var ratePerSecondPerHostHtml = "&lt;a href=\"javascript://\" title=\"Total Request Rate per Second per Reporting Host\""
             + "class=\"hystrix-tooltip rate\">"
-            + "<span class=\"smaller\">Host: </span>"
-            + "<span class=\"ratePerSecondPerHost\">"
-            + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
+            + "&lt;span class=\"smaller\">Host: &lt;/span>"
+            + "&lt;span class=\"ratePerSecondPerHost\">"
+            + this.data["ratePerSecondPerHost"] + "&lt;/span>/s&lt;/a>";
 
-        var $rate1Div = $("<div></div>").addClass("rate")
+        var $rate1Div = $("&lt;div>&lt;/div>").addClass("rate")
             .html(ratePerSecondPerHostHtml);
         monitorDataDiv.append($rate1Div);
 
-        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Request Rate per Second for Cluster\""
+        var ratePerSecondPerClusterHtml = "&lt;a href=\"javascript://\" title=\"Total Request Rate per Second for Cluster\""
             + "class=\"hystrix-tooltip rate\">"
-            + "<span class=\"smaller\">Cluster: </span>"
-            + "<span class=\"ratePerSecond\">"
-            + this.data["ratePerSecond"] + "</span>/s</a>";
+            + "&lt;span class=\"smaller\">Cluster: &lt;/span>"
+            + "&lt;span class=\"ratePerSecond\">"
+            + this.data["ratePerSecond"] + "&lt;/span>/s&lt;/a>";
 
-        var $rate2Div = $("<div></div>").addClass("rate")
+        var $rate2Div = $("&lt;div>&lt;/div>").addClass("rate")
             .html(ratePerSecondPerClusterHtml);
         monitorDataDiv.append($rate2Div);
     };
 
     this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
-        //var html = "Circuit <font color=\"green\">Closed</font>";
+        //var html = "Circuit &lt;font color=\"green\">Closed&lt;/font>";
         var html = "";
         if (this.data["propertyValue_circuitBreakerForceClosed"]) {
-            html = "<span class=\"smaller\">[ <font color=\"orange\">Forced Closed</font> ]";
+            html = "&lt;span class=\"smaller\">[ &lt;font color=\"orange\">Forced Closed&lt;/font> ]";
         }
 
         if (this.data["propertyValue_circuitBreakerForceOpen"]) {
-            html = "Circuit <font color=\"red\">Forced Open</font>";
+            html = "Circuit &lt;font color=\"red\">Forced Open&lt;/font>";
         }
 
         if (this.data["isCircuitBreakerOpen"] === this.data["reportingHosts"]) {
-            html = "Circuit <font color=\"red\">Open</font>";
+            html = "Circuit &lt;font color=\"red\">Open&lt;/font>";
         } else if (this.data["isCircuitBreakerOpen"] === 0) {
-            html = "Circuit <font color=\"green\">Closed</font>";
+            html = "Circuit &lt;font color=\"green\">Closed&lt;/font>";
         } else {
-            if (this.data["isCircuitBreakerOpen"] !== undefined &&
+            if (this.data["isCircuitBreakerOpen"] !== undefined &amp;&amp;
                 typeof this.data["isCircuitBreakerOpen"] === 'object') {
-                html = "Circuit <font color=\"red\">Open " + this.data["isCircuitBreakerOpen"].true +
-                    "</font> <font color=\"green\">Closed " + this.data["isCircuitBreakerOpen"].false;
+                html = "Circuit &lt;font color=\"red\">Open " + this.data["isCircuitBreakerOpen"].true +
+                    "&lt;/font> &lt;font color=\"green\">Closed " + this.data["isCircuitBreakerOpen"].false;
             } else if (this.data["isCircuitBreakerOpen"] !== undefined) {
-                html = "Circuit <font color=\"orange\">" +
+                html = "Circuit &lt;font color=\"orange\">" +
                     this.data["isCircuitBreakerOpen"].toString()
                         .replace("true", "Open").replace("false", "Closed");
             } else {
-                html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                html = "Circuit &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;";
             }
         }
 
-        var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus").html(html);
+        var $circuitStatusDiv = $("&lt;div>&lt;/div>").addClass("circuitStatus").html(html);
         monitorDataDiv.append($circuitStatusDiv);
     };
 
     this.addDataTable = function addDataTable(monitorDataDiv) {
-        var $spacerDiv = $("<div></div>").addClass("spacer");
+        var $spacerDiv = $("&lt;div>&lt;/div>").addClass("spacer");
         monitorDataDiv.append($spacerDiv);
 
-        var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Hosts</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["reportingHosts"] + " </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">90th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency90\"><span class=\"value\">" + this.data["latency90"] + "</span>ms </div></div>");
+        var $monitorRow1Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Hosts&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["reportingHosts"] + " &lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">90th&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right latency90\">&lt;span class=\"value\">" + this.data["latency90"] + "&lt;/span>ms &lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow1Div);
 
-        var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Median</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMedian\"><span class=\"value\">" + this.data["latencyMedian"] + "</span>ms </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency99\"><span class=\"value\">" + this.data["latency99"] + "</span>ms </div></div>");
+        var $monitorRow2Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Median&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left latencyMedian\">&lt;span class=\"value\">" + this.data["latencyMedian"] + "&lt;/span>ms &lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">99th&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right latency99\">&lt;span class=\"value\">" + this.data["latency99"] + "&lt;/span>ms &lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow2Div);
 
-        var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Mean</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMean\"><span class=\"value\">" + this.data["latencyMean"] + "</span>ms</div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99.5th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency995\"><span class=\"value\">" + this.data["latency995"] + "</span>ms</div></div>");
+        var $monitorRow3Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Mean&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left latencyMean\">&lt;span class=\"value\">" + this.data["latencyMean"] + "&lt;/span>ms&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">99.5th&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right latency995\">&lt;span class=\"value\">" + this.data["latency995"] + "&lt;/span>ms&lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
     this.addSparkline = function addSparkline(chartDiv) {
-        var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
+        var $graphDiv = $("&lt;div>&lt;/div>").attr('id', this.graphDivId).addClass('graph')
             .css({
                 'position': 'absolute', 'top': '25px', 'left': '0', 'float': 'left',
                 'width': '140px', 'height': '62px'
@@ -322,13 +348,13 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             this.graphData.shift();
         }
 
-        if (this.graphData.length === 1 && this.graphData[0].v === 0) {
+        if (this.graphData.length === 1 &amp;&amp; this.graphData[0].v === 0) {
             //console.log("we have a single 0 so skipping");
             // don't show if we have a single 0
             return;
         }
 
-        if (this.graphData.length > 1 && this.graphData[0].v === 0 && this.graphData[1].v !== 0) {
+        if (this.graphData.length > 1 &amp;&amp; this.graphData[0].v === 0 &amp;&amp; this.graphData[1].v !== 0) {
             //console.log("we have a leading 0 so removing it");
             // get rid of a leading 0 if the following number is not a 0
             this.graphData.shift();
@@ -369,7 +395,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
 
         var totalRequests = _getMetricValue(jsonData, this.circuitKey + ".requestCount", 0);
-        if (totalRequests < 0) {
+        if (totalRequests &lt; 0) {
             totalRequests = 0;
         }
         var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
@@ -472,7 +498,7 @@ hystrixViewer.sortByLatency90 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat90_' + direction;
-    _sortByMetricInDirection(direction, ".latency90 .value");
+    this.sortByMetricInDirection(direction, ".latency90 .value");
 };
 
 hystrixViewer.sortByLatency99 = function () {
@@ -481,7 +507,7 @@ hystrixViewer.sortByLatency99 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat99_' + direction;
-    _sortByMetricInDirection(direction, ".latency99 .value");
+    this.sortByMetricInDirection(direction, ".latency99 .value");
 };
 
 hystrixViewer.sortByLatency995 = function () {
@@ -490,7 +516,7 @@ hystrixViewer.sortByLatency995 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat995_' + direction;
-    _sortByMetricInDirection(direction, ".latency995 .value");
+    this.sortByMetricInDirection(direction, ".latency995 .value");
 };
 
 hystrixViewer.sortByLatencyMean = function () {
@@ -499,7 +525,7 @@ hystrixViewer.sortByLatencyMean = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMean_' + direction;
-    _sortByMetricInDirection(direction, ".latencyMean .value");
+    this.sortByMetricInDirection(direction, ".latencyMean .value");
 };
 
 hystrixViewer.sortByLatencyMedian = function () {
@@ -508,50 +534,32 @@ hystrixViewer.sortByLatencyMedian = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMedian_' + direction;
-    _sortByMetricInDirection(direction, ".latencyMedian .value");
+    this.sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-function _sortByMetricInDirection  (direction, metric) {
+hystrixViewer.sortByMetricInDirection = function (direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
-}
+};</code></pre>
+        </article>
+    </section>
 
-function _sortCircuitSameAsLast() {
-    if(_circuitSortedBy == 'alph_asc') {
-        _sortAlphabeticalInDirection('asc');
-    } else if(_circuitSortedBy == 'alph_desc') {
-        _sortAlphabeticalInDirection('desc');
-    } else if(_circuitSortedBy == 'rate_asc') {
-        _sortByVolumeInDirection('asc');
-    } else if(_circuitSortedBy == 'rate_desc') {
-        _sortByVolumeInDirection('desc');
-    } else if(_circuitSortedBy == 'error_asc') {
-        _sortByErrorInDirection('asc');
-    } else if(_circuitSortedBy == 'error_desc') {
-        _sortByErrorInDirection('desc');
-    } else if(_circuitSortedBy == 'error_then_volume_asc') {
-        _sortByErrorThenVolumeInDirection('asc');
-    } else if(_circuitSortedBy == 'error_then_volume_desc') {
-        _sortByErrorThenVolumeInDirection('desc');
-    } else if(_circuitSortedBy == 'lat90_asc') {
-        _sortByMetricInDirection('asc', '.latency90 .value');
-    } else if(_circuitSortedBy == 'lat90_desc') {
-        _sortByMetricInDirection('desc', '.latency90 .value');
-    } else if(_circuitSortedBy == 'lat99_asc') {
-        _sortByMetricInDirection('asc', '.latency99 .value');
-    } else if(_circuitSortedBy == 'lat99_desc') {
-        _sortByMetricInDirection('desc', '.latency99 .value');
-    } else if(_circuitSortedBy == 'lat995_asc') {
-        _sortByMetricInDirection('asc', '.latency995 .value');
-    } else if(_circuitSortedBy == 'lat995_desc') {
-        _sortByMetricInDirection('desc', '.latency995 .value');
-    } else if(_circuitSortedBy == 'latMean_asc') {
-        _sortByMetricInDirection('asc', '.latencyMean .value');
-    } else if(_circuitSortedBy == 'latMean_desc') {
-        _sortByMetricInDirection('desc', '.latencyMean .value');
-    } else if(_circuitSortedBy == 'latMedian_asc') {
-        _sortByMetricInDirection('asc', '.latencyMedian .value');
-    } else if(_circuitSortedBy == 'latMedian_desc') {
-        _sortByMetricInDirection('desc', '.latencyMedian .value');
-    }
-}
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="HystrixCommandConfig.html">HystrixCommandConfig</a></li><li><a href="HystrixThreadpoolConfig.html">HystrixThreadpoolConfig</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Sun Jul 02 2017 21:28:42 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

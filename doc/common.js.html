@@ -1,28 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: common/common.js</title>
 
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: common/common.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
 /**
  * Creates a Hystrix dashboard, It displays the the following:
- * <li>
- *     <ol>Hystrix Circuit</ol>
- *     <ol>Hystrix Thread</ol>
- *     </li>
+ * &lt;li>
+ *     &lt;ol>Hystrix Circuit&lt;/ol>
+ *     &lt;ol>Hystrix Thread&lt;/ol>
+ *     &lt;/li>
  * @param {string} divId divId the id of the HTML division tag where the Hystrix dashboard will be displayed
  */
 hystrixViewer.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
-    var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
+    var $outerContainerDiv = $("&lt;div>&lt;/div>").addClass('hystrix-outer-container');
     $(_hystrixDashboardDivId).append($outerContainerDiv);
 
-    var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
-        .html("<h2><span id='title_name'>Hystrix Metrics</span></h2>");
+    var $headerDiv = $("&lt;div>&lt;/div>").attr('id', 'hystrix-header')
+        .html("&lt;h2>&lt;span id='title_name'>Hystrix&lt;/span>&lt;/h2>");
     $outerContainerDiv.append($headerDiv);
 
-    var $containerDiv = $("<div></div>").addClass('hystrix-container');
+    var $containerDiv = $("&lt;div>&lt;/div>").addClass('hystrix-container');
     $outerContainerDiv.append($containerDiv);
 
     _createHystrixCircuitArea($containerDiv);
 
-    var $spacerDiv = $("<div></div>").addClass("hystrix-spacer");
+    var $spacerDiv = $("&lt;div>&lt;/div>").addClass("hystrix-spacer");
     $($containerDiv).append($spacerDiv);
 
     _createHystrixThreadPoolArea($containerDiv);
@@ -128,58 +155,58 @@ var _addHystrix = function (jsonData) {
 };
 
 function _createHystrixCircuitArea(containerDiv) {
-    var $row1Div = $("<div></div>").addClass('hystrix-row');
+    var $row1Div = $("&lt;div>&lt;/div>").addClass('hystrix-row');
     $(containerDiv).append($row1Div);
-    var $menuBar1Div = $("<div></div>").addClass('hystrix-menubar');
+    var $menuBar1Div = $("&lt;div>&lt;/div>").addClass('hystrix-menubar');
     $($row1Div).append($menuBar1Div);
-    var $circuitTitleDiv = $("<div></div>").addClass('title').text("Circuit");
+    var $circuitTitleDiv = $("&lt;div>&lt;/div>").addClass('title').text("Circuit");
     $($menuBar1Div).append($circuitTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
-    var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5&lt;/a> ";
+    var $menuActions = $("&lt;div>&lt;/div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar1Div).append($menuActions);
 
-    var menuLegendHtml = "<span class=\"success\">Success</span> | " +
-        "<span class=\"shortCircuited\">Short-Circuited</span> | " +
-        "<span class=\"badRequest\"> Bad Request</span> | " +
-        "<span class=\"timeout\">Timeout</span> | " +
-        "<span class=\"rejected\">Rejected</span> | " +
-        "<span class=\"failure\">Failure</span> | " +
-        "<span class=\"errorPercentage\">Error %</span>";
-    var $menuLegend = $("<div></div>").addClass('menu_legend').html(menuLegendHtml);
+    var menuLegendHtml = "&lt;span class=\"success\">Success&lt;/span> | " +
+        "&lt;span class=\"shortCircuited\">Short-Circuited&lt;/span> | " +
+        "&lt;span class=\"badRequest\"> Bad Request&lt;/span> | " +
+        "&lt;span class=\"timeout\">Timeout&lt;/span> | " +
+        "&lt;span class=\"rejected\">Rejected&lt;/span> | " +
+        "&lt;span class=\"failure\">Failure&lt;/span> | " +
+        "&lt;span class=\"errorPercentage\">Error %&lt;/span>";
+    var $menuLegend = $("&lt;div>&lt;/div>").addClass('menu_legend').html(menuLegendHtml);
     $($menuBar1Div).append($menuLegend);
 
     _hystrixCircuitContainerDivId = "dependencies";
-    var $circuitContainerDiv = $("<div></div>").attr('id', _hystrixCircuitContainerDivId)
+    var $circuitContainerDiv = $("&lt;div>&lt;/div>").attr('id', _hystrixCircuitContainerDivId)
         .addClass('hystrix-row').addClass('dependencies');
     $(containerDiv).append($circuitContainerDiv);
 }
 
 function _createHystrixThreadPoolArea(containerDiv) {
-    var $row2Div = $("<div></div>").addClass('hystrix-row');
+    var $row2Div = $("&lt;div>&lt;/div>").addClass('hystrix-row');
     $(containerDiv).append($row2Div);
-    var $menuBar2Div = $("<div></div>").addClass('hystrix-menubar');
+    var $menuBar2Div = $("&lt;div>&lt;/div>").addClass('hystrix-menubar');
     $($row2Div).append($menuBar2Div);
-    var $threadTitleDiv = $("<div></div>").addClass('title').text("Thread Pools");
+    var $threadTitleDiv = $("&lt;div>&lt;/div>").addClass('title').text("Thread Pools");
     $($menuBar2Div).append($threadTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume</a>";
-    var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">Alphabetical&lt;/a> | " +
+        "&lt;a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume&lt;/a>";
+    var $menuActions = $("&lt;div>&lt;/div>").addClass('menu_actions').html(menuActionsHtml);
     $($menuBar2Div).append($menuActions);
 
     _hystrixThreadContainerDivId = "dependencyThreadPools";
-    var $threadContainerDiv = $("<div></div>").attr('id', _hystrixThreadContainerDivId)
+    var $threadContainerDiv = $("&lt;div>&lt;/div>").attr('id', _hystrixThreadContainerDivId)
         .addClass('hystrix-row').addClass('dependencyThreadPools');
     $(containerDiv).append($threadContainerDiv);
 }
@@ -199,7 +226,6 @@ function _addHystrixCircuit(metricName) {
             if (!_hystrixCircuitMap[key]) {
                 var config = new HystrixCommandConfig(_hystrixCircuitContainerDivId, key, tokens[3], tokens[4]);
                 _hystrixCircuitMap[key] = config;
-                _sortCircuitSameAsLast();
             }
         }
     }
@@ -214,7 +240,6 @@ function _addHystrixThreadPool(metricName) {
             if (!_hystrixThreadpoolMap[key]) {
                 var config = new HystrixThreadpoolConfig(_hystrixThreadContainerDivId, key, tokens[3]);
                 _hystrixThreadpoolMap[key] = config;
-                _sortThreadpoolSameAsLast();
             }
         }
     }
@@ -264,4 +289,26 @@ function _formatNumber(number, precision) {
     var roundedTempNumber = Math.round(tempNumber);
 
     return roundedTempNumber / factor;
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="HystrixCommandConfig.html">HystrixCommandConfig</a></li><li><a href="HystrixThreadpoolConfig.html">HystrixThreadpoolConfig</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Sun Jul 02 2017 21:28:42 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

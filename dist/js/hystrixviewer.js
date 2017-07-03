@@ -54,7 +54,7 @@ hystrixViewer.addHystrixDashboard = function (divId) {
     $(_hystrixDashboardDivId).append($outerContainerDiv);
 
     var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
-        .html("<h2><span id='title_name'>Hystrix</span></h2>");
+        .html("<h2><span id='title_name'>Hystrix Metrics</span></h2>");
     $outerContainerDiv.append($headerDiv);
 
     var $containerDiv = $("<div></div>").addClass('hystrix-container');
@@ -239,6 +239,7 @@ function _addHystrixCircuit(metricName) {
             if (!_hystrixCircuitMap[key]) {
                 var config = new HystrixCommandConfig(_hystrixCircuitContainerDivId, key, tokens[3], tokens[4]);
                 _hystrixCircuitMap[key] = config;
+                _sortCircuitSameAsLast();
             }
         }
     }
@@ -253,6 +254,7 @@ function _addHystrixThreadPool(metricName) {
             if (!_hystrixThreadpoolMap[key]) {
                 var config = new HystrixThreadpoolConfig(_hystrixThreadContainerDivId, key, tokens[3]);
                 _hystrixThreadpoolMap[key] = config;
+                _sortThreadpoolSameAsLast();
             }
         }
     }
@@ -328,7 +330,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.circuitKey = circuitKey;
     this.serviceName = serviceName;
     this.methodName = methodName;
-    this.suffix = this.serviceName + "_" + this.methodName;
+    this.suffix = "_" + this.methodName;
     this.initialized = false;
     this.circuitDivId = "CIRCUIT_" + this.suffix;
     this.chartDivId = "chart_CIRCUIT_" + this.suffix;
@@ -423,13 +425,14 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addTitle = function addTitle(circuitDiv) {
-        var html = "<p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
-            + this.serviceName + "." + this.methodName + "</p>";
+        var html = "<p class=\"service-name\"" + this.serviceName + ">"
+            + this.serviceName + "</p> <p class=\"name\"" + this.serviceName + "." + this.methodName + ">"
+            + this.methodName + "</p>";
 
         var $titleDiv = $("<div></div>")
             .css({
                 'position': 'absolute', 'top': '0px',
-                'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
+                'width': '100%', 'height': '30px', 'opacity': '0.8', 'background': 'white'
             })
             .html(html);
         circuitDiv.append($titleDiv);
@@ -438,7 +441,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addData = function addData(chartDiv) {
         var $monitorDiv = $("<div></div>");
         $($monitorDiv).css({
-            'position': 'absolute', 'top': '15px', 'opacity': '0.8',
+            'position': 'absolute', 'top': '30px', 'opacity': '0.8',
             'background': 'white', 'width': '100%', 'height': '95%'
         });
         chartDiv.append($monitorDiv);
@@ -776,7 +779,7 @@ hystrixViewer.sortByLatency90 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat90_' + direction;
-    this.sortByMetricInDirection(direction, ".latency90 .value");
+    _sortByMetricInDirection(direction, ".latency90 .value");
 };
 
 hystrixViewer.sortByLatency99 = function () {
@@ -785,7 +788,7 @@ hystrixViewer.sortByLatency99 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat99_' + direction;
-    this.sortByMetricInDirection(direction, ".latency99 .value");
+    _sortByMetricInDirection(direction, ".latency99 .value");
 };
 
 hystrixViewer.sortByLatency995 = function () {
@@ -794,7 +797,7 @@ hystrixViewer.sortByLatency995 = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat995_' + direction;
-    this.sortByMetricInDirection(direction, ".latency995 .value");
+    _sortByMetricInDirection(direction, ".latency995 .value");
 };
 
 hystrixViewer.sortByLatencyMean = function () {
@@ -803,7 +806,7 @@ hystrixViewer.sortByLatencyMean = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMean_' + direction;
-    this.sortByMetricInDirection(direction, ".latencyMean .value");
+    _sortByMetricInDirection(direction, ".latencyMean .value");
 };
 
 hystrixViewer.sortByLatencyMedian = function () {
@@ -812,13 +815,53 @@ hystrixViewer.sortByLatencyMedian = function () {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMedian_' + direction;
-    this.sortByMetricInDirection(direction, ".latencyMedian .value");
+    _sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-hystrixViewer.sortByMetricInDirection = function (direction, metric) {
+function _sortByMetricInDirection  (direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
-};
+}
+
+function _sortCircuitSameAsLast() {
+    if(_circuitSortedBy == 'alph_asc') {
+        _sortAlphabeticalInDirection('asc');
+    } else if(_circuitSortedBy == 'alph_desc') {
+        _sortAlphabeticalInDirection('desc');
+    } else if(_circuitSortedBy == 'rate_asc') {
+        _sortByVolumeInDirection('asc');
+    } else if(_circuitSortedBy == 'rate_desc') {
+        _sortByVolumeInDirection('desc');
+    } else if(_circuitSortedBy == 'error_asc') {
+        _sortByErrorInDirection('asc');
+    } else if(_circuitSortedBy == 'error_desc') {
+        _sortByErrorInDirection('desc');
+    } else if(_circuitSortedBy == 'error_then_volume_asc') {
+        _sortByErrorThenVolumeInDirection('asc');
+    } else if(_circuitSortedBy == 'error_then_volume_desc') {
+        _sortByErrorThenVolumeInDirection('desc');
+    } else if(_circuitSortedBy == 'lat90_asc') {
+        _sortByMetricInDirection('asc', '.latency90 .value');
+    } else if(_circuitSortedBy == 'lat90_desc') {
+        _sortByMetricInDirection('desc', '.latency90 .value');
+    } else if(_circuitSortedBy == 'lat99_asc') {
+        _sortByMetricInDirection('asc', '.latency99 .value');
+    } else if(_circuitSortedBy == 'lat99_desc') {
+        _sortByMetricInDirection('desc', '.latency99 .value');
+    } else if(_circuitSortedBy == 'lat995_asc') {
+        _sortByMetricInDirection('asc', '.latency995 .value');
+    } else if(_circuitSortedBy == 'lat995_desc') {
+        _sortByMetricInDirection('desc', '.latency995 .value');
+    } else if(_circuitSortedBy == 'latMean_asc') {
+        _sortByMetricInDirection('asc', '.latencyMean .value');
+    } else if(_circuitSortedBy == 'latMean_desc') {
+        _sortByMetricInDirection('desc', '.latencyMean .value');
+    } else if(_circuitSortedBy == 'latMedian_asc') {
+        _sortByMetricInDirection('asc', '.latencyMedian .value');
+    } else if(_circuitSortedBy == 'latMedian_desc') {
+        _sortByMetricInDirection('desc', '.latencyMedian .value');
+    }
+}
 
 var maxDomain = 2000;
 Object.freeze(maxDomain);
@@ -1002,16 +1045,16 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
             "<div class=\"hystrix-cell hystrix-header hystrix-left\">Queued</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span>ms </div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span></div>" +
             "<div class=\"hystrix-cell hystrix-header hystrix-right\">Executions</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span></div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
             "<div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span>ms</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span></div>" +
             "<div class=\"hystrix-cell hystrix-header hystrix-right\">Queue Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span>ms</div></div>");
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span></div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
@@ -1052,6 +1095,10 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
             _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 1);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
             _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
+
+        this.data["currentQueueSize"] =
+            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
+        this.data["errorPercentage"] = this.data["currentQueueSize"] / this.data["reportingHosts"];
     };
 }
 

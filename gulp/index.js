@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     closureCompiler = require('gulp-closure-compiler'),
     del = require('del'),
     flatmap = require('gulp-flatmap'),
-    jsdoc = require("gulp-jsdoc3"),
+    jsdoc = require("gulp-jsdoc"),
     jshint = require('gulp-jshint'),
     rename = require('gulp-rename'),
     rimraf = require('gulp-rimraf'),
@@ -38,7 +38,7 @@ gulp.task('compile', ['jshint', 'compile:js', 'build:css', 'copy:img']);
 // deletes the distribution directory
 gulp.task('clean', function () {
     return gulp.src([dist + '*'], {read: false})
-         .pipe(rimraf());
+        .pipe(rimraf());
 });
 
 // create 'hystrixviewer.js' and 'hystrixviewer.min.js' from source js

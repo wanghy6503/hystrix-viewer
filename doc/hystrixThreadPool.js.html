@@ -1,4 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: charts/hystrixThreadPool.js</title>
 
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: charts/hystrixThreadPool.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
 var maxDomain = 2000;
 Object.freeze(maxDomain);
 
@@ -41,7 +68,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         if (!this.initialized) {
             var $parentDiv = $("#" + this.parentDivId);
 
-            var $threadDiv = $("<div></div>").attr('id', this.threadDivId)
+            var $threadDiv = $("&lt;div>&lt;/div>").attr('id', this.threadDivId)
                 .addClass('monitor').css({'position': 'relative'});
             $parentDiv.append($threadDiv);
 
@@ -67,7 +94,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addChart = function addChart(threadDiv) {
-        var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
+        var $chartDiv = $("&lt;div>&lt;/div>").attr('id', this.chartDivId).addClass('chart')
             .css({
                 'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
                 'width': '100%', 'height': '100%'
@@ -110,8 +137,8 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addTitle = function addTitle(threadDiv) {
-        var html = "<p class=\"name\"" + this.serviceName + ">" + this.serviceName + "</p>";
-        var $titleDiv = $("<div></div>")
+        var html = "&lt;p class=\"name\"" + this.serviceName + ">" + this.serviceName + "&lt;/p>";
+        var $titleDiv = $("&lt;div>&lt;/div>")
             .css({
                 'position': 'absolute', 'top': '0px',
                 'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
@@ -121,14 +148,14 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addData = function addData(threadDiv) {
-        var $monitorDiv = $("<div></div>");
+        var $monitorDiv = $("&lt;div>&lt;/div>");
         $($monitorDiv).css({
             'position': 'absolute', 'top': '15px', 'opacity': '0.8',
             'background': 'white', 'width': '100%', 'height': '95%'
         });
         threadDiv.append($monitorDiv);
 
-        var $monitorDataDiv = $("<div></div>")
+        var $monitorDataDiv = $("&lt;div>&lt;/div>")
             .attr('id', this.dataDivId)
             .addClass('monitor_data');
         $monitorDiv.append($monitorDataDiv);
@@ -138,7 +165,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         if (this.initialized) {
             var $monitorDataDiv = $("#" + this.dataDivId);
             $monitorDataDiv.empty();
-            var $spacerDiv = $("<div></div>").addClass("spacer");
+            var $spacerDiv = $("&lt;div>&lt;/div>").addClass("spacer");
             $monitorDataDiv.append($spacerDiv);
 
             this.addRate($monitorDataDiv);
@@ -147,50 +174,50 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addRate = function addRate(monitorDataDiv) {
-        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
+        var ratePerSecondPerHostHtml = "&lt;a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
             + " class=\"hystrix-tooltip rate\">"
-            + "<span class=\"smaller\">Host: </span>"
-            + "<span class=\"ratePerSecondPerHost\">"
-            + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
+            + "&lt;span class=\"smaller\">Host: &lt;/span>"
+            + "&lt;span class=\"ratePerSecondPerHost\">"
+            + this.data["ratePerSecondPerHost"] + "&lt;/span>/s&lt;/a>";
 
-        var $rate1Div = $("<div></div>").addClass("rate")
+        var $rate1Div = $("&lt;div>&lt;/div>").addClass("rate")
             .html(ratePerSecondPerHostHtml);
         monitorDataDiv.append($rate1Div);
 
-        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
+        var ratePerSecondPerClusterHtml = "&lt;a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
             + " class=\"hystrix-tooltip rate\">"
-            + "<span class=\"smaller\">Cluster: </span>"
-            + "<span class=\"ratePerSecond\">"
-            + this.data["ratePerSecond"] + "</span>/s</a>";
+            + "&lt;span class=\"smaller\">Cluster: &lt;/span>"
+            + "&lt;span class=\"ratePerSecond\">"
+            + this.data["ratePerSecond"] + "&lt;/span>/s&lt;/a>";
 
-        var $rate2Div = $("<div></div>").addClass("rate")
+        var $rate2Div = $("&lt;div>&lt;/div>").addClass("rate")
             .html(ratePerSecondPerClusterHtml);
         monitorDataDiv.append($rate2Div);
     };
 
     this.addDataTable = function addDataTable(monitorDataDiv) {
-        var $spacerDiv = $("<div></div>").addClass("spacer");
+        var $spacerDiv = $("&lt;div>&lt;/div>").addClass("spacer");
         monitorDataDiv.append($spacerDiv);
 
-        var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["currentActiveCount"] + " </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Max Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
+        var $monitorRow1Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Active&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["currentActiveCount"] + " &lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">Max Active&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right\">" + this.data["rollingMaxActiveThreads"] + "&lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow1Div);
 
-        var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Queued</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span></div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Executions</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span></div></div>");
+        var $monitorRow2Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Queued&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left\">&lt;span class=\"value\">" + this.data["currentQueueSize"] + "&lt;/span>ms &lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">Executions&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right\">&lt;span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "&lt;/span>ms &lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow2Div);
 
-        var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span></div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Queue Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span></div></div>");
+        var $monitorRow3Div = $("&lt;div class=\"tableRow\">" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-left\">&lt;span class=\"value\">" + this.data["currentPoolSize"] + "&lt;/span>ms&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-header hystrix-right\">Queue Size&lt;/div>" +
+            "&lt;div class=\"hystrix-cell hystrix-data hystrix-right\">&lt;span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "&lt;/span>ms&lt;/div>&lt;/div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
@@ -212,7 +239,7 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         var numberSeconds = this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
 
         var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 1);
-        if (totalThreadsExecuted < 0) {
+        if (totalThreadsExecuted &lt; 0) {
             totalThreadsExecuted = 0;
         }
 
@@ -231,10 +258,6 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
             _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 1);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
             _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 1);
-
-        this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 1);
-        this.data["errorPercentage"] = this.data["currentQueueSize"] / this.data["reportingHosts"];
     };
 }
 
@@ -302,4 +325,26 @@ function _sortThreadpoolSameAsLast() {
     } else if(_threadPoolSortedBy == 'latMedian_desc') {
         _sortThreadpoolByMetricInDirection('desc', 'pMedian');
     }
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="HystrixCommandConfig.html">HystrixCommandConfig</a></li><li><a href="HystrixThreadpoolConfig.html">HystrixThreadpoolConfig</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Sun Jul 02 2017 21:28:42 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

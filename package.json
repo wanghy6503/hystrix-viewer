@@ -33,6 +33,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.0.0",
     "gulp-flatmap": "^1.0.0",
+    "gulp-jsdoc": "^0.1.5",
     "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.0.4",
     "gulp-rename": "^1.2.2",
