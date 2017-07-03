@@ -2,7 +2,9 @@
 
 <!-- ![](./examples/images/logo-md-blue-379px.png) -->
 
-**HystrixViewer.js** is a simple JavaScript library for displaying Hystrix [Dropwizard Metrics](http://metrics.dropwizard.io/). It's a port of [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard).
+**HystrixViewer.js** is a simple JavaScript library for monitoring Hystrix Metrics in real time.
+It's a port of [Hystrix Dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard) and relies on 
+Hystrix metrics instead of Hystrix stream.
 
 # Examples
 This library is very easy to use. You can create a Hystrix Dashboard by calling `addHystrixDashboard`.

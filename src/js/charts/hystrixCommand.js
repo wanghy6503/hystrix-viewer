@@ -1,4 +1,3 @@
-
 // CIRCUIT_BREAKER circle visualization settings
 var circuitCircleRadius = d3.scalePow().exponent(0.5).domain([0, 400]).range(["5", maxRadiusForCircle]); // requests per second per host
 var circuitCircleYaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxXaxisForCircle]);
@@ -58,7 +57,7 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         this.updateSparkline();
     };
 
-    this.clear = function() {
+    this.clear = function () {
         $(this.circuitDivId).empty();
         delete this.circuitDivId;
 
@@ -239,35 +238,36 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
-        var html = "Circuit <font color=\"green\">Closed</font>";
+        //var html = "Circuit <font color=\"green\">Closed</font>";
+        var html = "";
+        if (this.data["propertyValue_circuitBreakerForceClosed"]) {
+            html = "<span class=\"smaller\">[ <font color=\"orange\">Forced Closed</font> ]";
+        }
+
+        if (this.data["propertyValue_circuitBreakerForceOpen"]) {
+            html = "Circuit <font color=\"red\">Forced Open</font>";
+        }
+
+        if (this.data["isCircuitBreakerOpen"] === this.data["reportingHosts"]) {
+            html = "Circuit <font color=\"red\">Open</font>";
+        } else if (this.data["isCircuitBreakerOpen"] === 0) {
+            html = "Circuit <font color=\"green\">Closed</font>";
+        } else {
+            if (this.data["isCircuitBreakerOpen"] !== undefined &&
+                typeof this.data["isCircuitBreakerOpen"] === 'object') {
+                html = "Circuit <font color=\"red\">Open " + this.data["isCircuitBreakerOpen"].true +
+                    "</font> <font color=\"green\">Closed " + this.data["isCircuitBreakerOpen"].false;
+            } else if (this.data["isCircuitBreakerOpen"] !== undefined) {
+                html = "Circuit <font color=\"orange\">" +
+                    this.data["isCircuitBreakerOpen"].toString()
+                        .replace("true", "Open").replace("false", "Closed");
+            } else {
+                html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
+        }
+
         var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus").html(html);
         monitorDataDiv.append($circuitStatusDiv);
-
-        /*
-         <div class="circuitStatus">
-         <% if(propertyValue_circuitBreakerForceClosed) { %>
-         <span class="smaller">[ <font color="orange">Forced Closed</font> ]</span>
-         <% } %>
-         <% if(propertyValue_circuitBreakerForceOpen) { %>
-         Circuit <font color="red">Forced Open</font>
-         <% } else { %>
-         <% if(isCircuitBreakerOpen == reportingHosts) { %>
-         Circuit <font color="red">Open</font>
-         <% } else if(isCircuitBreakerOpen == 0) { %>
-         Circuit <font color="green">Closed</font>
-         <% } else {
-         //We have some circuits that are open
-         %>
-         <% if(typeof isCircuitBreakerOpen === 'object' ) { %>
-         Circuit <font color="red">Open <%= isCircuitBreakerOpen.true %></font> <font color="green">Closed <%= isCircuitBreakerOpen.false %></font>
-         <% } else { %>
-         Circuit <font color="orange"><%= isCircuitBreakerOpen.toString().replace("true", "Open").replace("false", "Closed") %></font>
-         <% } %>
-         <% }  %>
-         <% } %>
-
-         </div>
-         */
     };
 
     this.addDataTable = function addDataTable(monitorDataDiv) {
@@ -378,8 +378,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         this.data["ratePerSecondPerHostDisplay"] = this.data["ratePerSecondPerHost"];
         this.data["errorPercentage"] = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
 
-        this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"])?
-            -1 : (this.data["errorPercentage"] * 100000000) +  this.data["ratePerSecond"];
+        this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"]) ?
+            -1 : (this.data["errorPercentage"] * 100000000) + this.data["ratePerSecond"];
 
         this.data["rollingCountTimeout"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountTimeout", 0);
         var rollingCountThreadPoolRejected =
@@ -409,37 +409,37 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 }
 
-HV.sortByVolume = function() {
+HV.sortByVolume = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'rate_desc') {
+    if (_circuitSortedBy == 'rate_desc') {
         direction = 'asc';
     }
     _sortByVolumeInDirection(direction);
 };
 
-function _sortByVolumeInDirection (direction) {
+function _sortByVolumeInDirection(direction) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     _circuitSortedBy = 'rate_' + direction;
     $monitors.tsort({order: direction, attr: 'rate_value'});
 }
 
-HV.sortByError = function() {
+HV.sortByError = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'error_desc') {
+    if (_circuitSortedBy == 'error_desc') {
         direction = 'asc';
     }
     _sortByErrorInDirection(direction);
 };
 
-function _sortByErrorInDirection (direction) {
+function _sortByErrorInDirection(direction) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     _circuitSortedBy = 'error_' + direction;
     $monitors.tsort(".errorPercentage .value", {order: direction});
 }
 
-HV.sortByErrorThenVolume = function() {
+HV.sortByErrorThenVolume = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'error_then_volume_desc') {
+    if (_circuitSortedBy == 'error_then_volume_desc') {
         direction = 'asc';
     }
     _sortByErrorThenVolumeInDirection(direction);
@@ -453,64 +453,64 @@ function _sortByErrorThenVolumeInDirection(direction) {
 
 HV.sortAlphabetically = function () {
     var direction = "asc";
-    if(_circuitSortedBy == 'alph_asc') {
+    if (_circuitSortedBy == 'alph_asc') {
         direction = 'desc';
     }
     _sortAlphabeticalInDirection(direction);
 };
 
-function _sortAlphabeticalInDirection (direction) {
+function _sortAlphabeticalInDirection(direction) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     _circuitSortedBy = 'alph_' + direction;
     $monitors.tsort("p.name", {order: direction});
 }
 
-HV.sortByLatency90 = function() {
+HV.sortByLatency90 = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'lat90_desc') {
+    if (_circuitSortedBy == 'lat90_desc') {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat90_' + direction;
     this.sortByMetricInDirection(direction, ".latency90 .value");
 };
 
-HV.sortByLatency99 = function() {
+HV.sortByLatency99 = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'lat99_desc') {
+    if (_circuitSortedBy == 'lat99_desc') {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat99_' + direction;
     this.sortByMetricInDirection(direction, ".latency99 .value");
 };
 
-HV.sortByLatency995 = function() {
+HV.sortByLatency995 = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'lat995_desc') {
+    if (_circuitSortedBy == 'lat995_desc') {
         direction = 'asc';
     }
     _circuitSortedBy = 'lat995_' + direction;
     this.sortByMetricInDirection(direction, ".latency995 .value");
 };
 
-HV.sortByLatencyMean = function() {
+HV.sortByLatencyMean = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'latMean_desc') {
+    if (_circuitSortedBy == 'latMean_desc') {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMean_' + direction;
     this.sortByMetricInDirection(direction, ".latencyMean .value");
 };
 
-HV.sortByLatencyMedian = function() {
+HV.sortByLatencyMedian = function () {
     var direction = "desc";
-    if(_circuitSortedBy == 'latMedian_desc') {
+    if (_circuitSortedBy == 'latMedian_desc') {
         direction = 'asc';
     }
     _circuitSortedBy = 'latMedian_' + direction;
     this.sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-HV.sortByMetricInDirection = function(direction, metric) {
+HV.sortByMetricInDirection = function (direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
 };
