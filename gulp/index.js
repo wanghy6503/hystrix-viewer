@@ -4,10 +4,12 @@ var gulp = require('gulp'),
     closureCompiler = require('gulp-closure-compiler'),
     del = require('del'),
     flatmap = require('gulp-flatmap'),
-    jsdoc = require("gulp-jsdoc"),
+    header = require('gulp-header'),
+    jsdoc = require("gulp-jsdoc3"),
     jshint = require('gulp-jshint'),
     rename = require('gulp-rename'),
     rimraf = require('gulp-rimraf'),
+    pkg = require('../package.json'),
     sass = require('gulp-sass'),
     testem = require('gulp-testem'),
     uglify = require('gulp-uglify'),
@@ -30,6 +32,15 @@ var src = './src/',
         src + 'scss/' + 'hystrixCommand.scss',
         src + 'scss/' + 'hystrixThreadPool.scss'],
     imgFiles = [src + '/images/' + '*.*'];
+
+var banner = ['/**',
+    ' * <%= pkg.name %> - <%= pkg.description %>',
+    ' * @version v<%= pkg.version %>',
+    ' * @author <%= pkg.author %>',
+    ' * @license <%= pkg.license %>',
+    ' * @copyright <%= pkg.license %>',
+    ' */',
+    ''].join('\n');
 
 gulp.task('default', ['jshint', 'build:js', 'build:css', 'copy:img']);
 
@@ -71,6 +82,7 @@ gulp.task('build:js', ['clean'], function () {
                 }
             }
         ))
+        .pipe(header(banner, {pkg: pkg}))
         .pipe(gulp.dest(distJs))
         .pipe(rename('hystrixviewer.min.js'))
         .pipe(uglify())
@@ -93,6 +105,7 @@ gulp.task('compile:js', ['clean'], function () {
                 'lib/externs/d3_v4.7_externs.js'
             ]
         }))
+        .pipe(header(banner, {pkg: pkg}))
         .pipe(gulp.dest(distJs));
 });
 

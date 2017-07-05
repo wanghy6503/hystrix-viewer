@@ -195,14 +195,14 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
             .html("<a href=\"javascript://\" " +
                 "title=\"Error Percentage " +
                 "[Timed-out + Threadpool Rejected + Failure / Total]\""
-                + "class=\"hystrix-tooltip errorPercentage\">"
+                + " class=\"hystrix-tooltip errorPercentage\">"
                 + "<span class=\"value\">"
                 + this.data["errorPercentage"] + "</span>%</a>");
         $countersDiv.append($errPerDiv);
 
         var rollingCountTimeoutHtml = "<a href=\"javascript://\" "
             + "title=\"Timed-out Request Count\""
-            + "class=\"line hystrix-tooltip timeout\">"
+            + " class=\"line hystrix-tooltip timeout\">"
             + "<span class=\"value\">" + this.data["rollingCountTimeout"]
             + "</span></a>";
 
@@ -210,21 +210,21 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         if (!this.data["rollingCountThreadPoolRejected"]) {
             rollingCountPoolRejectedHtml = "<a href=\"javascript://\" "
                 + "title=\"Semaphore Rejected Request Count\""
-                + "class=\"line hystrix-tooltip rejected\">"
+                + " class=\"line hystrix-tooltip rejected\">"
                 + "<span class=\"value\">"
                 + this.data["rollingCountSemaphoreRejected"]
                 + "</span></a>";
         } else {
             rollingCountPoolRejectedHtml = "<a href=\"javascript://\" "
                 + "title=\"Threadpool Rejected Request Count\""
-                + "class=\"line hystrix-tooltip rejected\">"
+                + " class=\"line hystrix-tooltip rejected\">"
                 + "<span class=\"value\">"
                 + this.data["rollingCountThreadPoolRejected"] + "</span></a>";
         }
 
         var rollingCountFailureHtml = "<a href=\"javascript://\" "
             + "title=\"Failure Request Count\""
-            + "class=\"line hystrix-tooltip failure\">"
+            + " class=\"line hystrix-tooltip failure\">"
             + "<span class=\"value\">" + this.data["rollingCountFailure"]
             + "</span></a>";
 
@@ -236,19 +236,19 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
 
         var rollingCountSuccessHtml = "<a href=\"javascript://\" "
             + "title=\"Successful Request Count\""
-            + "class=\"line hystrix-tooltip success\">"
+            + " class=\"line hystrix-tooltip success\">"
             + "<span class=\"value\">" + this.data["rollingCountSuccess"]
             + "</span></a>";
 
         var rollingCountShortCircuitedHtml = "<a href=\"javascript://\" "
             + "title=\"Short-circuited Request Count\""
-            + "class=\"line hystrix-tooltip shortCircuited\">"
+            + " class=\"line hystrix-tooltip shortCircuited\">"
             + "<span class=\"value\">" + this.data["rollingCountShortCircuited"]
             + "</span></a>";
 
         var rollingCountBadRequestsHtml = "<a href=\"javascript://\" "
             + "title=\"Bad Request Count\""
-            + "class=\"line hystrix-tooltip badRequest\">"
+            + " class=\"line hystrix-tooltip badRequest\">"
             + "<span class=\"value\">" + this.data["rollingCountBadRequests"]
             + "</span></a>";
 
@@ -262,7 +262,7 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
     this.addRate = function addRate(monitorDataDiv) {
         var ratePerSecondPerHostHtml = "<a href=\"javascript://\" "
             + "title=\"Total Request Rate per Second per Reporting Host\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Host: </span>"
             + "<span class=\"ratePerSecondPerHost\">"
             + this.data["ratePerSecondPerHost"] + "</span>/s</a>";
@@ -273,7 +273,7 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
 
         var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" "
             + "title=\"Total Request Rate per Second for Cluster\""
-            + "class=\"hystrix-tooltip rate\">"
+            + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Cluster: </span>"
             + "<span class=\"ratePerSecond\">"
             + this.data["ratePerSecond"] + "</span>/s</a>";
@@ -285,24 +285,25 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
 
     this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
         //var html = "Circuit <font color=\"green\">Closed</font>";
-        var html = "";
+        var html = ""; // NOSONAR
         if (this.data["propertyValue_circuitBreakerForceClosed"] &&
             this.data["propertyValue_circuitBreakerForceClosed"] === 1) {
-            html = "<span class=\"smaller\">[ <font color=\"orange\">" +
-                "Forced Closed</font> ]";
+            html = "<span class=\"smaller\">[" // NOSONAR
+                + "<span style=\"color:orange\">"
+                + "Forced Closed</span> ]";
         }
 
         if (this.data["propertyValue_circuitBreakerForceOpen"] &&
             this.data["propertyValue_circuitBreakerForceOpen"] === 1) {
-            html = "Circuit <font color=\"red\">Forced Open</font>";
+            html = "Circuit <style=\"color:red\">Forced Open</span>"; // NOSONAR
         }
 
         if (this.data["isCircuitBreakerOpen"] === this.data["reportingHosts"]) {
-            html = "Circuit <font color=\"red\">Open</font>";
+            html = "Circuit <span style=\"color:red\">Open</span>";
         } else if (this.data["isCircuitBreakerOpen"] === 0) {
-            html = "Circuit <font color=\"green\">Closed</font>";
+            html = "Circuit <span style=\"color:green\">Closed</span>"; // NOSONAR
         } else {
-            html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+            html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + // NOSONAR
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         }
 

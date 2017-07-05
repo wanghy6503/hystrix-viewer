@@ -10,7 +10,7 @@ var threadPoolCircleXaxis = d3.scaleLinear().domain([0, maxDomain])
     .range(["30%", maxYaxisForCircle]);
 var threadPoolColorRange = d3.scaleLinear().domain([10, 25, 40, 50])
     .range(["green", "#FFCC00", "#FF9900", "red"]);
-var threadPoolErrorPercentageColorRange = d3.scaleLinear()
+var threadPoolErrorPercentageColorRange = d3.scaleLinear() // NOSONAR
     .domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
 // default sort type and direction

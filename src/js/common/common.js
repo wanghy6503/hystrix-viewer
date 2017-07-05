@@ -33,7 +33,7 @@ hystrixViewer.addHystrixDashboard = function (divId) {
  * Refreshes the metric view with new data. Each metric is cashed up to the
  * 100 metric points. Older metrics are removed once it reaches the threshold.
  *
- * @param {string} JSON the metric data in json format
+ * @param {string} json the metric data in JSON format
  */
 hystrixViewer.refresh = function (json) {
     if (_hystrixDashboardDivId) {
@@ -144,7 +144,7 @@ var _hystrixThreadpoolMap = {};
 
 /**
  * Adds a Hytrix circuit or thread pool chart by parsing the metric path.
- * @param jsonData metrics data in JSOn format
+ * @param jsonData metrics data in JSON format
  * @private
  */
 var _addHystrix = function (jsonData) {

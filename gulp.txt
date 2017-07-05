@@ -34,6 +34,7 @@ npm install gulp-delete-file --save-dev
 
 npm install gulp-flatmap --save-dev
 
+npm install gulp-header --save-dev
 
 nav {
     position: relative;

@@ -1,7 +1,7 @@
 {
-  "name": "hystrix-viewer",
+  "name": "Hystrix Viewer",
   "version": "1.0.0",
-  "description": "Viewing Dropwizard metrics as Hystrix Dashboard",
+  "description": "Viewing Hystrix metrics as Hystrix Dashboard",
   "main": "index.js",
   "scripts": {
     "build": "gulp build:js",
@@ -25,6 +25,8 @@
   ],
   "author": "Indra Basak",
   "license": "Apache-2.0",
+  "copyright": "Copyright [2017] [Indra Basak]",
+  "since": "June 2017",
   "devDependencies": {
     "del": "^3.0.0",
     "glob": "^7.1.2",
@@ -33,6 +35,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.0.0",
     "gulp-flatmap": "^1.0.0",
+    "gulp-header": "^1.8.8",
     "gulp-jsdoc": "^0.1.5",
     "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.0.4",
