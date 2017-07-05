@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="{{ site.lang | default: "en-US" }}">
+<html lang="{{ site.lang | default: " en-US" }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{{ site.title | default: site.github.repository_name }} by {{ site.github.owner_name }}</title>
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <title>{{ site.title | default: site.github.repository_name }} by {{
+        site.github.owner_name }}</title>
+    <link rel="stylesheet"
+          href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="{{ '/assets/js/respond.js' | relative_url }}"></script>
     <!--[if lt IE 9]>
@@ -13,7 +15,8 @@
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="{{ '/assets/css/ie.css' | relative_url }}">
     <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, user-scalable=no">
 
     <link rel="shortcut icon" type="image/png" href="{{ site.logo }}"/>
 
@@ -23,10 +26,12 @@
     <nav>
         {% if site.logo %}
         <li class="logo"><a href="{{ site.baseurl }}">
-            <img height="30px" width="30px" src="{{ site.logo }}" alt="{{ site.title }}"/></a></li>
+            <img height="30px" width="30px" src="{{ site.logo }}"
+                 alt="{{ site.title }}"/></a></li>
         {% endif %}
 
-        <li class="fork"><a href="{{ site.github.repository_url }}">Source</a></li>
+        <li class="fork"><a href="{{ site.github.repository_url }}">Source</a>
+        </li>
 
         {% if site.docs %}
         <li class="fork"><a href="{{ site.docs }}">Docs</a></li>
@@ -64,18 +69,29 @@
 
 <div>
     <footer class="footer">
-        <a href="{{ site.github.repository_url }}"><i class="svg-icon github"></i></a>
-        <p><span class="credits left">Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span></p>
-        <p class="copyright">&#169; {{ site.time | date: '%Y' }} - {{ site.author }}
+        <a href="{{ site.github.repository_url }}"><i
+                class="svg-icon github"></i></a>
+        <p><span class="credits left">Project maintained by <a
+                href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></span>
+        </p>
+        <p class="copyright">&#169; {{ site.time | date: '%Y' }} - {{
+            site.author }}
     </footer>
 </div>
 
 {% if site.google_analytics %}
 <script type="text/javascript">
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
     ga('create', '{{ site.google_analytics }}', 'auto');
     ga('send', 'pageview');
 </script>

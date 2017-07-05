@@ -1,26 +1,35 @@
 // CIRCUIT_BREAKER circle visualization settings
-var circuitCircleRadius = d3.scalePow().exponent(0.5).domain([0, 400]).range(["5", maxRadiusForCircle]); // requests per second per host
-var circuitCircleYaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxXaxisForCircle]);
-var circuitCircleXaxis = d3.scaleLinear().domain([0, 400]).range(["30%", maxYaxisForCircle]);
-var circuitColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
-var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
+var circuitCircleRadius = d3.scalePow().exponent(0.5).domain([0, 400])
+    .range(["5", maxRadiusForCircle]); // requests per second per host
+var circuitCircleYaxis = d3.scaleLinear().domain([0, 400])
+    .range(["30%", maxXaxisForCircle]);
+var circuitCircleXaxis = d3.scaleLinear().domain([0, 400])
+    .range(["30%", maxYaxisForCircle]);
+var circuitColorRange = d3.scaleLinear().domain([10, 25, 40, 50])
+    .range(["green", "#FFCC00", "#FF9900", "red"]);
+var circuitErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50])
+    .range(["grey", "black", "#FF9900", "red"]);
 
 // default sort type and direction
 var _circuitSortedBy = 'alph_asc';
 
 /**
  *
- * Hystrix circuit configuration which holds the circuit chart properties and the data.
+ * Hystrix circuit configuration which holds the circuit chart
+ * properties and the data.
  *
  * @param {string} parentDivId div id of parent container
- * @param {string} circuitKey metric prefix for retrieving the individual metric data from metric JSON array.
- * @param {string} serviceName name of the service name which generates the Hystrix metrics
- * @param {string} methodName corresponf method name responsible for generating Hystrix metrics
+ * @param {string} metricKey metric prefix for retrieving the individual
+ * metric data from metric JSON array.
+ * @param {string} serviceName name of the service name which generates
+ * the Hystrix metrics
+ * @param {string} methodName corresponf method name responsible for
+ * generating Hystrix metrics
  * @constructor
  */
-function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) {
+function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
     this.parentDivId = parentDivId;
-    this.circuitKey = circuitKey;
+    this.metricKey = metricKey;
     this.serviceName = serviceName;
     this.methodName = methodName;
     this.suffix = "_" + this.methodName;
@@ -75,10 +84,15 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     };
 
     this.addChart = function addChart(circuitDiv) {
-        var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
+        var $chartDiv = $("<div></div>")
+            .attr('id', this.chartDivId).addClass('chart')
             .css({
-                'position': 'absolute', 'top': '15px', 'left': '0', 'float': 'left',
-                'width': '100%', 'height': '100%'
+                'position': 'absolute',
+                'top': '15px',
+                'left': '0',
+                'float': 'left',
+                'width': '100%',
+                'height': '100%'
             });
         circuitDiv.append($chartDiv);
 
@@ -89,22 +103,28 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
             .attr("width", "100%").attr("height", "100%");
         var circle = svgContainer.append("svg:circle");
-        circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 5);
+        circle.style("fill", "green").attr("cx", "30%")
+            .attr("cy", "30%").attr("r", 5);
     };
 
     this.updateCircle = function updateCircle() {
-        var newXaxisForCircle = circuitCircleXaxis(this.data["ratePerSecondPerHost"]);
-        if (parseInt(newXaxisForCircle, 10) > parseInt(maxXaxisForCircle, 10)) {
+        var newXaxisForCircle =
+            circuitCircleXaxis(this.data["ratePerSecondPerHost"]);
+        if (parseInt(newXaxisForCircle, 10) >
+            parseInt(maxXaxisForCircle, 10)) {
             newXaxisForCircle = maxXaxisForCircle;
         }
 
-        var newYaxisForCircle = circuitCircleYaxis(this.data["ratePerSecondPerHost"]);
+        var newYaxisForCircle =
+            circuitCircleYaxis(this.data["ratePerSecondPerHost"]);
         if (parseInt(newYaxisForCircle, 10) > parseInt(maxYaxisForCircle, 10)) {
             newYaxisForCircle = maxYaxisForCircle;
         }
 
-        var newRadiusForCircle = circuitCircleRadius(this.data["ratePerSecondPerHost"]);
-        if (parseInt(newRadiusForCircle, 10) > parseInt(maxRadiusForCircle, 10)) {
+        var newRadiusForCircle =
+            circuitCircleRadius(this.data["ratePerSecondPerHost"]);
+        if (parseInt(newRadiusForCircle, 10) >
+            parseInt(maxRadiusForCircle, 10)) {
             newRadiusForCircle = maxRadiusForCircle;
         }
 
@@ -119,13 +139,15 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
     this.addTitle = function addTitle(circuitDiv) {
         var html = "<p class=\"service-name\"" + this.serviceName + ">"
-            + this.serviceName + "</p> <p class=\"name\"" + this.methodName + ">"
+            + this.serviceName + "</p> <p class=\"name\""
+            + this.serviceName + "." + this.methodName + ">"
             + this.methodName + "</p>";
 
         var $titleDiv = $("<div></div>")
             .css({
                 'position': 'absolute', 'top': '0px',
-                'width': '100%', 'height': '30px', 'opacity': '0.8', 'background': 'white'
+                'width': '100%', 'height': '30px',
+                'opacity': '0.8', 'background': 'white'
             })
             .html(html);
         circuitDiv.append($titleDiv);
@@ -160,7 +182,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
                 .attr('error_then_volume', this.data["errorThenVolume"]);
 
             $("#" + this.circuitDivId + " a.errorPercentage")
-                .css('color', circuitErrorPercentageColorRange(this.data["errorPercentage"]));
+                .css('color', circuitErrorPercentageColorRange(
+                    this.data["errorPercentage"]));
         }
     };
 
@@ -169,55 +192,76 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         monitorDataDiv.append($countersDiv);
 
         var $errPerDiv = $("<div></div>").addClass("hystrix-cell line")
-            .html("<a href=\"javascript://\" title=\"Error Percentage [Timed-out + Threadpool Rejected + Failure / Total]\""
+            .html("<a href=\"javascript://\" " +
+                "title=\"Error Percentage " +
+                "[Timed-out + Threadpool Rejected + Failure / Total]\""
                 + "class=\"hystrix-tooltip errorPercentage\">"
-                + "<span class=\"value\">" + this.data["errorPercentage"] + "</span>%</a>");
+                + "<span class=\"value\">"
+                + this.data["errorPercentage"] + "</span>%</a>");
         $countersDiv.append($errPerDiv);
 
-        var rollingCountTimeoutHtml = "<a href=\"javascript://\" title=\"Timed-out Request Count\""
+        var rollingCountTimeoutHtml = "<a href=\"javascript://\" "
+            + "title=\"Timed-out Request Count\""
             + "class=\"line hystrix-tooltip timeout\">"
-            + "<span class=\"value\">" + this.data["rollingCountTimeout"] + "</span></a>";
+            + "<span class=\"value\">" + this.data["rollingCountTimeout"]
+            + "</span></a>";
 
         var rollingCountPoolRejectedHtml;
         if (!this.data["rollingCountThreadPoolRejected"]) {
-            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Semaphore Rejected Request Count\""
+            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" "
+                + "title=\"Semaphore Rejected Request Count\""
                 + "class=\"line hystrix-tooltip rejected\">"
-                + "<span class=\"value\">" + this.data["rollingCountSemaphoreRejected"] + "</span></a>";
+                + "<span class=\"value\">"
+                + this.data["rollingCountSemaphoreRejected"]
+                + "</span></a>";
         } else {
-            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" title=\"Threadpool Rejected Request Count\""
+            rollingCountPoolRejectedHtml = "<a href=\"javascript://\" "
+                + "title=\"Threadpool Rejected Request Count\""
                 + "class=\"line hystrix-tooltip rejected\">"
-                + "<span class=\"value\">" + this.data["rollingCountThreadPoolRejected"] + "</span></a>";
+                + "<span class=\"value\">"
+                + this.data["rollingCountThreadPoolRejected"] + "</span></a>";
         }
 
-        var rollingCountFailureHtml = "<a href=\"javascript://\" title=\"Failure Request Count\""
+        var rollingCountFailureHtml = "<a href=\"javascript://\" "
+            + "title=\"Failure Request Count\""
             + "class=\"line hystrix-tooltip failure\">"
-            + "<span class=\"value\">" + this.data["rollingCountFailure"] + "</span></a>";
+            + "<span class=\"value\">" + this.data["rollingCountFailure"]
+            + "</span></a>";
 
         var $sec1Div = $("<div></div>").addClass("hystrix-cell borderRight")
-            .html(rollingCountTimeoutHtml + "\n" + rollingCountPoolRejectedHtml + "\n"
+            .html(rollingCountTimeoutHtml + "\n"
+                + rollingCountPoolRejectedHtml + "\n"
                 + rollingCountFailureHtml);
         $countersDiv.append($sec1Div);
 
-        var rollingCountSuccessHtml = "<a href=\"javascript://\" title=\"Successful Request Count\""
+        var rollingCountSuccessHtml = "<a href=\"javascript://\" "
+            + "title=\"Successful Request Count\""
             + "class=\"line hystrix-tooltip success\">"
-            + "<span class=\"value\">" + this.data["rollingCountSuccess"] + "</span></a>";
+            + "<span class=\"value\">" + this.data["rollingCountSuccess"]
+            + "</span></a>";
 
-        var rollingCountShortCircuitedHtml = "<a href=\"javascript://\" title=\"Short-circuited Request Count\""
+        var rollingCountShortCircuitedHtml = "<a href=\"javascript://\" "
+            + "title=\"Short-circuited Request Count\""
             + "class=\"line hystrix-tooltip shortCircuited\">"
-            + "<span class=\"value\">" + this.data["rollingCountShortCircuited"] + "</span></a>";
+            + "<span class=\"value\">" + this.data["rollingCountShortCircuited"]
+            + "</span></a>";
 
-        var rollingCountBadRequestsHtml = "<a href=\"javascript://\" title=\"Bad Request Count\""
+        var rollingCountBadRequestsHtml = "<a href=\"javascript://\" "
+            + "title=\"Bad Request Count\""
             + "class=\"line hystrix-tooltip badRequest\">"
-            + "<span class=\"value\">" + this.data["rollingCountBadRequests"] + "</span></a>";
+            + "<span class=\"value\">" + this.data["rollingCountBadRequests"]
+            + "</span></a>";
 
         var $sec2Div = $("<div></div>").addClass("hystrix-cell borderRight")
-            .html(rollingCountSuccessHtml + "\n" + rollingCountShortCircuitedHtml + "\n"
+            .html(rollingCountSuccessHtml + "\n"
+                + rollingCountShortCircuitedHtml + "\n"
                 + rollingCountBadRequestsHtml);
         $countersDiv.append($sec2Div);
     };
 
     this.addRate = function addRate(monitorDataDiv) {
-        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Request Rate per Second per Reporting Host\""
+        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" "
+            + "title=\"Total Request Rate per Second per Reporting Host\""
             + "class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Host: </span>"
             + "<span class=\"ratePerSecondPerHost\">"
@@ -227,7 +271,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             .html(ratePerSecondPerHostHtml);
         monitorDataDiv.append($rate1Div);
 
-        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Request Rate per Second for Cluster\""
+        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" "
+            + "title=\"Total Request Rate per Second for Cluster\""
             + "class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Cluster: </span>"
             + "<span class=\"ratePerSecond\">"
@@ -241,11 +286,14 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.addCircuitStatus = function addCircuitStatus(monitorDataDiv) {
         //var html = "Circuit <font color=\"green\">Closed</font>";
         var html = "";
-        if (this.data["propertyValue_circuitBreakerForceClosed"]) {
-            html = "<span class=\"smaller\">[ <font color=\"orange\">Forced Closed</font> ]";
+        if (this.data["propertyValue_circuitBreakerForceClosed"] &&
+            this.data["propertyValue_circuitBreakerForceClosed"] === 1) {
+            html = "<span class=\"smaller\">[ <font color=\"orange\">" +
+                "Forced Closed</font> ]";
         }
 
-        if (this.data["propertyValue_circuitBreakerForceOpen"]) {
+        if (this.data["propertyValue_circuitBreakerForceOpen"] &&
+            this.data["propertyValue_circuitBreakerForceOpen"] === 1) {
             html = "Circuit <font color=\"red\">Forced Open</font>";
         }
 
@@ -254,20 +302,12 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         } else if (this.data["isCircuitBreakerOpen"] === 0) {
             html = "Circuit <font color=\"green\">Closed</font>";
         } else {
-            if (this.data["isCircuitBreakerOpen"] !== undefined &&
-                typeof this.data["isCircuitBreakerOpen"] === 'object') {
-                html = "Circuit <font color=\"red\">Open " + this.data["isCircuitBreakerOpen"].true +
-                    "</font> <font color=\"green\">Closed " + this.data["isCircuitBreakerOpen"].false;
-            } else if (this.data["isCircuitBreakerOpen"] !== undefined) {
-                html = "Circuit <font color=\"orange\">" +
-                    this.data["isCircuitBreakerOpen"].toString()
-                        .replace("true", "Open").replace("false", "Closed");
-            } else {
-                html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-            }
+            html = "Circuit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
         }
 
-        var $circuitStatusDiv = $("<div></div>").addClass("circuitStatus").html(html);
+        var $circuitStatusDiv = $("<div></div>")
+            .addClass("circuitStatus").html(html);
         monitorDataDiv.append($circuitStatusDiv);
     };
 
@@ -276,32 +316,47 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         monitorDataDiv.append($spacerDiv);
 
         var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Hosts</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["reportingHosts"] + " </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">90th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency90\"><span class=\"value\">" + this.data["latency90"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">"
+            + "Hosts</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left\">"
+            + this.data["reportingHosts"] + " </div>"
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">90th</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-right latency90\">"
+            + "<span class=\"value\">" + this.data["latency90"]
+            + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow1Div);
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Median</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMedian\"><span class=\"value\">" + this.data["latencyMedian"] + "</span>ms </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency99\"><span class=\"value\">" + this.data["latency99"] + "</span>ms </div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">"
+            + "Median</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left" +
+            " latencyMedian\">"
+            + "<span class=\"value\">" + this.data["latencyMedian"]
+            + "</span>ms </div>"
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">99th</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-right latency99\">"
+            + "<span class=\"value\">" + this.data["latency99"]
+            + "</span>ms </div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Mean</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMean\"><span class=\"value\">" + this.data["latencyMean"] + "</span>ms</div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">99.5th</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right latency995\"><span class=\"value\">" + this.data["latency995"] + "</span>ms</div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Mean</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left latencyMean\">"
+            + "<span class=\"value\">" + this.data["latencyMean"]
+            + "</span>ms</div>"
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">99.5th</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-right latency995\">" +
+            "<span class=\"value\">" + this.data["latency995"]
+            + "</span>ms</div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
     this.addSparkline = function addSparkline(chartDiv) {
-        var $graphDiv = $("<div></div>").attr('id', this.graphDivId).addClass('graph')
+        var $graphDiv = $("<div></div>")
+            .attr('id', this.graphDivId).addClass('graph')
             .css({
-                'position': 'absolute', 'top': '38px', 'left': '0', 'float': 'left',
-                'width': '140px', 'height': '62px'
+                'position': 'absolute', 'top': '38px', 'left': '0',
+                'float': 'left', 'width': '140px', 'height': '62px'
             });
         chartDiv.append($graphDiv);
 
@@ -313,7 +368,10 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
 
     this.updateSparkline = function updateSparkline() {
         var currentTimeMilliseconds = new Date().getTime();
-        this.graphData.push({"v": parseFloat(this.data["ratePerSecond"]), "t": currentTimeMilliseconds});
+        this.graphData.push({
+            "v": parseFloat(this.data["ratePerSecond"]),
+            "t": currentTimeMilliseconds
+        });
 
         // 400 should be plenty for the 2 minutes we have the scale set
         // to below even with a very low update latency
@@ -328,7 +386,8 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
             return;
         }
 
-        if (this.graphData.length > 1 && this.graphData[0].v === 0 && this.graphData[1].v !== 0) {
+        if (this.graphData.length > 1 && this.graphData[0].v === 0 &&
+            this.graphData[1].v !== 0) {
             //console.log("we have a leading 0 so removing it");
             // get rid of a leading 0 if the following number is not a 0
             this.graphData.shift();
@@ -344,7 +403,9 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
         var yMax = d3.max(this.graphData, function (d) {
             return d.v;
         });
-        var yScale = d3.scaleLinear().domain([yMin, yMax]).nice().range([60, 0]); // y goes DOWN, so 60 is the "lowest"
+        // y goes DOWN, so 60 is the "lowest"
+        var yScale = d3.scaleLinear().domain([yMin, yMax])
+            .nice().range([60, 0]);
 
         var sparkline = d3.line()
         // assign the X function to plot our line as we wish
@@ -366,47 +427,98 @@ function HystrixCommandConfig(parentDivId, circuitKey, serviceName, methodName) 
     this.preProcessData = function preProcessData(jsonData) {
         this.data = {};
         var numberSeconds =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0) / 1000;
 
-        var totalRequests = _getMetricValue(jsonData, this.circuitKey + ".requestCount", 0);
+        var totalRequests = _getMetricValue(jsonData, this.metricKey
+            + ".requestCount", 0);
         if (totalRequests < 0) {
             totalRequests = 0;
         }
-        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
+        var reportingHosts = _getMetricValue(jsonData, this.metricKey
+            + ".reportingHosts", 0);
 
-        this.data["ratePerSecond"] = _roundNumber(totalRequests / numberSeconds);
-        this.data["ratePerSecondPerHost"] = _roundNumber(totalRequests / numberSeconds / reportingHosts);
-        this.data["ratePerSecondPerHostDisplay"] = this.data["ratePerSecondPerHost"];
-        this.data["errorPercentage"] = _getMetricValue(jsonData, this.circuitKey + ".errorPercentage", 0);
+        this.data["ratePerSecond"] =
+            _roundNumber(totalRequests / numberSeconds);
+        this.data["ratePerSecondPerHost"] =
+            _roundNumber(totalRequests / numberSeconds / reportingHosts);
+        this.data["ratePerSecondPerHostDisplay"] =
+            this.data["ratePerSecondPerHost"];
+        this.data["errorPercentage"] =
+            _getMetricValue(jsonData, this.metricKey + ".errorPercentage", 0);
 
         this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"]) ?
-            -1 : (this.data["errorPercentage"] * 100000000) + this.data["ratePerSecond"];
+            -1 : (this.data["errorPercentage"] * 100000000)
+        + this.data["ratePerSecond"];
 
-        this.data["rollingCountTimeout"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountTimeout", 0);
+        this.data["rollingCountTimeout"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountTimeout", 0);
         var rollingCountThreadPoolRejected =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadPoolRejected", -20);
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountThreadPoolRejected", -20);
 
         if (rollingCountThreadPoolRejected === -20) {
             this.data["rollingCountSemaphoreRejected"] =
-                _getMetricValue(jsonData, this.circuitKey + ".rollingCountSemaphorePoolRejected", 0);
+                _getMetricValue(jsonData, this.metricKey
+                    + ".rollingCountSemaphorePoolRejected", 0);
         } else {
             this.data["rollingCountThreadPoolRejected"] = rollingCountThreadPoolRejected;
         }
 
-        this.data["rollingCountFailure"] = _getMetricValue(jsonData, this.circuitKey + ".rollingCountFailure", 0);
+        this.data["rollingCountFailure"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountFailure", 0);
         this.data["rollingCountSuccess"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountSuccess", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountSuccess", 0);
         this.data["rollingCountShortCircuited"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountShortCircuited", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountShortCircuited", 0);
         this.data["rollingCountBadRequests"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountBadRequests", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountBadRequests", 0);
 
-        this.data["reportingHosts"] = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 1);
-        this.data["latency90"] = _getMetricValue(jsonData, this.circuitKey + ".90", 0);
-        this.data["latencyMedian"] = _getMetricValue(jsonData, this.circuitKey + ".50", 0);
-        this.data["latency99"] = _getMetricValue(jsonData, this.circuitKey + ".99", 0);
-        this.data["latencyMean"] = _getMetricValue(jsonData, this.circuitKey + ".latencyExecute_mean", 0);
-        this.data["latency995"] = _getMetricValue(jsonData, this.circuitKey + ".99.5", 0);
+        this.data["reportingHosts"] =
+            _getMetricValue(jsonData, this.metricKey + ".reportingHosts", 1);
+        this.data["latency90"] =
+            _getMetricValue(jsonData, this.metricKey + ".90", 0);
+        this.data["latencyMedian"] =
+            _getMetricValue(jsonData, this.metricKey + ".50", 0);
+        this.data["latency99"] =
+            _getMetricValue(jsonData, this.metricKey + ".99", 0);
+        this.data["latencyMean"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_mean", 0);
+        this.data["latency995"] =
+            _getMetricValue(jsonData, this.metricKey + ".99.5", 0);
+
+        //circuit breaker may be missing with hystrix metrics unless
+        //'hystrix-codahale-metrics-publisher' maven library is included
+        //1 or 0 for true or false respectively
+        var propertyValue_circuitBreakerForceClosed =
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_circuitBreakerForceClosed", -20);
+        if (propertyValue_circuitBreakerForceClosed !== -20) {
+            this.data["propertyValue_circuitBreakerForceClosed"]
+                = propertyValue_circuitBreakerForceClosed;
+        }
+
+        //1 or 0 for true or false respectively
+        var propertyValue_circuitBreakerForceOpen =
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_circuitBreakerForceOpen", -20);
+        if (propertyValue_circuitBreakerForceOpen !== -20) {
+            this.data["propertyValue_circuitBreakerForceOpen"]
+                = propertyValue_circuitBreakerForceOpen;
+        }
+
+        //1 or 0 for true or false respectively
+        var isCircuitBreakerOpen =
+            _getMetricValue(jsonData, this.metricKey
+                + ".isCircuitBreakerOpen", -20);
+        if (isCircuitBreakerOpen !== -20) {
+            this.data["isCircuitBreakerOpen"] = isCircuitBreakerOpen;
+        }
     };
 }
 
@@ -511,47 +623,47 @@ hystrixViewer.sortByLatencyMedian = function () {
     _sortByMetricInDirection(direction, ".latencyMedian .value");
 };
 
-function _sortByMetricInDirection  (direction, metric) {
+function _sortByMetricInDirection(direction, metric) {
     var $monitors = $('#' + "dependencies" + ' div.monitor');
     $monitors.tsort(metric, {order: direction});
 }
 
 function _sortCircuitSameAsLast() {
-    if(_circuitSortedBy == 'alph_asc') {
+    if (_circuitSortedBy == 'alph_asc') {
         _sortAlphabeticalInDirection('asc');
-    } else if(_circuitSortedBy == 'alph_desc') {
+    } else if (_circuitSortedBy == 'alph_desc') {
         _sortAlphabeticalInDirection('desc');
-    } else if(_circuitSortedBy == 'rate_asc') {
+    } else if (_circuitSortedBy == 'rate_asc') {
         _sortByVolumeInDirection('asc');
-    } else if(_circuitSortedBy == 'rate_desc') {
+    } else if (_circuitSortedBy == 'rate_desc') {
         _sortByVolumeInDirection('desc');
-    } else if(_circuitSortedBy == 'error_asc') {
+    } else if (_circuitSortedBy == 'error_asc') {
         _sortByErrorInDirection('asc');
-    } else if(_circuitSortedBy == 'error_desc') {
+    } else if (_circuitSortedBy == 'error_desc') {
         _sortByErrorInDirection('desc');
-    } else if(_circuitSortedBy == 'error_then_volume_asc') {
+    } else if (_circuitSortedBy == 'error_then_volume_asc') {
         _sortByErrorThenVolumeInDirection('asc');
-    } else if(_circuitSortedBy == 'error_then_volume_desc') {
+    } else if (_circuitSortedBy == 'error_then_volume_desc') {
         _sortByErrorThenVolumeInDirection('desc');
-    } else if(_circuitSortedBy == 'lat90_asc') {
+    } else if (_circuitSortedBy == 'lat90_asc') {
         _sortByMetricInDirection('asc', '.latency90 .value');
-    } else if(_circuitSortedBy == 'lat90_desc') {
+    } else if (_circuitSortedBy == 'lat90_desc') {
         _sortByMetricInDirection('desc', '.latency90 .value');
-    } else if(_circuitSortedBy == 'lat99_asc') {
+    } else if (_circuitSortedBy == 'lat99_asc') {
         _sortByMetricInDirection('asc', '.latency99 .value');
-    } else if(_circuitSortedBy == 'lat99_desc') {
+    } else if (_circuitSortedBy == 'lat99_desc') {
         _sortByMetricInDirection('desc', '.latency99 .value');
-    } else if(_circuitSortedBy == 'lat995_asc') {
+    } else if (_circuitSortedBy == 'lat995_asc') {
         _sortByMetricInDirection('asc', '.latency995 .value');
-    } else if(_circuitSortedBy == 'lat995_desc') {
+    } else if (_circuitSortedBy == 'lat995_desc') {
         _sortByMetricInDirection('desc', '.latency995 .value');
-    } else if(_circuitSortedBy == 'latMean_asc') {
+    } else if (_circuitSortedBy == 'latMean_asc') {
         _sortByMetricInDirection('asc', '.latencyMean .value');
-    } else if(_circuitSortedBy == 'latMean_desc') {
+    } else if (_circuitSortedBy == 'latMean_desc') {
         _sortByMetricInDirection('desc', '.latencyMean .value');
-    } else if(_circuitSortedBy == 'latMedian_asc') {
+    } else if (_circuitSortedBy == 'latMedian_asc') {
         _sortByMetricInDirection('asc', '.latencyMedian .value');
-    } else if(_circuitSortedBy == 'latMedian_desc') {
+    } else if (_circuitSortedBy == 'latMedian_desc') {
         _sortByMetricInDirection('desc', '.latencyMedian .value');
     }
 }

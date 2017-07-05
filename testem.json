@@ -4,9 +4,7 @@
     "node_modules/jquery/dist/jquery.js",
     "node_modules/d3/build/d3.js",
     "lib/js/metricsgraphics.js",
-
     "src/js/metricsviewer.js",
-
     "tests/metricsviewer_test.js"
   ],
   "launch_in_ci": [

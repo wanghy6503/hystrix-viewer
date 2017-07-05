@@ -3,8 +3,10 @@
         <h1>Hystrix Viewer</h1>
     </header>
     <p>
-        A counter metric is used to measure the count of an item you are trying to monitor, e.g., object instances, etc.
-        It can be incremented or decremented. A counter metric viewer is created by calling the <code>addCounter</code>
+        A counter metric is used to measure the count of an item you are trying
+        to monitor, e.g., object instances, etc.
+        It can be incremented or decremented. A counter metric viewer is created
+        by calling the <code>addCounter</code>
         method.
     </p>
     <pre><code class="javascript">//add a new metrics viewer
@@ -14,8 +16,10 @@ metricsViewer.addCounter('#counter-div',  //div id
     "counter.test.metric.a"); //metric path
     </code></pre>
     <p>
-        If you are interested in showing more than one counter metrics on the same viewer, call
-        <code>addMultiCounter</code> and provide an array of metric names (instead of one metric name in the previous
+        If you are interested in showing more than one counter metrics on the
+        same viewer, call
+        <code>addMultiCounter</code> and provide an array of metric names
+        (instead of one metric name in the previous
         example).
     </p>
     <pre><code class="javascript">metricsViewer.addMultiCounter('#counter-multi-div',

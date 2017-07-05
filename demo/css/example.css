@@ -31,11 +31,11 @@
 }
 
 /*@font-face {*/
-    /*font-family: 'Inconsolata';*/
-    /*src: url("../fonts/Inconsolata/inconsolata-bold-webfont.eot");*/
-    /*src: url("../fonts/Inconsolata/inconsolata-bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Inconsolata/inconsolata-bold-webfont.woff") format("woff"), url("../fonts/Inconsolata/inconsolata-bold-webfont.ttf") format("truetype"), url("../fonts/Inconsolata/inconsolata-bold-webfont.svg#inconsolatabold") format("svg");*/
-    /*font-weight: 500;*/
-    /*font-style: normal;*/
+/*font-family: 'Inconsolata';*/
+/*src: url("../fonts/Inconsolata/inconsolata-bold-webfont.eot");*/
+/*src: url("../fonts/Inconsolata/inconsolata-bold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Inconsolata/inconsolata-bold-webfont.woff") format("woff"), url("../fonts/Inconsolata/inconsolata-bold-webfont.ttf") format("truetype"), url("../fonts/Inconsolata/inconsolata-bold-webfont.svg#inconsolatabold") format("svg");*/
+/*font-weight: 500;*/
+/*font-style: normal;*/
 /*}*/
 
 .head {
@@ -76,7 +76,6 @@
     font-size: 0.8em;
     color: #999;
 }
-
 
 a,
 a:active,
@@ -165,10 +164,10 @@ body {
 }
 
 /*.head {*/
-    /*color: black;*/
-    /*margin: auto;*/
-    /*margin-bottom: 20px;*/
-    /*width: 100%;*/
+/*color: black;*/
+/*margin: auto;*/
+/*margin-bottom: 20px;*/
+/*width: 100%;*/
 /*}*/
 
 /*
@@ -273,13 +272,13 @@ pre, code, text-area {
 }
 
 /*#torso {*/
-    /*margin: 0 auto;*/
-    /*text-align: center;*/
-    /*width: 100%;*/
+/*margin: 0 auto;*/
+/*text-align: center;*/
+/*width: 100%;*/
 /*}*/
 
 /*#torso div {*/
-    /*display: inline-block;*/
+/*display: inline-block;*/
 /*}*/
 
 #trunk {
@@ -295,7 +294,6 @@ pre, code, text-area {
     font-weight: 300;
     text-transform: uppercase;
 }*/
-
 
 .trunk-section {
     border-top: 1px solid #ccc;

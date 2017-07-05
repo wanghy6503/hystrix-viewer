@@ -2,27 +2,35 @@
 var maxDomain = 2000;
 Object.freeze(maxDomain);
 
-var threadPoolCircleRadius = d3.scalePow().exponent(0.5).domain([0, maxDomain]).range(["5", maxRadiusForCircle]); // requests per second per host
-var threadPoolCircleYaxis = d3.scaleLinear().domain([0, maxDomain]).range(["30%", maxXaxisForCircle]);
-var threadPoolCircleXaxis = d3.scaleLinear().domain([0, maxDomain]).range(["30%", maxYaxisForCircle]);
-var threadPoolColorRange = d3.scaleLinear().domain([10, 25, 40, 50]).range(["green", "#FFCC00", "#FF9900", "red"]);
-var threadPoolErrorPercentageColorRange = d3.scaleLinear().domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
+var threadPoolCircleRadius = d3.scalePow().exponent(0.5).domain([0, maxDomain])
+    .range(["5", maxRadiusForCircle]); // requests per second per host
+var threadPoolCircleYaxis = d3.scaleLinear().domain([0, maxDomain])
+    .range(["30%", maxXaxisForCircle]);
+var threadPoolCircleXaxis = d3.scaleLinear().domain([0, maxDomain])
+    .range(["30%", maxYaxisForCircle]);
+var threadPoolColorRange = d3.scaleLinear().domain([10, 25, 40, 50])
+    .range(["green", "#FFCC00", "#FF9900", "red"]);
+var threadPoolErrorPercentageColorRange = d3.scaleLinear()
+    .domain([0, 10, 35, 50]).range(["grey", "black", "#FF9900", "red"]);
 
 // default sort type and direction
 var _threadPoolSortedBy = 'alph_asc';
 
 /**
  *
- * Hystrix thread pool configuration which holds the threadpool chart properties and the data.
+ * Hystrix thread pool configuration which holds the threadpool chart
+ * properties and the data.
  *
  * @param {string} parentDivId div id of parent container
- * @param {string} circuitKey metric prefix for retrieving the individual metric data from metric JSON array.
- * @param {string} serviceName name of the service name which generates the Hystrix metrics
+ * @param {string} metricKey metric prefix for retrieving the individual
+ * metric data from metric JSON array.
+ * @param {string} serviceName name of the service name which generates
+ * the Hystrix metrics
  * @constructor
  */
-function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
+function HystrixThreadpoolConfig(parentDivId, metricKey, serviceName) {
     this.parentDivId = parentDivId;
-    this.circuitKey = circuitKey;
+    this.metricKey = metricKey;
     this.serviceName = serviceName;
     this.data = {};
     this.initialized = false;
@@ -67,10 +75,11 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addChart = function addChart(threadDiv) {
-        var $chartDiv = $("<div></div>").attr('id', this.chartDivId).addClass('chart')
+        var $chartDiv = $("<div></div>").attr('id', this.chartDivId)
+            .addClass('chart')
             .css({
-                'position': 'absolute', 'top': '0px', 'left': '0', 'float': 'left',
-                'width': '100%', 'height': '100%'
+                'position': 'absolute', 'top': '0px', 'left': '0',
+                'float': 'left', 'width': '100%', 'height': '100%'
             });
         threadDiv.append($chartDiv);
 
@@ -81,21 +90,25 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         var svgContainer = d3.select("#" + chartDivId).append("svg:svg")
             .attr("width", "100%").attr("height", "100%");
         var circle = svgContainer.append("svg:circle");
-        circle.style("fill", "green").attr("cx", "30%").attr("cy", "30%").attr("r", 5);
+        circle.style("fill", "green").attr("cx", "30%")
+            .attr("cy", "30%").attr("r", 5);
     };
 
     this.updateCircle = function updateCircle() {
-        var newXaxisForCircle = threadPoolCircleXaxis(this.data["ratePerSecondPerHost"]);
+        var newXaxisForCircle =
+            threadPoolCircleXaxis(this.data["ratePerSecondPerHost"]);
         if (parseInt(newXaxisForCircle) > parseInt(maxXaxisForCircle)) {
             newXaxisForCircle = maxXaxisForCircle;
         }
 
-        var newYaxisForCircle = threadPoolCircleYaxis(this.data["ratePerSecondPerHost"]);
+        var newYaxisForCircle =
+            threadPoolCircleYaxis(this.data["ratePerSecondPerHost"]);
         if (parseInt(newYaxisForCircle) > parseInt(maxYaxisForCircle)) {
             newYaxisForCircle = maxYaxisForCircle;
         }
 
-        var newRadiusForCircle = threadPoolCircleRadius(this.data["ratePerSecondPerHost"]);
+        var newRadiusForCircle =
+            threadPoolCircleRadius(this.data["ratePerSecondPerHost"]);
         if (parseInt(newRadiusForCircle) > parseInt(maxRadiusForCircle)) {
             newRadiusForCircle = maxRadiusForCircle;
         }
@@ -110,11 +123,13 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addTitle = function addTitle(threadDiv) {
-        var html = "<p class=\"name\"" + this.serviceName + ">" + this.serviceName + "</p>";
+        var html = "<p class=\"name\"" + this.serviceName + ">"
+            + this.serviceName + "</p>";
         var $titleDiv = $("<div></div>")
             .css({
                 'position': 'absolute', 'top': '0px',
-                'width': '100%', 'height': '15px', 'opacity': '0.8', 'background': 'white'
+                'width': '100%', 'height': '15px',
+                'opacity': '0.8', 'background': 'white'
             })
             .html(html);
         threadDiv.append($titleDiv);
@@ -147,7 +162,8 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
     };
 
     this.addRate = function addRate(monitorDataDiv) {
-        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second per Reporting Host\""
+        var ratePerSecondPerHostHtml = "<a href=\"javascript://\" "
+            + "title=\"Total Execution Rate per Second per Reporting Host\""
             + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Host: </span>"
             + "<span class=\"ratePerSecondPerHost\">"
@@ -157,7 +173,8 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
             .html(ratePerSecondPerHostHtml);
         monitorDataDiv.append($rate1Div);
 
-        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" title=\"Total Execution Rate per Second for Cluster\""
+        var ratePerSecondPerClusterHtml = "<a href=\"javascript://\" "
+            + "title=\"Total Execution Rate per Second for Cluster\""
             + " class=\"hystrix-tooltip rate\">"
             + "<span class=\"smaller\">Cluster: </span>"
             + "<span class=\"ratePerSecond\">"
@@ -173,68 +190,98 @@ function HystrixThreadpoolConfig(parentDivId, circuitKey, serviceName) {
         monitorDataDiv.append($spacerDiv);
 
         var $monitorRow1Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\">" + this.data["currentActiveCount"] + " </div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Max Active</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\">" + this.data["rollingMaxActiveThreads"] + "</div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Active</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left\">"
+            + this.data["currentActiveCount"] + " </div>"
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">"
+            + "Max Active</div>" +
+            "<div class=\"hystrix-cell hystrix-data hystrix-right\">" 
+            + this.data["rollingMaxActiveThreads"] + "</div></div>");
         monitorDataDiv.append($monitorRow1Div);
 
         var $monitorRow2Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Queued</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentQueueSize"] + "</span></div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Executions</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["rollingCountThreadsExecuted"] + "</span></div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Queued</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left\">"
+            + "<span class=\"value\">"
+            + this.data["currentQueueSize"] + "</span></div>"
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">"
+            + "Executions</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-right\">"
+            + "<span class=\"value\">"
+            + this.data["rollingCountThreadsExecuted"]
+            + "</span></div></div>");
         monitorDataDiv.append($monitorRow2Div);
 
         var $monitorRow3Div = $("<div class=\"tableRow\">" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-left\"><span class=\"value\">" + this.data["currentPoolSize"] + "</span></div>" +
-            "<div class=\"hystrix-cell hystrix-header hystrix-right\">Queue Size</div>" +
-            "<div class=\"hystrix-cell hystrix-data hystrix-right\"><span class=\"value\">" + this.data["propertyValue_queueSizeRejectionThreshold"] + "</span></div></div>");
+            "<div class=\"hystrix-cell hystrix-header hystrix-left\">Pool Size</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-left\">"
+            + "<span class=\"value\">" + this.data["currentPoolSize"]
+            + "</span></div>" 
+            + "<div class=\"hystrix-cell hystrix-header hystrix-right\">"
+            + "Queue Size</div>"
+            + "<div class=\"hystrix-cell hystrix-data hystrix-right\">"
+            + "<span class=\"value\">"
+            + this.data["propertyValue_queueSizeRejectionThreshold"]
+            + "</span></div></div>");
         monitorDataDiv.append($monitorRow3Div);
     };
 
     this.preProcessData = function preProcessData(jsonData) {
         this.data = {};
-        var reportingHosts = _getMetricValue(jsonData, this.circuitKey + ".reportingHosts", 0);
+        var reportingHosts =
+            _getMetricValue(jsonData, this.metricKey + ".reportingHosts", 0);
         this.data["reportingHosts"] = reportingHosts;
 
         var propertyValue_queueSizeRejectionThreshold =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_queueSizeRejectionThreshold", 0);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
             _roundNumber(propertyValue_queueSizeRejectionThreshold / reportingHosts);
 
         var propertyValue_metricsRollingStatisticalWindowInMilliseconds =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_metricsRollingStatisticalWindowInMilliseconds", 0);
         this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] =
             _roundNumber(propertyValue_metricsRollingStatisticalWindowInMilliseconds / reportingHosts);
 
-        var numberSeconds = this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
+        var numberSeconds =
+            this.data["propertyValue_metricsRollingStatisticalWindowInMilliseconds"] / 1000;
 
-        var totalThreadsExecuted = _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
+        var totalThreadsExecuted = _getMetricValue(jsonData,
+            this.metricKey + ".rollingCountThreadsExecuted", 0);
         if (totalThreadsExecuted < 0) {
             totalThreadsExecuted = 0;
         }
 
-        this.data["ratePerSecond"] = _roundNumber(totalThreadsExecuted / numberSeconds);
-        this.data["ratePerSecondPerHost"] = _roundNumber(totalThreadsExecuted / numberSeconds / reportingHosts);
+        this.data["ratePerSecond"] =
+            _roundNumber(totalThreadsExecuted / numberSeconds);
+        this.data["ratePerSecondPerHost"] =
+            _roundNumber(totalThreadsExecuted / numberSeconds / reportingHosts);
 
         this.data["currentActiveCount"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentActiveCount", 0);
+            _getMetricValue(jsonData, this.metricKey 
+                + ".currentActiveCount", 0);
         this.data["rollingMaxActiveThreads"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingMaxActiveThreads", 0);
+            _getMetricValue(jsonData, this.metricKey 
+                + ".rollingMaxActiveThreads", 0);
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".currentQueueSize", 0);
         this.data["rollingCountThreadsExecuted"] =
-            _getMetricValue(jsonData, this.circuitKey + ".rollingCountThreadsExecuted", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountThreadsExecuted", 0);
         this.data["currentPoolSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentPoolSize", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".currentPoolSize", 0);
         this.data["propertyValue_queueSizeRejectionThreshold"] =
-            _getMetricValue(jsonData, this.circuitKey + ".propertyValue_queueSizeRejectionThreshold", 0);
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_queueSizeRejectionThreshold", 0);
 
         this.data["currentQueueSize"] =
-            _getMetricValue(jsonData, this.circuitKey + ".currentQueueSize", 0);
-        this.data["errorPercentage"] = this.data["currentQueueSize"] / this.data["reportingHosts"];
+            _getMetricValue(jsonData, this.metricKey
+                + ".currentQueueSize", 0);
+        this.data["errorPercentage"] =
+            this.data["currentQueueSize"] / this.data["reportingHosts"];
     };
 }
 

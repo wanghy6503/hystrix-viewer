@@ -1,16 +1,17 @@
-
 /**
  * Creates a Hystrix dashboard, It displays the the following:
  * <li>
  *     <ol>Hystrix Circuit</ol>
  *     <ol>Hystrix Thread</ol>
  *     </li>
- * @param {string} divId divId the id of the HTML division tag where the Hystrix dashboard will be displayed
+ * @param {string} divId divId the id of the HTML division tag where the
+ * Hystrix dashboard will be displayed
  */
 hystrixViewer.addHystrixDashboard = function (divId) {
     _hystrixDashboardDivId = divId;
 
-    var $outerContainerDiv = $("<div></div>").addClass('hystrix-outer-container');
+    var $outerContainerDiv = $("<div></div>")
+        .addClass('hystrix-outer-container');
     $(_hystrixDashboardDivId).append($outerContainerDiv);
 
     var $headerDiv = $("<div></div>").attr('id', 'hystrix-header')
@@ -29,10 +30,10 @@ hystrixViewer.addHystrixDashboard = function (divId) {
 };
 
 /**
- * Refreshes the metric view with new data. Each metric is cashed up to the 100 metric points. Older metrics are
- * removed once it reaches the threshold.
+ * Refreshes the metric view with new data. Each metric is cashed up to the
+ * 100 metric points. Older metrics are removed once it reaches the threshold.
  *
- * @param {string} json the metric data in json format
+ * @param {string} JSON the metric data in json format
  */
 hystrixViewer.refresh = function (json) {
     if (_hystrixDashboardDivId) {
@@ -67,13 +68,13 @@ hystrixViewer.clear = function () {
     _hystrixThreadpoolMap = {};
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////////////////////////
-/**
+////////////////////////////////////////////////////////////////////////////
+// PRIVATE FUNCTIONS & VARIABLES
+////////////////////////////////////////////////////////////////////////////
+/*
  * Types of metrics
- * @enum {Object}
  *
+ * @enum {Object}
  */
 var METRIC_TYPE = {
     COUNTER: {type: "counters"},
@@ -83,43 +84,76 @@ var METRIC_TYPE = {
 };
 Object.freeze(METRIC_TYPE);
 
-/**
- * The size of metric queue
- * @type {number}
+/*
+ * Flag to indicate if 'hystrix-codahale-metrics-publisher'
+ * metrics are published.
+ * @type {boolean} true is the 'hystrix-codahale-metrics-publisher'
+ * are on, false otherwise.
  */
-var QUEUE_SIZE = 100;
-Object.freeze(QUEUE_SIZE);
+var _metricsPublisherOn = false;
 
+/**
+ * Maximum x-axis for circles drawn on the charts.
+ * @type {string}
+ */
 var maxXaxisForCircle = "40%";
 Object.freeze(maxXaxisForCircle);
 
+/*
+ * Maximum y-axis for circles drawn on the charts.
+ * @type {string}
+ */
 var maxYaxisForCircle = "40%";
 Object.freeze(maxYaxisForCircle);
 
+/*
+ * Maximum radius for circles drawn on the charts.
+ * @type {string}
+ */
 var maxRadiusForCircle = "125";
 Object.freeze(maxRadiusForCircle);
 
+/*
+ * Div id of the Hystrix dashboard passed on as a parameter during call to
+ * 'addHystrixDashboard'
+ */
 var _hystrixDashboardDivId;
 
+/*
+ * Div id of the inner container holding Hytrix circuit charts.
+ */
 var _hystrixCircuitContainerDivId;
 
+/*
+ * Div id of the inner container holding Hytrix thread pool charts.
+ */
 var _hystrixThreadContainerDivId;
 
-/**
- * A cache of Hystrix circuit charts
+/*
+ * An array of Hystrix Circuit charts with key:value pairs
  * @type {Array}
+ * @private
  */
 var _hystrixCircuitMap = {};
 
+/*
+ * An array of Hystrix Thread Pool charts with key:value pairs
+ * @type {Array}
+ */
 var _hystrixThreadpoolMap = {};
 
+/**
+ * Adds a Hytrix circuit or thread pool chart by parsing the metric path.
+ * @param jsonData metrics data in JSOn format
+ * @private
+ */
 var _addHystrix = function (jsonData) {
     for (var key in jsonData) {
         if (jsonData.hasOwnProperty(key)) {
             if (key === METRIC_TYPE.GAUGE.type) {
-                var jsonNode = jsonData[METRIC_TYPE.GAUGE.type];
-                $.each(jsonNode, function (key, val) {
-                    _addHystrixCircuit(key);
+                var gaugeJsonNode = jsonData[METRIC_TYPE.GAUGE.type];
+                $.each(gaugeJsonNode, function (key, val) { // NOSONAR
+                    _addHystrixCircuit(key, gaugeJsonNode);
                     _addHystrixThreadPool(key);
                 });
             }
@@ -127,6 +161,12 @@ var _addHystrix = function (jsonData) {
     }
 };
 
+/**
+ * Creates the circuit chart area where a navigation bar and all subsequent
+ * circuit charts are added.
+ * @param containerDiv inner container
+ * @private
+ */
 function _createHystrixCircuitArea(containerDiv) {
     var $row1Div = $("<div></div>").addClass('hystrix-row');
     $(containerDiv).append($row1Div);
@@ -136,16 +176,31 @@ function _createHystrixCircuitArea(containerDiv) {
     $($menuBar1Div).append($circuitTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByErrorThenVolume();\">Error then Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByVolume();\">Volume</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByError();\">Error</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMean();\">Mean</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
-    var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByErrorThenVolume();\">" +
+        "Error then Volume</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortAlphabetically();\">" +
+        "Alphabetical</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByVolume();\">" +
+        "Volume</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByError();\">" +
+        "Error</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByLatencyMean();\">" +
+        "Mean</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByLatencyMedian();\">Median</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByLatency90();\">90</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByLatency99();\">99</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortByLatency995();\">99.5</a> ";
+    var $menuActions = $("<div></div>").addClass('menu_actions')
+        .html(menuActionsHtml);
     $($menuBar1Div).append($menuActions);
 
     var menuLegendHtml = "<span class=\"success\">Success</span> | " +
@@ -155,15 +210,23 @@ function _createHystrixCircuitArea(containerDiv) {
         "<span class=\"rejected\">Rejected</span> | " +
         "<span class=\"failure\">Failure</span> | " +
         "<span class=\"errorPercentage\">Error %</span>";
-    var $menuLegend = $("<div></div>").addClass('menu_legend').html(menuLegendHtml);
+    var $menuLegend = $("<div></div>").addClass('menu_legend')
+        .html(menuLegendHtml);
     $($menuBar1Div).append($menuLegend);
 
     _hystrixCircuitContainerDivId = "dependencies";
-    var $circuitContainerDiv = $("<div></div>").attr('id', _hystrixCircuitContainerDivId)
+    var $circuitContainerDiv = $("<div></div>")
+        .attr('id', _hystrixCircuitContainerDivId)
         .addClass('hystrix-row').addClass('dependencies');
     $(containerDiv).append($circuitContainerDiv);
 }
 
+/**
+ * Creates the thread pool chart area where a navigation bar and all subsequent
+ * thread pool charts are added.
+ * @param containerDiv inner container
+ * @private
+ */
 function _createHystrixThreadPoolArea(containerDiv) {
     var $row2Div = $("<div></div>").addClass('hystrix-row');
     $(containerDiv).append($row2Div);
@@ -173,53 +236,168 @@ function _createHystrixThreadPoolArea(containerDiv) {
     $($menuBar2Div).append($threadTitleDiv);
 
     var menuActionsHtml = "Sort: " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">Alphabetical</a> | " +
-        "<a href=\"javascript://\" onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume</a>";
-    var $menuActions = $("<div></div>").addClass('menu_actions').html(menuActionsHtml);
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortThreadpoolAlphabetically();\">" +
+        "Alphabetical</a> | " +
+        "<a href=\"javascript://\" " +
+        "onclick=\"hystrixViewer.sortThreadpoolByVolume();\">Volume</a>";
+    var $menuActions = $("<div></div>").addClass('menu_actions')
+        .html(menuActionsHtml);
     $($menuBar2Div).append($menuActions);
 
     _hystrixThreadContainerDivId = "dependencyThreadPools";
-    var $threadContainerDiv = $("<div></div>").attr('id', _hystrixThreadContainerDivId)
+    var $threadContainerDiv = $("<div></div>")
+        .attr('id', _hystrixThreadContainerDivId)
         .addClass('hystrix-row').addClass('dependencyThreadPools');
     $(containerDiv).append($threadContainerDiv);
 }
 
 /**
- * Adds a Hystrix circuit chart
+ * Adds a Hystrix circuit chart by parsing the metric path. Checks for
+ * both hystrix metricsand metrics published by
+ * 'hystrix-codahale-metrics-publisher'. If 'hystrix-codahale-metrics-publisher'
+ * is on, switches over to metrics published
+ * by 'hystrix-codahale-metrics-publisher'.
+ *
  * @param {string} metricName name of metric,
- * e.g., 'gauge.hystrix.HystrixCommand.serviceA.readAuthors.rollingCountTimeout'
+ * e.g., 'gauge.hystrix.HystrixCommand.serviceA.readAuthors.countShortCircuited'
+ * or 'serviceA.readAuthors.countShortCircuited'
+ * @param {string} gaugeJsonNode gauges metric node
  * @private
  */
-function _addHystrixCircuit(metricName) {
-    if (metricName.startsWith("gauge.hystrix.HystrixCommand")) {
-        var tokens = metricName.split(".");
+function _addHystrixCircuit(metricName, gaugeJsonNode) {
+    var tokens, key, metricKey, knownMetricName, config;
+
+    //metricName: gauge.hystrix.HystrixCommand.serviceA.readAuthors.countShortCircuited
+    if (!_metricsPublisherOn &&
+        metricName.startsWith("gauge.hystrix.HystrixCommand")) {
+
+        tokens = metricName.split(".");
         if (tokens.length == 6) {
-            var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
-                tokens[3] + "." + tokens[4];
+            //serviceA.readAuthors
+            key = tokens[3] + "." + tokens[4];
             if (!_hystrixCircuitMap[key]) {
-                var config = new HystrixCommandConfig(_hystrixCircuitContainerDivId, key, tokens[3], tokens[4]);
+                //metricKey: gauge.hystrix.HystrixCommand.serviceA.readAuthors
+                metricKey = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
+                    tokens[3] + "." + tokens[4];
+
+                //check if a known metric is published by
+                // 'hystrix-codahale-metrics-publisher' maven library
+                //serviceA.readAuthors.countShortCircuited
+                //RibbonCommand.readAuthors.countShortCircuited
+                knownMetricName = tokens[3] + "." + tokens[4] + "." + tokens[5];
+                if (gaugeJsonNode[knownMetricName]) {
+                    //metricKey: serviceA.readAuthors
+                    metricKey = tokens[3] + "." + tokens[4];
+                    _metricsPublisherOn = true;
+                }
+
+                config = new HystrixCommandConfig(_hystrixCircuitContainerDivId,
+                    metricKey, tokens[3], tokens[4]);
                 _hystrixCircuitMap[key] = config;
                 _sortCircuitSameAsLast();
+            }
+        } else {
+            tokens = metricName.split(".");
+            if (tokens.length == 3) {
+                //key: serviceA.readAuthor
+                key = tokens[1] + "." + tokens[2];
+                if (!_hystrixCircuitMap[key]) {
+                    //look for a known metric, e.g.,
+                    // metricName: serviceA.readAuthor.countShortCircuited
+                    knownMetricName = tokens[1] + "." + tokens[2] +
+                        ".countShortCircuited";
+                    if (gaugeJsonNode[knownMetricName]) {
+                        //metricKey: serviceA.readAuthor
+                        metricKey = key;
+                        config = new HystrixCommandConfig(
+                            _hystrixCircuitContainerDivId,
+                            metricKey, tokens[1], tokens[2]);
+                        _hystrixCircuitMap[key] = config;
+                        _metricsPublisherOn = true;
+                        _sortCircuitSameAsLast();
+                    }
+                }
             }
         }
     }
 }
 
+/**
+ * Adds a Hystrix thread pool chart by parsing the metric path. Checks only
+ * for hystrix metrics and ignores metrics published by
+ * 'hystrix-codahale-metrics-publisher' since the doesn't pusblishes all
+ * the required metrics to view a threadpool.
+ *
+ * @param {string} metricName name of metric,
+ * e.g., 'gauge.hystrix.HystrixThreadPool.serviceA.currentActiveCount'
+ * @private
+ */
 function _addHystrixThreadPool(metricName) {
+    var tokens, key, metricKey, config;
+
+    //metricName: gauge.hystrix.HystrixThreadPool.serviceA.currentActiveCount
+    //if (!_metricsPublisherOn &&
     if (metricName.startsWith("gauge.hystrix.HystrixThreadPool")) {
-        var tokens = metricName.split(".");
+        tokens = metricName.split(".");
         if (tokens.length == 5) {
-            var key = tokens[0] + "." + tokens[1] + "." + tokens[2] + "." +
-                tokens[3];
+            //key: serviceA
+            key = tokens[3];
             if (!_hystrixThreadpoolMap[key]) {
-                var config = new HystrixThreadpoolConfig(_hystrixThreadContainerDivId, key, tokens[3]);
+                //metricKey: gauge.hystrix.HystrixThreadPool.serviceA
+                metricKey = tokens[0] + "." + tokens[1] + "."
+                    + tokens[2] + "." + tokens[3];
+
+                //check if a known metric is published by
+                // 'hystrix-codahale-metrics-publisher' maven library
+                //HystrixThreadPool.serviceA.currentActiveCount
+                /*                var knownMetricName = "HystrixThreadPool"
+                 + "." + tokens[3] + ".currentActiveCount";
+                 if (gaugeJsonNode[knownMetricName]) {
+                 //metricKey: HystrixThreadPool.serviceA
+                 metricKey = "HystrixThreadPool" + "." + tokens[3];
+                 _metricsPublisherOn = true;
+                 }*/
+
+                config = new HystrixThreadpoolConfig(
+                    _hystrixThreadContainerDivId,
+                    metricKey, tokens[3]);
                 _hystrixThreadpoolMap[key] = config;
                 _sortThreadpoolSameAsLast();
             }
         }
     }
+    /*else if (metricName.startsWith("HystrixThreadPool")) {
+     //metricName: HystrixThreadPool.serviceA.currentActiveCount
+     tokens = metricName.split(".");
+     _metricsPublisherOn = true;
+     if (tokens.length == 3) {
+     //key: serviceA
+     key = tokens[1];
+     if (!_hystrixThreadpoolMap[key]) {
+     //metricKey: HystrixThreadPool.serviceA
+     metricKey = tokens[0] + "." + tokens[1];
+     config = new HystrixThreadpoolConfig(_hystrixThreadContainerDivId,
+     metricKey, tokens[3]);
+     _hystrixThreadpoolMap[key] = config;
+     _metricsPublisherOn = true;
+     _sortThreadpoolSameAsLast();
+     }
+     }
+     }*/
 }
 
+/**
+ * Retrieves a gauge metric value from the given metric name.
+ * @param jsonRoot metrics JSON data
+ * @param metricName the name of the metric for which the metric value is
+ * retrieved
+ * @param defaultValue default value of the metric if the metric is missing
+ * in the JSON data.
+ *
+ * @returns the metric value
+ * @private
+ */
 function _getMetricValue(jsonRoot, metricName, defaultValue) {
     var value = defaultValue;
     if (jsonRoot[METRIC_TYPE.GAUGE.type]) {
@@ -234,10 +412,16 @@ function _getMetricValue(jsonRoot, metricName, defaultValue) {
             }
         }
     }
+
     return value;
 }
 
-/* private */
+/**
+ * Roounds a number
+ * @param num the mumber to be rounded
+ * @returns {string} the rounded number
+ * @private
+ */
 function _roundNumber(num) {
     var dec = 1;
     var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
@@ -253,6 +437,7 @@ function _roundNumber(num) {
  * @param {number} number the number to be formatted
  * @param {number} precision the number of decimal places
  * @returns {number} the formatted number
+ * @private
  */
 function _formatNumber(number, precision) {
     if (!precision) {

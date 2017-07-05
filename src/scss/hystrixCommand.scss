@@ -1,23 +1,22 @@
 .dependencies {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   //font-size: 0.875em;
-  line-height:1;
+  line-height: 1;
 }
 
 .dependencies p {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   //font-size: 0.875em;
-  line-height:1;
+  line-height: 1;
 }
 
 /* --------------------- START*/
 .dependencies .spacer {
   width: 100%;
   margin: 0 auto;
-  padding-top:4px;
-  clear:both;
+  padding-top: 4px;
+  clear: both;
 }
-
 
 .dependencies .last {
   margin-right: 0px;
@@ -35,23 +34,22 @@
   color: red;
 }
 
-
 .dependencies div.monitor {
   float: left;
   //margin-right:5px;
-  margin-right:15px;
-  margin-top:5px;
+  margin-right: 15px;
+  margin-top: 5px;
 }
 
 .dependencies div.monitor p.service-name {
-  font-weight:bold;
+  font-weight: bold;
   font-size: 10pt;
   text-align: right;
   padding-bottom: 2px;
 }
 
 .dependencies div.monitor p.name {
-  font-weight:bold;
+  font-weight: bold;
   font-size: 10pt;
   text-align: right;
   padding-bottom: 5px;
@@ -92,7 +90,7 @@
 
 .dependencies div.monitor_data a,
 .dependencies span.rate_value {
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .dependencies span.smaller {
@@ -101,22 +99,22 @@
 }
 
 .dependencies div.tableRow {
-  width:100%;
+  width: 100%;
   white-space: nowrap;
   font-size: 8pt;
   margin: 0 auto;
-  clear:both;
+  clear: both;
   //padding-left:26%;
 }
 
 .dependencies div.tableRow .hystrix-cell {
-  float:left;
+  float: left;
 }
 
 .dependencies div.tableRow .hystrix-header {
-  width:18%;
-  text-align:right;
-  padding-right:2%;
+  width: 18%;
+  text-align: right;
+  padding-right: 2%;
 }
 
 .dependencies div.tableRow .hystrix-header.hystrix-left {
@@ -128,9 +126,9 @@
 }
 
 .dependencies div.tableRow .hystrix-data {
-  width:17%;
+  width: 17%;
   font-weight: bold;
-  text-align:right;
+  text-align: right;
 }
 
 .dependencies div.monitor {
@@ -148,7 +146,7 @@
 }
 
 .dependencies .timeout {
-  color: #FF9900;	 /* shade of orange */
+  color: #FF9900; /* shade of orange */
 }
 
 .dependencies .failure {
@@ -174,8 +172,8 @@
 
 .dependencies div.rate {
   padding-top: 1px;
-  clear:both;
-  text-align:right;
+  clear: both;
+  text-align: right;
 }
 
 .dependencies .errorPercentage {
@@ -183,10 +181,9 @@
 }
 
 .dependencies div.hystrix-cell .errorPercentage {
-  padding-left:5px;
+  padding-left: 5px;
   font-size: 12pt !important;
 }
-
 
 .dependencies div.monitor div.chart {
 }
@@ -198,14 +195,13 @@
   fill: white;
 }
 
-
 .dependencies div.circuitStatus {
-  width:100%;
+  width: 100%;
   white-space: nowrap;
   font-size: 9pt;
   margin: 0 auto;
-  clear:both;
-  text-align:right;
+  clear: both;
+  text-align: right;
   padding-top: 4px;
 }
 
