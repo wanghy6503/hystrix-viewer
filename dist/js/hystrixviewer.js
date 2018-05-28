@@ -432,12 +432,22 @@ function _addHystrixThreadPool(metricName) {
  */
 function _getMetricValue(jsonRoot, metricName, defaultValue) {
     var value = defaultValue;
+    console.log(metricName);
     if (jsonRoot[METRIC_TYPE.GAUGE.type]) {
         var metricData = jsonRoot[METRIC_TYPE.GAUGE.type][metricName];
         if (metricData) {
             try {
                 if (metricData["value"]) {
-                    value = _formatNumber(metricData["value"], 4);
+                    var metricVal = metricData["value"];
+                    if (typeof(metricVal) === "boolean") {
+                       if (metricVal) {
+                           value = 1;
+                       } else {
+                           value = 0;
+                       }
+                    } else {
+                        value = _formatNumber(metricVal, 4);
+                    }
                 }
             } catch (err) {
                 //do nothing
@@ -983,6 +993,8 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var propertyValue_circuitBreakerForceClosed =
             _getMetricValue(jsonData, this.metricKey
                 + ".propertyValue_circuitBreakerForceClosed", -20);
+        console.log("propertyValue_circuitBreakerForceClosed: " +
+            propertyValue_circuitBreakerForceClosed);
         if (propertyValue_circuitBreakerForceClosed !== -20) {
             this.data["propertyValue_circuitBreakerForceClosed"]
                 = propertyValue_circuitBreakerForceClosed;
@@ -992,6 +1004,8 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var propertyValue_circuitBreakerForceOpen =
             _getMetricValue(jsonData, this.metricKey
                 + ".propertyValue_circuitBreakerForceOpen", -20);
+        console.log("propertyValue_circuitBreakerForceOpen: " +
+            propertyValue_circuitBreakerForceOpen);
         if (propertyValue_circuitBreakerForceOpen !== -20) {
             this.data["propertyValue_circuitBreakerForceOpen"]
                 = propertyValue_circuitBreakerForceOpen;
@@ -1001,6 +1015,8 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var isCircuitBreakerOpen =
             _getMetricValue(jsonData, this.metricKey
                 + ".isCircuitBreakerOpen", -20);
+        console.log("isCircuitBreakerOpen: " +
+            isCircuitBreakerOpen);
         if (isCircuitBreakerOpen !== -20) {
             this.data["isCircuitBreakerOpen"] = isCircuitBreakerOpen;
         }

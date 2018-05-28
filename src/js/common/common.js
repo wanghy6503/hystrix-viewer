@@ -400,12 +400,22 @@ function _addHystrixThreadPool(metricName) {
  */
 function _getMetricValue(jsonRoot, metricName, defaultValue) {
     var value = defaultValue;
+    console.log(metricName);
     if (jsonRoot[METRIC_TYPE.GAUGE.type]) {
         var metricData = jsonRoot[METRIC_TYPE.GAUGE.type][metricName];
         if (metricData) {
             try {
                 if (metricData["value"]) {
-                    value = _formatNumber(metricData["value"], 4);
+                    var metricVal = metricData["value"];
+                    if (typeof(metricVal) === "boolean") {
+                       if (metricVal) {
+                           value = 1;
+                       } else {
+                           value = 0;
+                       }
+                    } else {
+                        value = _formatNumber(metricVal, 4);
+                    }
                 }
             } catch (err) {
                 //do nothing

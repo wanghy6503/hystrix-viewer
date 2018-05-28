@@ -499,6 +499,8 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var propertyValue_circuitBreakerForceClosed =
             _getMetricValue(jsonData, this.metricKey
                 + ".propertyValue_circuitBreakerForceClosed", -20);
+        console.log("propertyValue_circuitBreakerForceClosed: " +
+            propertyValue_circuitBreakerForceClosed);
         if (propertyValue_circuitBreakerForceClosed !== -20) {
             this.data["propertyValue_circuitBreakerForceClosed"]
                 = propertyValue_circuitBreakerForceClosed;
@@ -508,6 +510,8 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var propertyValue_circuitBreakerForceOpen =
             _getMetricValue(jsonData, this.metricKey
                 + ".propertyValue_circuitBreakerForceOpen", -20);
+        console.log("propertyValue_circuitBreakerForceOpen: " +
+            propertyValue_circuitBreakerForceOpen);
         if (propertyValue_circuitBreakerForceOpen !== -20) {
             this.data["propertyValue_circuitBreakerForceOpen"]
                 = propertyValue_circuitBreakerForceOpen;
@@ -517,6 +521,136 @@ function HystrixCommandConfig(parentDivId, metricKey, serviceName, methodName) {
         var isCircuitBreakerOpen =
             _getMetricValue(jsonData, this.metricKey
                 + ".isCircuitBreakerOpen", -20);
+        console.log("isCircuitBreakerOpen: " +
+            isCircuitBreakerOpen);
+        if (isCircuitBreakerOpen !== -20) {
+            this.data["isCircuitBreakerOpen"] = isCircuitBreakerOpen;
+        }
+    };
+
+    /**
+     *
+     * @param jsonData
+     */
+    this.preProcessDataWithMetricPubOn =
+        function preProcessDataWithMetricPubOn(jsonData) {
+        this.data = {};
+
+        //FOUND WITH CHANGED NAME
+        var numberSeconds =
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_rollingStatisticalWindowInMilliseconds", 0) / 1000;
+
+        //NOT FOUND
+        var totalRequests = _getMetricValue(jsonData, this.metricKey
+            + ".requestCount", 0);
+        if (totalRequests < 0) {
+            totalRequests = 0;
+        }
+
+        //NOT FOUND
+        var reportingHosts = _getMetricValue(jsonData, this.metricKey
+            + ".reportingHosts", 0);
+        this.data["reportingHosts"] = reportingHosts;
+
+        this.data["ratePerSecond"] =
+            _roundNumber(totalRequests / numberSeconds);
+        this.data["ratePerSecondPerHost"] =
+            _roundNumber(totalRequests / numberSeconds / reportingHosts);
+        this.data["ratePerSecondPerHostDisplay"] =
+            this.data["ratePerSecondPerHost"];
+
+        //FOUND
+        this.data["errorPercentage"] =
+            _getMetricValue(jsonData, this.metricKey + ".errorPercentage", 0);
+
+        this.data["errorThenVolume"] = isNaN(this.data["ratePerSecond"]) ?
+            -1 : (this.data["errorPercentage"] * 100000000)
+        + this.data["ratePerSecond"];
+
+        //FOUND
+        this.data["rollingCountTimeout"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountTimeout", 0);
+
+        //FOUND
+        var rollingCountThreadPoolRejected =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountThreadPoolRejected", -20);
+
+        if (rollingCountThreadPoolRejected === -20) {
+            this.data["rollingCountSemaphoreRejected"] =
+                _getMetricValue(jsonData, this.metricKey
+                    + ".rollingCountSemaphorePoolRejected", 0);
+        } else {
+            this.data["rollingCountThreadPoolRejected"] = rollingCountThreadPoolRejected;
+        }
+
+        //FOUND
+        this.data["rollingCountFailure"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountFailure", 0);
+
+        //FOUND
+        this.data["rollingCountSuccess"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountSuccess", 0);
+
+        //FOUND
+        this.data["rollingCountShortCircuited"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountShortCircuited", 0);
+
+        //FOUND
+        this.data["rollingCountBadRequests"] =
+            _getMetricValue(jsonData, this.metricKey
+                + ".rollingCountBadRequests", 0);
+
+        //FOUND WITH CHANGED NAMES
+        this.data["latency90"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_percentile_90", 0);
+        this.data["latencyMedian"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_percentile_50", 0);
+        this.data["latency99"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_percentile_99", 0);
+        this.data["latencyMean"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_mean", 0);
+        this.data["latency995"] =
+            _getMetricValue(jsonData, this.metricKey + ".latencyExecute_percentile_995", 0);
+
+        //FOUND
+        //circuit breaker may be missing with hystrix metrics unless
+        //'hystrix-codahale-metrics-publisher' maven library is included
+        //1 or 0 for true or false respectively
+        var propertyValue_circuitBreakerForceClosed =
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_circuitBreakerForceClosed", -20);
+        console.log("propertyValue_circuitBreakerForceClosed: " +
+            propertyValue_circuitBreakerForceClosed);
+        if (propertyValue_circuitBreakerForceClosed !== -20) {
+            this.data["propertyValue_circuitBreakerForceClosed"]
+                = propertyValue_circuitBreakerForceClosed;
+        }
+
+        //FOUND
+        //1 or 0 for true or false respectively
+        var propertyValue_circuitBreakerForceOpen =
+            _getMetricValue(jsonData, this.metricKey
+                + ".propertyValue_circuitBreakerForceOpen", -20);
+        console.log("propertyValue_circuitBreakerForceOpen: " +
+            propertyValue_circuitBreakerForceOpen);
+        if (propertyValue_circuitBreakerForceOpen !== -20) {
+            this.data["propertyValue_circuitBreakerForceOpen"]
+                = propertyValue_circuitBreakerForceOpen;
+        }
+
+        //FOUND
+        //1 or 0 for true or false respectively
+        var isCircuitBreakerOpen =
+            _getMetricValue(jsonData, this.metricKey
+                + ".isCircuitBreakerOpen", -20);
+        console.log("isCircuitBreakerOpen: " +
+            isCircuitBreakerOpen);
         if (isCircuitBreakerOpen !== -20) {
             this.data["isCircuitBreakerOpen"] = isCircuitBreakerOpen;
         }
